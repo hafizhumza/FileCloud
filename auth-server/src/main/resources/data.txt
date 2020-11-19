@@ -1,0 +1,20 @@
+INSERT INTO oauth_client_details (client_id, client_secret, web_server_redirect_uri, scope, access_token_validity, refresh_token_validity, resource_ids, authorized_grant_types, additional_information) VALUES ('mobile', '{noop}123', 'http://localhost:8080/login', 'READ,WRITE,DOCUMENT', '3600', '10000', 'u_437287,d_498778', 'authorization_code,password,refresh_token,implicit', '{}');
+
+INSERT INTO PERMISSION (NAME) VALUES('approve_new_user'), ('view_all_users'), ('upload_document'), ('delete_document'), ('view_document');
+
+INSERT INTO role (NAME) VALUES('ROLE_admin'), ('ROLE_user');
+
+INSERT INTO PERMISSION_ROLE (PERMISSION_ID, ROLE_ID) VALUES
+     (1,1), /*approve_new_user, admin */
+     (2,1), /* view_all_users, admin */
+     (3,2), /* upload_document, authUser */
+     (4,2), /* delete_document, authUser */
+     (5,2), /* view_document, authUser */
+
+insert into auth_user (id, full_name, email, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked) VALUES ('1', 'Hamza', 'hamza@gmail.com', '{noop}123', '1', '1', '1', '1');
+insert into  auth_user (id, full_name, email, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked) VALUES ('2', 'Ahmad', 'ahmad@gmail.com', '{noop}123', '1', '1', '1', '1');
+
+INSERT INTO ROLE_USER (ROLE_ID, USER_ID)
+    VALUES
+    (1, 1) /* hamza-admin */,
+    (2, 2) /* ahmad-authUser */;
