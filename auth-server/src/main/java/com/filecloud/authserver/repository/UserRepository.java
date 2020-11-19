@@ -1,12 +1,17 @@
 package com.filecloud.authserver.repository;
 
-import com.filecloud.authserver.model.db.AuthUser;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import com.filecloud.authserver.model.db.AuthUser;
+
 
 public interface UserRepository extends JpaRepository<AuthUser, Long> {
 
-    Optional<AuthUser> findByEmail(String email);
+	Optional<AuthUser> findByEmail(String email);
+
+	List<AuthUser> findByAccountNonLocked(boolean accountNonLocked);
 
 }

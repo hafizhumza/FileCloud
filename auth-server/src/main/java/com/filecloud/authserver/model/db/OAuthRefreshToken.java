@@ -8,11 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "oauth_refresh_token")
 public class OAuthRefreshToken implements Serializable {
-
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "token_id")

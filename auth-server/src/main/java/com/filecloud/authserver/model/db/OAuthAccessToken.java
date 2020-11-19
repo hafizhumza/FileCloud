@@ -8,11 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+
 @Entity
 @Table(name = "oauth_access_token")
 public class OAuthAccessToken implements Serializable {
-
-	private static final long serialVersionUID = 1L;
 
 	@Id
 	@Column(name = "authentication_id")

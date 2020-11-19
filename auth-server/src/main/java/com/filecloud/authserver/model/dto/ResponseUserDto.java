@@ -12,6 +12,6 @@ public class ResponseUserDto {
     private Long id;
     private String fullName;
     private String email;
-    private boolean accountNonLocked;
+    private Boolean accountNonLocked;
 
 }
