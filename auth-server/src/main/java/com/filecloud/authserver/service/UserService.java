@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
@@ -26,8 +25,9 @@ import com.filecloud.authserver.model.dto.RegisterUserDto;
 import com.filecloud.authserver.model.dto.RequestUserDto;
 import com.filecloud.authserver.model.dto.ResponseUserDto;
 import com.filecloud.authserver.repository.UserRepository;
+import com.filecloud.authserver.security.dto.AuthUserDetail;
 import com.filecloud.authserver.security.util.AuthUtil;
-import com.filecloud.authserver.util.AppConstants;
+import com.filecloud.authserver.util.ConstUtil;
 import com.filecloud.authserver.util.Util;
 
 
@@ -54,7 +54,7 @@ public class UserService {
 	}
 
 	public void registerUser(RegisterUserDto userDto) {
-		Role role = roleService.findByName(AppConstants.ROLE_USER);
+		Role role = roleService.findByName(ConstUtil.ROLE_USER);
 
 		AuthUser authUser = new AuthUser();
 		authUser.setFullName(userDto.getFullName());
@@ -74,9 +74,9 @@ public class UserService {
 		String scope;
 
 		if (isAdmin(logInDto.getEmail()))
-			scope = AppConstants.SCOPE_WRITE;
+			scope = ConstUtil.SCOPE_WRITE;
 		else
-			scope = AppConstants.SCOPE_READ + " " + AppConstants.SCOPE_DOCUMENT;
+			scope = ConstUtil.SCOPE_READ + " " + ConstUtil.SCOPE_DOCUMENT;
 
 		User user = new User(logInDto.getClientId(), logInDto.getClientSecret(), true, true, true, true, Collections.emptyList());
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
@@ -99,7 +99,7 @@ public class UserService {
 
 		return user.map(u -> {
 			for (Role role : u.getRoles())
-				if (role.getName().equals(AppConstants.ROLE_ADMIN))
+				if (role.getName().equals(ConstUtil.ROLE_ADMIN))
 					return true;
 			return false;
 		}).orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
@@ -113,7 +113,7 @@ public class UserService {
 					.stream()
 					.filter(u -> {
 						for (Role role : u.getRoles())
-							if (role.getName().equals(AppConstants.ROLE_USER))
+							if (role.getName().equals(ConstUtil.ROLE_USER))
 								return true;
 						return false;
 					})
@@ -148,8 +148,8 @@ public class UserService {
 		userRepository.delete(authUser);
 	}
 
-	public ResponseUserDto getUser() {
-		UserDetails userDetails = AuthUtil.getPrincipal();
+	public ResponseUserDto getUserDetail() {
+		AuthUserDetail userDetails = AuthUtil.getPrincipal();
 		Optional<AuthUser> user = userRepository.findByEmail(userDetails.getUsername());
 
 		return user.map(u -> new ResponseUserDto(u.getId(), u.getFullName(), u.getEmail(), u.isAccountNonLocked()))
@@ -164,7 +164,7 @@ public class UserService {
 					.stream()
 					.filter(u -> {
 						for (Role role : u.getRoles())
-							if (role.getName().equals(AppConstants.ROLE_USER))
+							if (role.getName().equals(ConstUtil.ROLE_USER))
 								return true;
 						return false;
 					})

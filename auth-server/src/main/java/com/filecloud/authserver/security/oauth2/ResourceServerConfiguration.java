@@ -6,6 +6,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 
+import com.filecloud.authserver.util.ConstUtil;
+
 
 /**
  * In order to secure Controllers endpoints with oauth2 we need configure Resource Server.
@@ -14,26 +16,26 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 @Configuration
 public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
 
-    @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http
-                .authorizeRequests()
-                .antMatchers("/api/v1/admin/**")
-                .access("#oauth2.hasScope('WRITE')");
-    }
+	@Override
+	public void configure(HttpSecurity http) throws Exception {
+		http
+				.authorizeRequests()
+				.antMatchers("/api/v1/admin/**")
+				.access("#oauth2.hasScope('" + ConstUtil.SCOPE_WRITE + "')");
+	}
 
-    @Override
-    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-        resources.resourceId("u_437287");
-    }
+	@Override
+	public void configure(ResourceServerSecurityConfigurer resources) {
+		resources.resourceId("u_437287");
+	}
 
-    /*@Override
-    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-        resources.authenticationEntryPoint(authenticationEntryPoint());
-    }*/
+	/*@Override
+	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+	    resources.authenticationEntryPoint(authenticationEntryPoint());
+	}*/
 
-    /*@Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-        return new AuthRequestEntryPoint();
-    }*/
+	/*@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint() {
+	    return new AuthRequestEntryPoint();
+	}*/
 }

@@ -1,4 +1,4 @@
-package com.filecloud.authserver.model.db;
+package com.filecloud.authserver.security.dto;
 
 import java.util.Collection;
 
@@ -6,15 +6,16 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 
-public class CustomUserDetail extends User {
-
-//	private static final long serialVersionUID = -8299093910604002878L;
+public class AuthUserDetail extends User {
 
 	private Long userId;
 
-	public CustomUserDetail(long userId, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+	private String fullName;
+
+	public AuthUserDetail(long userId, String fullName, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 		setUserId(userId);
+		setFullName(fullName);
 	}
 
 	public Long getUserId() {
@@ -23,5 +24,13 @@ public class CustomUserDetail extends User {
 
 	public void setUserId(Long userId) {
 		this.userId = userId;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
 	}
 }
