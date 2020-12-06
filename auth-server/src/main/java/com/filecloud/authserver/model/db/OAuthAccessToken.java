@@ -1,8 +1,6 @@
 
 package com.filecloud.authserver.model.db;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -11,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "oauth_access_token")
-public class OAuthAccessToken implements Serializable {
+public class OAuthAccessToken {
 
 	@Id
 	@Column(name = "authentication_id")
