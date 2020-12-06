@@ -29,6 +29,7 @@ public class UserController {
 	}
 
 	// TODO: Login can be achieved from /oauth/token endpoint as well
+	@Deprecated
 	@Transactional
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody LogInDto logInDto) throws HttpRequestMethodNotSupportedException {
@@ -42,9 +43,12 @@ public class UserController {
 		return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
 	}
 
+	// TODO: This service is not required anymore. Because oauth/check_token service has been modified.
+	// All necessary user info will be sent once at check token time.
+	@Deprecated
 	@GetMapping("/user-detail")
 	public ResponseEntity<?> detail() {
-		return new ResponseEntity<>(userService.getUser(), HttpStatus.OK);
+		return new ResponseEntity<>(userService.getUserDetail(), HttpStatus.OK);
 	}
 
 	@GetMapping("/list-active-users")
