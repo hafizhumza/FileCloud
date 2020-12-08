@@ -7,7 +7,6 @@ import com.filecloud.documentservice.security.dto.UserSession;
 import com.filecloud.documentservice.util.Util;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.common.exceptions.UnauthorizedUserException;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 
@@ -71,5 +70,14 @@ public class AuthUtil {
             throw new InvalidAccessException();
 
         return userSession;
+    }
+
+    public static String getBearerToken() {
+        OAuth2AuthenticationDetails authenticationDetails = getAuthenticationDetails();
+
+        if (authenticationDetails == null)
+            throw new InvalidAccessException();
+
+        return authenticationDetails.getTokenType().concat(" ").concat(authenticationDetails.getTokenValue());
     }
 }
