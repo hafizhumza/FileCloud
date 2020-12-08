@@ -1,45 +1,58 @@
 
 package com.filecloud.documentservice.response;
 
-public abstract class Result {
+public class Result<T> {
 
-	private int status;
+    private boolean success;
 
-	private boolean success;
+    private long statusCode;
 
-	private String message;
+    private String message;
 
-	Result(int status, boolean successfull) {
-		this.status = status;
-		this.success = successfull;
-	}
+    private T data;
 
-	Result(int status, boolean successfull, String message) {
-		this(status, successfull);
-		this.message = message;
-	}
+    private String errorMessage;
 
-	public int getStatus() {
-		return status;
-	}
+    public Result() {
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public boolean isSuccess() {
+        return success;
+    }
 
-	public boolean isSuccess() {
-		return success;
-	}
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
 
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
+    public String getErrorMessage() {
+        return errorMessage;
+    }
 
-	public String getMessage() {
-		return message;
-	}
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
-	public void setMessage(String message) {
-		this.message = message;
-	}
+    public long getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(long statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
 }

@@ -10,16 +10,16 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmailSharedDocumentUrlDto {
+public class EmailSharedDocumentDto {
 
     @NotBlank(message = "Email cannot be empty")
     @NotNull(message = "Email cannot be null")
-    private String toEmail;
+    private String receiverEmail;
 
-    private String fromName;
+    private String senderName;
 
     private String url;
 
-    private int expiryDays;
+    private long expiryDays;
 
 }

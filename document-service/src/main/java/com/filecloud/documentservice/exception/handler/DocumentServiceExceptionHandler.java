@@ -30,13 +30,13 @@ public class DocumentServiceExceptionHandler extends ResponseEntityExceptionHand
 
     @ExceptionHandler(Throwable.class)
     @ResponseBody
-    Result handleControllerException(HttpServletRequest req, Throwable ex) {
+    Result<?> handleControllerException(HttpServletRequest req, Throwable ex) {
         return this.getExceptionResponse(ex);
     }
 
     @ExceptionHandler(ResponseException.class)
     @ResponseBody
-    Result handleResponseException(HttpServletRequest req, ResponseException ex) {
+    Result<?> handleResponseException(HttpServletRequest req, ResponseException ex) {
 
         if (ex.getStatus() == Status.INTERNAL_SERVER_ERROR)
             this.handleControllerException(req, ex);
@@ -46,13 +46,13 @@ public class DocumentServiceExceptionHandler extends ResponseEntityExceptionHand
 
     @ExceptionHandler(HttpResponseException.class)
     @ResponseBody
-    Result handleHttpResponseException(HttpServletRequest req, HttpResponseException ex) {
+    Result<?> handleHttpResponseException(HttpServletRequest req, HttpResponseException ex) {
         return BaseController.sendErrorResponse(ex.getStatusCode(), ex.getMessage(), null);
     }
 
     @ExceptionHandler(WrappedException.class)
     @ResponseBody
-    Result handleWrappedException(HttpServletRequest req, WrappedException ex) {
+    Result<?> handleWrappedException(HttpServletRequest req, WrappedException ex) {
 
         if (ex.getActualException() instanceof ResponseException)
             return this.handleResponseException(req, (ResponseException) ex.getActualException());
@@ -60,7 +60,7 @@ public class DocumentServiceExceptionHandler extends ResponseEntityExceptionHand
         return this.handleControllerException(req, ex.getActualException());
     }
 
-    private Result getExceptionResponse(Throwable ex) {
+    private Result<?> getExceptionResponse(Throwable ex) {
         return documentServiceProperties.isDevMode() ? BaseController.sendErrorResponse(Status.INTERNAL_SERVER_ERROR, ex.getMessage()) : BaseController.sendErrorResponse(Status.INTERNAL_SERVER_ERROR, "Service failed.");
     }
 }

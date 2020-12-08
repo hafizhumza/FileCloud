@@ -6,6 +6,7 @@ import com.filecloud.documentservice.constant.ConstUtil;
 import com.filecloud.documentservice.exception.RecordNotFoundException;
 import com.filecloud.documentservice.model.db.Document;
 import com.filecloud.documentservice.model.dto.*;
+import com.filecloud.documentservice.network.EmailServiceClient;
 import com.filecloud.documentservice.properties.DocumentServiceProperties;
 import com.filecloud.documentservice.repository.DocumentRepository;
 import com.filecloud.documentservice.security.dto.UserSession;
@@ -36,6 +37,8 @@ public class DocumentService extends BaseService {
 
     private final SharedDocumentService sharedDocumentService;
 
+    private final EmailServiceClient emailServiceClient;
+
     private static Path fileStorageLocation;
 
     private final ObjectMapper jacksonObjectMapper;
@@ -43,13 +46,11 @@ public class DocumentService extends BaseService {
     private final Validator validator;
 
     @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    public DocumentService(DocumentRepository documentRepository, DocumentServiceProperties documentServiceProperties, ObjectMapper jacksonObjectMapper, Validator validator, SharedDocumentService sharedDocumentService) {
+    public DocumentService(DocumentRepository documentRepository, DocumentServiceProperties documentServiceProperties, ObjectMapper jacksonObjectMapper, Validator validator, SharedDocumentService sharedDocumentService, EmailServiceClient emailServiceClient) {
         this.documentRepository = documentRepository;
         this.sharedDocumentService = sharedDocumentService;
         this.documentServiceProperties = documentServiceProperties;
+        this.emailServiceClient = emailServiceClient;
         this.jacksonObjectMapper = jacksonObjectMapper;
         this.validator = validator;
         createDocumentsDir(documentServiceProperties);
@@ -107,9 +108,9 @@ public class DocumentService extends BaseService {
     }
 
     public SpaceInfoResponseDto getSpaceInfo() {
-        double spaceLimit = Util.roundUptoTwo(documentServiceProperties.getSpaceLimitPerUser());
-        double usedSpace = Util.roundUptoTwo(this.getUsedSpace());
-        double remainingSpace = Util.roundUptoTwo((spaceLimit - usedSpace));
+        double spaceLimit = documentServiceProperties.getSpaceLimitPerUser();
+        double usedSpace = this.getUsedSpace();
+        double remainingSpace = (spaceLimit - usedSpace);
         return new SpaceInfoResponseDto(spaceLimit, usedSpace, remainingSpace);
     }
 
@@ -135,7 +136,17 @@ public class DocumentService extends BaseService {
     public void share(ShareDocumentRequestDto requestDto) {
         Document document = getVerifiedUserDocument(requestDto.getDocumentId());
         String url = sharedDocumentService.save(document);
-        emailService.sendMail(new EmailSharedDocumentUrlDto(requestDto.getToEmail(), "", url, 7));
+        UserSession session = AuthUtil.getCurrentLoggedInUser();
+
+        // TODO: Call Email Service to send email
+        EmailSharedDocumentDto dto = new EmailSharedDocumentDto(
+                requestDto.getReceiverEmail(),
+                session.getFullName(),
+                url,
+                documentServiceProperties.getSharedDocumentsExpiryDays()
+        );
+
+        emailServiceClient.emailSharedDocumentUrl(AuthUtil.getBearerToken(), dto);
     }
 
     private void createDocumentsDir(DocumentServiceProperties documentServiceProperties) {
@@ -176,7 +187,7 @@ public class DocumentService extends BaseService {
         if (multipartDocument == null)
             invalidInput("Document cannot be null.");
 
-        double documentSize = Util.roundUptoTwo(Util.convertBytesToMb(multipartDocument.getSize()));
+        double documentSize = Util.convertBytesToMb(multipartDocument.getSize());
 
         if (documentSize <= 0)
             invalidInput("Document size cannot be 0.");
@@ -185,14 +196,14 @@ public class DocumentService extends BaseService {
 
         if (documentSize > spaceInfo.getSpaceLimit())
             invalidAccess(String.format("Your document size is bigger than space limit. " +
-                    "Document Size: %s, Space Limit: %s.", documentSize, spaceInfo.getSpaceLimit()));
+                    "Document Size: %.6f, Space Limit: %.6f.", documentSize, spaceInfo.getSpaceLimit()));
 
         if (documentSize > getSpaceInfo().getRemainingSpace())
             invalidAccess(String.format("Your disk space is low. " +
-                            "Space Limit is %s MB. " +
-                            "You used %s MB. " +
-                            "Remaining space is %s MB. " +
-                            "Document size is %s MB." +
+                            "Space Limit is %.6f MB. " +
+                            "You used %.6f MB. " +
+                            "Remaining space is %.6f MB. " +
+                            "Document size is %.6f MB." +
                             "Please delete some documents to continue.",
                     spaceInfo.getSpaceLimit(), spaceInfo.getUsedSpace(),
                     spaceInfo.getRemainingSpace(), documentSize));

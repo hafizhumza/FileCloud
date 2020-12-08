@@ -20,6 +20,6 @@ public class ShareDocumentRequestDto implements Serializable {
 
     @NotBlank(message = "Email cannot be empty")
     @NotNull(message = "Email cannot be null")
-    private String toEmail;
+    private String receiverEmail;
 
 }
