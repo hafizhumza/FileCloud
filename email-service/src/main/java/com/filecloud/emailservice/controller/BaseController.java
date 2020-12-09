@@ -1,69 +1,71 @@
 
 package com.filecloud.emailservice.controller;
 
-
-import com.filecloud.emailservice.response.ErrorResult;
 import com.filecloud.emailservice.response.Response.Status;
 import com.filecloud.emailservice.response.Result;
-import com.filecloud.emailservice.response.SuccessResult;
+
 
 public class BaseController {
 
-    /**
-     * Success Result
-     */
+	/**
+	 * Success Result
+	 */
 
-    public static <T> Result sendSuccessResponse(Status status) {
-        return sendSuccessResponse(status.getStatusCode(), status.getMessage(), null);
-    }
+	public static <T> Result<?> sendSuccessResponse(Status status) {
+		return sendResponse(true, status.getStatusCode(), null, null, null);
+	}
 
-    public static <T> Result sendSuccessResponse(Status status, String message) {
-        return sendSuccessResponse(status.getStatusCode(), message, null);
-    }
+	public static <T> Result<?> sendSuccessResponse(Status status, String message) {
+		return sendResponse(true, status.getStatusCode(), message, null, null);
+	}
 
-    public static <T> Result sendSuccessResponse(Status status, T body) {
-        return sendSuccessResponse(status.getStatusCode(), status.getMessage(), body);
-    }
+	public static <T> Result<?> sendSuccessResponse(Status status, T data) {
+		return sendResponse(true, status.getStatusCode(), null, null, data);
+	}
 
-    public static <T> Result sendSuccessResponse(Status status, String message, T body) {
-        return sendSuccessResponse(status.getStatusCode(), message, body);
-    }
+	public static <T> Result<?> sendSuccessResponse(Status status, String message, T data) {
+		return sendResponse(true, status.getStatusCode(), message, null, data);
+	}
 
-    /**
-     * Error Result
-     */
+	/**
+	 * Error Result
+	 */
 
-    public static <T> Result sendErrorResponse(Status status) {
-        return sendErrorResponse(status.getStatusCode(), status.getMessage(), null);
-    }
+	public static <T> Result<?> sendErrorResponse(Status status) {
+		return sendResponse(false, status.getStatusCode(), status.getMessage(), null, null);
+	}
 
-    public static <T> Result sendErrorResponse(Status status, String message) {
-        return sendErrorResponse(status.getStatusCode(), message, null);
-    }
+	public static <T> Result<?> sendErrorResponse(Status status, String message) {
+		return sendResponse(false, status.getStatusCode(), message, null, null);
+	}
 
-    public static <T> Result sendErrorResponse(Status status, T errors) {
-        return sendErrorResponse(status, status.getMessage(), errors);
-    }
+	public static <T> Result<?> sendErrorResponse(Status status, String message, String errorMessage) {
+		return sendResponse(false, status.getStatusCode(), message, errorMessage, null);
+	}
 
-    public static <T> Result sendErrorResponse(Status status, String message, T errors) {
-        return sendErrorResponse(status.getStatusCode(), message, errors);
-    }
+	public static <T> Result<?> sendErrorResponse(Status status, String message, String errorMessage, T data) {
+		return sendResponse(false, status.getStatusCode(), message, errorMessage, data);
+	}
 
-    /**
-     * Generic Methods
-     */
+	public static <T> Result<?> sendErrorResponse(int status, String message, String errorMessage) {
+		return sendResponse(false, status, message, errorMessage, null);
+	}
 
-    public static <T> Result sendSuccessResponse(int status, String message, T body) {
-        SuccessResult<T> result = new SuccessResult<T>(status);
-        result.setMessage(message);
-        result.setBody(body);
-        return result;
-    }
+	public static <T> Result<?> sendErrorResponse(int status, String message, String errorMessage, T data) {
+		return sendResponse(false, status, message, errorMessage, data);
+	}
 
-    public static <T> Result sendErrorResponse(int status, String message, T errors) {
-        ErrorResult<T> result = new ErrorResult<T>(status);
-        result.setMessage(message);
-        result.setErrors(errors);
-        return result;
-    }
+	/**
+	 * Generic Methods
+	 */
+
+	public static <T> Result<?> sendResponse(boolean success, int status, String message, String errorMessage, T data) {
+		Result<T> result = new Result<T>();
+		result.setSuccess(success);
+		result.setStatusCode(status);
+		result.setMessage(message);
+		result.setErrorMessage(errorMessage);
+		result.setData(data);
+		return result;
+	}
 }

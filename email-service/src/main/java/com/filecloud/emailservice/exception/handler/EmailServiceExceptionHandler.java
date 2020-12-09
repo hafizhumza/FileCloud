@@ -1,13 +1,8 @@
 
 package com.filecloud.emailservice.exception.handler;
 
-import com.filecloud.emailservice.response.Response.Status;
-import com.filecloud.emailservice.response.Result;
-import com.filecloud.emailservice.controller.BaseController;
-import com.filecloud.emailservice.exception.HttpResponseException;
-import com.filecloud.emailservice.exception.ResponseException;
-import com.filecloud.emailservice.exception.WrappedException;
-import com.filecloud.emailservice.properties.EmailServiceProperties;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,52 +10,59 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.servlet.http.HttpServletRequest;
+import com.filecloud.emailservice.controller.BaseController;
+import com.filecloud.emailservice.exception.HttpResponseException;
+import com.filecloud.emailservice.exception.ResponseException;
+import com.filecloud.emailservice.exception.WrappedException;
+import com.filecloud.emailservice.properties.EmailServiceProperties;
+import com.filecloud.emailservice.response.Response.Status;
+import com.filecloud.emailservice.response.Result;
+
 
 @EnableWebMvc
 @ControllerAdvice
 public class EmailServiceExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private final EmailServiceProperties emailServiceProperties;
+	private final EmailServiceProperties emailServiceProperties;
 
-    @Autowired
-    public EmailServiceExceptionHandler(EmailServiceProperties emailServiceProperties) {
-        this.emailServiceProperties = emailServiceProperties;
-    }
+	@Autowired
+	public EmailServiceExceptionHandler(EmailServiceProperties emailServiceProperties) {
+		this.emailServiceProperties = emailServiceProperties;
+	}
 
-    @ExceptionHandler(Throwable.class)
-    @ResponseBody
-    Result handleControllerException(HttpServletRequest req, Throwable ex) {
-        return this.getExceptionResponse(ex);
-    }
+	@ExceptionHandler(Throwable.class)
+	@ResponseBody
+	Result<?> handleControllerException(HttpServletRequest req, Throwable ex) {
+		return this.getExceptionResponse(ex);
+	}
 
-    @ExceptionHandler(ResponseException.class)
-    @ResponseBody
-    Result handleResponseException(HttpServletRequest req, ResponseException ex) {
+	@ExceptionHandler(ResponseException.class)
+	@ResponseBody
+	Result<?> handleResponseException(HttpServletRequest req, ResponseException ex) {
 
-        if (ex.getStatus() == Status.INTERNAL_SERVER_ERROR)
-            this.handleControllerException(req, ex);
+		if (ex.getStatus() == Status.INTERNAL_SERVER_ERROR)
+			this.handleControllerException(req, ex);
 
-        return BaseController.sendErrorResponse(ex.getStatus(), ex.getMessage());
-    }
+		return BaseController.sendErrorResponse(ex.getStatus(), ex.getMessage());
+	}
 
-    @ExceptionHandler(HttpResponseException.class)
-    @ResponseBody
-    Result handleHttpResponseException(HttpServletRequest req, HttpResponseException ex) {
-        return BaseController.sendErrorResponse(ex.getStatusCode(), ex.getMessage(), null);
-    }
+	@ExceptionHandler(HttpResponseException.class)
+	@ResponseBody
+	Result<?> handleHttpResponseException(HttpServletRequest req, HttpResponseException ex) {
+		return BaseController.sendErrorResponse(ex.getStatusCode(), ex.getMessage(), null);
+	}
 
-    @ExceptionHandler(WrappedException.class)
-    @ResponseBody
-    Result handleWrappedException(HttpServletRequest req, WrappedException ex) {
+	@ExceptionHandler(WrappedException.class)
+	@ResponseBody
+	Result<?> handleWrappedException(HttpServletRequest req, WrappedException ex) {
 
-        if (ex.getActualException() instanceof ResponseException)
-            return this.handleResponseException(req, (ResponseException) ex.getActualException());
+		if (ex.getActualException() instanceof ResponseException)
+			return this.handleResponseException(req, (ResponseException) ex.getActualException());
 
-        return this.handleControllerException(req, ex.getActualException());
-    }
+		return this.handleControllerException(req, ex.getActualException());
+	}
 
-    private Result getExceptionResponse(Throwable ex) {
-        return emailServiceProperties.isDevMode() ? BaseController.sendErrorResponse(Status.INTERNAL_SERVER_ERROR, ex.getMessage()) : BaseController.sendErrorResponse(Status.INTERNAL_SERVER_ERROR, "Service failed.");
-    }
+	private Result<?> getExceptionResponse(Throwable ex) {
+		return emailServiceProperties.isDevMode() ? BaseController.sendErrorResponse(Status.INTERNAL_SERVER_ERROR, ex.getMessage()) : BaseController.sendErrorResponse(Status.INTERNAL_SERVER_ERROR, "Service failed.");
+	}
 }

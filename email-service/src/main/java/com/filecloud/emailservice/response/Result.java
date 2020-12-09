@@ -1,30 +1,19 @@
 
 package com.filecloud.emailservice.response;
 
-public abstract class Result {
-
-	private int status;
+public class Result<T> {
 
 	private boolean success;
 
+	private int statusCode;
+
 	private String message;
 
-	Result(int status, boolean successfull) {
-		this.status = status;
-		this.success = successfull;
-	}
+	private T data;
 
-	Result(int status, boolean successfull, String message) {
-		this(status, successfull);
-		this.message = message;
-	}
+	private String errorMessage;
 
-	public int getStatus() {
-		return status;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
+	public Result() {
 	}
 
 	public boolean isSuccess() {
@@ -35,11 +24,35 @@ public abstract class Result {
 		this.success = success;
 	}
 
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
+
+	public int getStatusCode() {
+		return statusCode;
+	}
+
+	public void setStatusCode(int statusCode) {
+		this.statusCode = statusCode;
+	}
+
 	public String getMessage() {
 		return message;
 	}
 
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public T getData() {
+		return data;
+	}
+
+	public void setData(T data) {
+		this.data = data;
 	}
 }

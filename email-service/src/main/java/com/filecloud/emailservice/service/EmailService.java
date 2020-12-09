@@ -1,7 +1,7 @@
 package com.filecloud.emailservice.service;
 
 import com.filecloud.emailservice.model.db.Email;
-import com.filecloud.emailservice.model.dto.EmailSharedDocumentUrlDto;
+import com.filecloud.emailservice.model.dto.EmailSharedDocumentDto;
 import com.filecloud.emailservice.repository.EmailRepository;
 import com.filecloud.emailservice.security.dto.UserSession;
 import com.filecloud.emailservice.security.util.AuthUtil;
@@ -24,7 +24,7 @@ public class EmailService extends BaseService {
         this.emailUtilService = emailUtilService;
     }
 
-    public void saveAndSend(EmailSharedDocumentUrlDto dto) {
+    public void saveAndSend(EmailSharedDocumentDto dto) {
         UserSession session = AuthUtil.getCurrentLoggedInUser();
         boolean sent = false;
 

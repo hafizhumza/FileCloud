@@ -1,6 +1,6 @@
 package com.filecloud.emailservice.service;
 
-import com.filecloud.emailservice.model.dto.EmailSharedDocumentUrlDto;
+import com.filecloud.emailservice.model.dto.EmailSharedDocumentDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Async;
@@ -26,7 +26,7 @@ public class EmailUtilService {
     }
 
     @Async
-    public Future<Boolean> sendMail(EmailSharedDocumentUrlDto dto) throws MessagingException {
+    public Future<Boolean> sendMail(EmailSharedDocumentDto dto) throws MessagingException {
         String subject = "Document Shared";
 
         Map<String, Object> variables = new HashMap<>();
