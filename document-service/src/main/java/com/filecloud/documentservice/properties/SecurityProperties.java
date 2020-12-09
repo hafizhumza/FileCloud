@@ -5,6 +5,8 @@ public class SecurityProperties {
 
     private boolean enabled;
 
+    private String encryptionKey;
+
     private String[] ignoredPaths;
 
     public boolean isEnabled() {
@@ -13,6 +15,14 @@ public class SecurityProperties {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getEncryptionKey() {
+        return encryptionKey;
+    }
+
+    public void setEncryptionKey(String encryptionKey) {
+        this.encryptionKey = encryptionKey;
     }
 
     public String[] getIgnoredPaths() {

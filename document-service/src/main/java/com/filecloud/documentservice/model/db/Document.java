@@ -1,12 +1,14 @@
 package com.filecloud.documentservice.model.db;
 
 import com.filecloud.documentservice.constant.DocumentQueries;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "document")
 @NamedQueries({
@@ -28,9 +30,6 @@ public class Document {
     @Lob
     @Column
     private String description;
-
-    @Column(name = "document_type")
-    private String documentType;
 
     @Column
     private String extension;

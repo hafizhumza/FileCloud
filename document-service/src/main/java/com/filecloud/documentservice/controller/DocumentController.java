@@ -1,6 +1,7 @@
 package com.filecloud.documentservice.controller;
 
 import com.filecloud.documentservice.model.dto.DeleteRequestDto;
+import com.filecloud.documentservice.model.dto.DownloadDocumentDto;
 import com.filecloud.documentservice.model.dto.ShareDocumentRequestDto;
 import com.filecloud.documentservice.model.dto.UpdateRequestDto;
 import com.filecloud.documentservice.response.Response;
@@ -38,12 +39,13 @@ public class DocumentController extends BaseController {
 
     @GetMapping("/download/{documentId}")
     public ResponseEntity<ByteArrayResource> download(@PathVariable long documentId) {
-        ByteArrayResource resource = documentService.downloadDocument(documentId);
+        DownloadDocumentDto dto = documentService.downloadDocument(documentId);
 
         return ResponseEntity.ok()
-                .contentLength(resource.contentLength())
+                .headers(dto.getHeaders())
+                .contentLength(dto.getResource().contentLength())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
+                .body(dto.getResource());
     }
 
     @GetMapping("/list")

@@ -18,12 +18,4 @@ public class UploadRequestDto {
 
     private String description;
 
-    @NotBlank(message = "Document type cannot be empty")
-    @NotNull(message = "Document type cannot be null")
-    private String type;
-
-    @NotBlank(message = "Document extension cannot be empty")
-    @NotNull(message = "Document extension cannot be null")
-    private String extension;
-
 }

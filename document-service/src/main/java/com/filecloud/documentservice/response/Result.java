@@ -5,7 +5,7 @@ public class Result<T> {
 
     private boolean success;
 
-    private long statusCode;
+    private int statusCode;
 
     private String message;
 
@@ -32,11 +32,11 @@ public class Result<T> {
         this.errorMessage = errorMessage;
     }
 
-    public long getStatusCode() {
+    public int getStatusCode() {
         return statusCode;
     }
 
-    public void setStatusCode(long statusCode) {
+    public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
     }
 

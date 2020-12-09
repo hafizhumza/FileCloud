@@ -24,6 +24,6 @@ public class ConstUtil {
     /**
      * Other
      */
-    public static final String FILE_EXTENSION = "encrypted";
+    public static final String FILE_EXTENSION_ENCRYPTED = "encrypted";
 
 }

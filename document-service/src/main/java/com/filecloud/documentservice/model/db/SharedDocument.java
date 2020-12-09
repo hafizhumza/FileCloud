@@ -1,10 +1,12 @@
 package com.filecloud.documentservice.model.db;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Setter
+@Getter
 @Entity
 @Table(name = "shared_documents")
 public class SharedDocument {

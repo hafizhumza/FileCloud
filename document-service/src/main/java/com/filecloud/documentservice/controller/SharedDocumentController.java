@@ -1,17 +1,15 @@
 package com.filecloud.documentservice.controller;
 
+import com.filecloud.documentservice.model.dto.DownloadDocumentDto;
 import com.filecloud.documentservice.service.SharedDocumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.HandlerMapping;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.IOException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("/api/v1/document/shared")
 @RestController
@@ -26,18 +24,12 @@ public class SharedDocumentController extends BaseController {
 
     @GetMapping("/{token}")
     public ResponseEntity<ByteArrayResource> document(@PathVariable String token) {
-        ByteArrayResource resource = sharedDocumentService.getSharedDocument(token);
-
-        HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=AnyDesk.exe");
-        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        header.add("Pragma", "no-cache");
-        header.add("Expires", "0");
+        DownloadDocumentDto dto = sharedDocumentService.getSharedDocument(token);
 
         return ResponseEntity.ok()
-                .headers(header)
-                .contentLength(resource.contentLength())
+                .headers(dto.getHeaders())
+                .contentLength(dto.getResource().contentLength())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                .body(resource);
+                .body(dto.getResource());
     }
 }

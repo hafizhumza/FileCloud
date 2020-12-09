@@ -3,8 +3,10 @@ package com.filecloud.documentservice.service;
 import com.filecloud.documentservice.exception.RecordNotFoundException;
 import com.filecloud.documentservice.model.db.Document;
 import com.filecloud.documentservice.model.db.SharedDocument;
+import com.filecloud.documentservice.model.dto.DownloadDocumentDto;
 import com.filecloud.documentservice.properties.DocumentServiceProperties;
 import com.filecloud.documentservice.repository.SharedDocumentRepository;
+import com.filecloud.documentservice.util.HeaderUtil;
 import com.filecloud.documentservice.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -13,7 +15,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Service
@@ -40,7 +41,7 @@ public class SharedDocumentService extends BaseService {
         return getSharedDocumentUrl(token);
     }
 
-    public ByteArrayResource getSharedDocument(String token) {
+    public DownloadDocumentDto getSharedDocument(String token) {
         SharedDocument sharedDocument = sharedDocumentRepository.findByToken(token)
                 .orElseThrow(RecordNotFoundException::new);
 
@@ -53,35 +54,29 @@ public class SharedDocumentService extends BaseService {
             invalidAccess("Link is expired");
 
         Document document = sharedDocument.getDocument();
-        Path path = Paths.get(document.getPath());
+
+        // TODO: Commented document decryption for now
+//        String tempFile = Util.getRandomUUID() + "." + document.getExtension();
+//        Path copyPath = Paths.get(documentServiceProperties.getUploadedDocumentsDir())
+//                .resolve(tempFile)
+//                .toAbsolutePath()
+//                .normalize();
+
 
         try {
-            return new ByteArrayResource(Files.readAllBytes(path));
-        } catch (IOException e) {
+//            CryptoUtils.decrypt(documentServiceProperties.security().getEncryptionKey(), new File(document.getPath()), new File(copyPath.toString()));
+//            ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(copyPath));
+//            Files.deleteIfExists(copyPath);
+            ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Paths.get(document.getPath())));
+            return new DownloadDocumentDto(resource, HeaderUtil.getDocumentHeaders(document));
+        } catch (IOException /*| CryptoException*/ e) {
             error("Document not found.");
         }
 
         return null;
     }
 
-    //    public Resource loadFileAsResource(String fileName) throws Exception {
-//        try {
-//            Path filePath = this.fileStorageLocation.resolve(fileName).normalize();
-//            Resource resource = new UrlResource(filePath.toUri());
-//            if (resource.exists()) {
-//                return resource;
-//            } else {
-//                throw new FileNotFoundException("File not found " + fileName);
-//            }
-//        } catch (MalformedURLException ex) {
-//            throw new FileNotFoundException("File not found " + fileName);
-//        }
-//    }
-//
-//    public String getDocumentName(Integer userId, String docType) {
-//        return docStorageRepo.getUploadDocumnetPath(userId, docType);
-//    }
-
+    // TODO: append gateway server path, either from .prop file or from code
     private String getSharedDocumentUrl(String token) {
         return ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("api")

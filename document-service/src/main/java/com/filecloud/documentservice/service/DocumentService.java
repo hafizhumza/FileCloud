@@ -9,11 +9,15 @@ import com.filecloud.documentservice.model.dto.*;
 import com.filecloud.documentservice.network.EmailServiceClient;
 import com.filecloud.documentservice.properties.DocumentServiceProperties;
 import com.filecloud.documentservice.repository.DocumentRepository;
+import com.filecloud.documentservice.response.Result;
 import com.filecloud.documentservice.security.dto.UserSession;
 import com.filecloud.documentservice.security.util.AuthUtil;
+import com.filecloud.documentservice.util.FileUtil;
+import com.filecloud.documentservice.util.HeaderUtil;
 import com.filecloud.documentservice.util.Util;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,7 +64,7 @@ public class DocumentService extends BaseService {
         UploadRequestDto properties = verifyDocumentUploadRequest(rawProps);
         double documentSizeInMb = verifyDocumentAndSpaceLimit(multipartDocument);
 
-        String fileName = Util.getRandomUUID() + "." + ConstUtil.FILE_EXTENSION;
+        String fileName = Util.getRandomUUID() + "." + ConstUtil.FILE_EXTENSION_ENCRYPTED;
         Path targetLocation = fileStorageLocation.resolve(fileName);
 
         try {
@@ -69,26 +73,28 @@ public class DocumentService extends BaseService {
             error(e);
         }
 
+        String extension = FilenameUtils.getExtension(multipartDocument.getOriginalFilename());
         UserSession session = AuthUtil.getCurrentLoggedInUser();
 
         Document document = new Document();
         document.setUserId(session.getUserId());
         document.setDescription(properties.getDescription());
         document.setDisplayName(properties.getName());
-        document.setDocumentType(properties.getType());
-        document.setExtension(properties.getExtension());
+        document.setExtension(extension);
         document.setPath(targetLocation.toString());
         document.setSizeInMb(documentSizeInMb);
 
         return new DocumentResponseDto(documentRepository.save(document));
     }
 
-    public ByteArrayResource downloadDocument(long documentId) {
+    public DownloadDocumentDto downloadDocument(long documentId) {
         Document document = getVerifiedUserDocument(documentId);
-        Path path = Paths.get(document.getPath());
 
         try {
-            return new ByteArrayResource(Files.readAllBytes(path));
+            return new DownloadDocumentDto(
+                    FileUtil.readFileToByteArray(document.getPath()),
+                    HeaderUtil.getDocumentHeaders(document)
+            );
         } catch (IOException e) {
             error("Document not found.");
         }
@@ -138,7 +144,6 @@ public class DocumentService extends BaseService {
         String url = sharedDocumentService.save(document);
         UserSession session = AuthUtil.getCurrentLoggedInUser();
 
-        // TODO: Call Email Service to send email
         EmailSharedDocumentDto dto = new EmailSharedDocumentDto(
                 requestDto.getReceiverEmail(),
                 session.getFullName(),
@@ -146,7 +151,10 @@ public class DocumentService extends BaseService {
                 documentServiceProperties.getSharedDocumentsExpiryDays()
         );
 
-        emailServiceClient.emailSharedDocumentUrl(AuthUtil.getBearerToken(), dto);
+        Result<?> result = emailServiceClient.emailSharedDocumentUrl(AuthUtil.getBearerToken(), dto);
+
+        if (!(result.isSuccess() && result.getStatusCode() == HttpStatus.OK.value()))
+            error(result.getStatusCode(), result.getMessage());
     }
 
     private void createDocumentsDir(DocumentServiceProperties documentServiceProperties) {

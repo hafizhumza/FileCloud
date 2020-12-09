@@ -15,7 +15,6 @@ public class DocumentResponseDto implements Serializable {
     private Long documentId;
     private String displayName;
     private String description;
-    private String documentType;
     private String extension;
     private Double sizeInMb;
     private Long createDate;
@@ -25,7 +24,6 @@ public class DocumentResponseDto implements Serializable {
         documentId = document.getDocumentId();
         displayName = document.getDisplayName();
         description = document.getDescription();
-        documentType = document.getDocumentType();
         extension = document.getExtension();
         sizeInMb = document.getSizeInMb();
         createDate = document.getCreateDate();
