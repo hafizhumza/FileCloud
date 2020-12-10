@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.filecloud.authserver.constant.ConstUtil;
 import com.filecloud.authserver.security.dto.AuthUserDetail;
 import com.filecloud.authserver.security.dto.UserSession;
-import com.filecloud.authserver.util.ConstUtil;
 
 
 @RestController

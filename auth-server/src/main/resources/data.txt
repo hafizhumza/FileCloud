@@ -1,4 +1,4 @@
-INSERT INTO oauth_client_details (client_id, client_secret, web_server_redirect_uri, scope, access_token_validity, refresh_token_validity, resource_ids, authorized_grant_types, additional_information) VALUES ('mobile', '{noop}123', 'http://localhost:8080/login', 'READ,WRITE,DOCUMENT,EMAIL', '3600', '10000', 'u_437287,d_498778,e_547634', 'authorization_code,password,refresh_token,implicit', '{}');
+INSERT INTO oauth_client_details (client_id, client_secret, web_server_redirect_uri, scope, access_token_validity, refresh_token_validity, resource_ids, authorized_grant_types, additional_information) VALUES ('mobile', '{noop}123', 'http://localhost:8080/login', 'READ,WRITE,DOCUMENT,EMAIL', '3600', '10000', 'u_437287,d_498778,e_547634,a_548734', 'authorization_code,password,refresh_token,implicit', '{}');
 
 INSERT INTO PERMISSION (NAME) VALUES('approve_new_user'), ('view_all_users'), ('upload_document'), ('delete_document'), ('view_document');
 

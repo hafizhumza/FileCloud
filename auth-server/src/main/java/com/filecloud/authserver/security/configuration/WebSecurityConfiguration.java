@@ -1,7 +1,5 @@
 package com.filecloud.authserver.security.configuration;
 
-import com.filecloud.authserver.properties.AppProperties;
-import com.filecloud.authserver.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,47 +8,39 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+import com.filecloud.authserver.properties.AuthServerProperties;
+import com.filecloud.authserver.util.Util;
+
+
 @Configuration
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final AppProperties appProperties;
+	private final AuthServerProperties authServerProperties;
 
-    @Autowired
-    public WebSecurityConfiguration(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
+	@Autowired
+	public WebSecurityConfiguration(AuthServerProperties authServerProperties) {
+		this.authServerProperties = authServerProperties;
+	}
 
-    @Bean
-    protected AuthenticationManager getAuthenticationManager() throws Exception {
-        return super.authenticationManagerBean();
-    }
+	@Bean
+	protected AuthenticationManager getAuthenticationManager() throws Exception {
+		return super.authenticationManagerBean();
+	}
 
-    /*@Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new AuthFailureRequestHandler();
-    }
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.headers().contentSecurityPolicy("script-src 'self' ");
+		http.csrf().disable();
+	}
 
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new AuthAccessDeniedRequestHandler();
-    }*/
+	@Override
+	public void configure(WebSecurity web) {
+		boolean securityEnabled = authServerProperties.security().isEnabled();
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.headers().contentSecurityPolicy("script-src 'self' ");
-        http.csrf().disable();
-//        http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
-//                .failureHandler(authenticationFailureHandler());
-    }
+		if (!securityEnabled)
+			web.ignoring().antMatchers("/**").anyRequest();
 
-    @Override
-    public void configure(WebSecurity web) {
-        boolean securityEnabled = appProperties.security().isEnabled();
-
-        if (!securityEnabled)
-            web.ignoring().antMatchers("/**").anyRequest();
-
-        if (securityEnabled && Util.isValidArray(appProperties.security().getIgnoredPaths()))
-            web.ignoring().antMatchers(appProperties.security().getIgnoredPaths());
-    }
+		if (securityEnabled && Util.isValidArray(authServerProperties.security().getIgnoredPaths()))
+			web.ignoring().antMatchers(authServerProperties.security().getIgnoredPaths());
+	}
 }

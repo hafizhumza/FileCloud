@@ -2,37 +2,26 @@ package com.filecloud.authserver.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.stereotype.Service;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 
+import com.filecloud.authserver.constant.ConstUtil;
+import com.filecloud.authserver.exception.RecordNotFoundException;
 import com.filecloud.authserver.model.db.AuthUser;
 import com.filecloud.authserver.model.db.Role;
-import com.filecloud.authserver.model.dto.LogInDto;
 import com.filecloud.authserver.model.dto.RegisterUserDto;
-import com.filecloud.authserver.model.dto.RequestUserDto;
 import com.filecloud.authserver.model.dto.ResponseUserDto;
+import com.filecloud.authserver.model.dto.SingleIdRequestDto;
 import com.filecloud.authserver.repository.UserRepository;
-import com.filecloud.authserver.security.dto.AuthUserDetail;
-import com.filecloud.authserver.security.util.AuthUtil;
-import com.filecloud.authserver.util.ConstUtil;
 import com.filecloud.authserver.util.Util;
 
 
 @Service
-public class UserService {
+public class UserService extends BaseService {
 
 	private final RoleService roleService;
 
@@ -42,14 +31,11 @@ public class UserService {
 
 	private final PasswordEncoder passwordEncoder;
 
-	private final TokenEndpoint tokenEndpoint;
-
 	@Autowired
-	public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder, TokenEndpoint tokenEndpoint, OAuthAccessTokenService oAuthAccessTokenService) {
+	public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder, OAuthAccessTokenService oAuthAccessTokenService) {
 		this.userRepository = userRepository;
 		this.roleService = roleService;
 		this.passwordEncoder = passwordEncoder;
-		this.tokenEndpoint = tokenEndpoint;
 		this.oAuthAccessTokenService = oAuthAccessTokenService;
 	}
 
@@ -69,50 +55,15 @@ public class UserService {
 		userRepository.save(authUser);
 	}
 
-	public OAuth2AccessToken login(LogInDto logInDto) throws HttpRequestMethodNotSupportedException {
-		// First check client type if admin then add scope WRITE, if user then add scope USER and DOCUMENT
-		String scope;
-
-		if (isAdmin(logInDto.getEmail()))
-			scope = ConstUtil.SCOPE_WRITE;
-		else
-			scope = ConstUtil.SCOPE_READ + " " + ConstUtil.SCOPE_DOCUMENT;
-
-		User user = new User(logInDto.getClientId(), logInDto.getClientSecret(), true, true, true, true, Collections.emptyList());
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
-
-		Map<String, String> request = new HashMap<>();
-		request.put("username", logInDto.getEmail());
-		request.put("password", logInDto.getPassword());
-		request.put("grant_type", "password");
-		request.put("scope", scope);
-		request.put("client_id", logInDto.getClientId());
-		request.put("client_secret", logInDto.getClientSecret());
-		request.put("clientVersion", "resource");
-		request.put("userType", "user");
-
-		return this.tokenEndpoint.postAccessToken(token, request).getBody();
-	}
-
-	private boolean isAdmin(String email) {
-		Optional<AuthUser> user = userRepository.findByEmail(email);
-
-		return user.map(u -> {
-			for (Role role : u.getRoles())
-				if (role.getName().equals(ConstUtil.ROLE_ADMIN))
-					return true;
-			return false;
-		}).orElseThrow(() -> new BadCredentialsException("Invalid email or password"));
-	}
-
 	public List<ResponseUserDto> findAllUsers() {
 		List<AuthUser> dbUsers = userRepository.findAll();
 
 		if (Util.isValidList(dbUsers))
 			return dbUsers
 					.stream()
-					.filter(u -> {
-						for (Role role : u.getRoles())
+					.filter(user -> {
+						// Admin will ignore
+						for (Role role : user.getRoles())
 							if (role.getName().equals(ConstUtil.ROLE_USER))
 								return true;
 						return false;
@@ -123,37 +74,25 @@ public class UserService {
 		return new ArrayList<>();
 	}
 
-	public void enableUser(RequestUserDto dto) {
-		AuthUser authUser = userRepository.findById(dto.getUserId())
-				.orElseThrow(() -> new BadCredentialsException("User not found"));
-
+	public void enableUser(SingleIdRequestDto dto) {
+		AuthUser authUser = userRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException("User not found"));
 		authUser.setAccountNonLocked(true);
 		userRepository.save(authUser);
 	}
 
-	public void disableUser(RequestUserDto dto) {
-		AuthUser authUser = userRepository.findById(dto.getUserId())
-				.orElseThrow(() -> new BadCredentialsException("User not found"));
+	public void disableUser(SingleIdRequestDto dto) {
+		AuthUser authUser = userRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException("User not found"));
 
-		oAuthAccessTokenService.deleteUserAccessAndRefreshToken(authUser.getEmail());
+		oAuthAccessTokenService.deleteAccessAndRefreshToken(authUser.getEmail());
 		authUser.setAccountNonLocked(false);
 		userRepository.save(authUser);
 	}
 
-	public void deleteUser(RequestUserDto dto) {
-		AuthUser authUser = userRepository.findById(dto.getUserId())
-				.orElseThrow(() -> new BadCredentialsException("User not found"));
+	public void deleteUser(SingleIdRequestDto dto) {
+		AuthUser authUser = userRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException("User not found"));
 
-		oAuthAccessTokenService.deleteUserAccessAndRefreshToken(authUser.getEmail());
+		oAuthAccessTokenService.deleteAccessAndRefreshToken(authUser.getEmail());
 		userRepository.delete(authUser);
-	}
-
-	public ResponseUserDto getUserDetail() {
-		AuthUserDetail userDetails = AuthUtil.getPrincipal();
-		Optional<AuthUser> user = userRepository.findByEmail(userDetails.getUsername());
-
-		return user.map(u -> new ResponseUserDto(u.getId(), u.getFullName(), u.getEmail(), u.isAccountNonLocked()))
-				.orElseThrow(() -> new BadCredentialsException("User not found"));
 	}
 
 	public List<ResponseUserDto> findAllActiveUsers() {
@@ -172,5 +111,10 @@ public class UserService {
 					.collect(Collectors.toList());
 
 		return new ArrayList<>();
+	}
+
+	public ResponseUserDto getUser(long userId) {
+		AuthUser user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
+		return new ResponseUserDto(user);
 	}
 }

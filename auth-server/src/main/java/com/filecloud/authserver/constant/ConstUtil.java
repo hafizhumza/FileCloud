@@ -1,4 +1,4 @@
-package com.filecloud.authserver.util;
+package com.filecloud.authserver.constant;
 
 public class ConstUtil {
 
@@ -14,10 +14,16 @@ public class ConstUtil {
 	public static final String SCOPE_WRITE = "WRITE";
 	public static final String SCOPE_READ = "READ";
 	public static final String SCOPE_DOCUMENT = "DOCUMENT";
+	public static final String SCOPE_EMAIL = "EMAIL";
 
 	/**
 	 * KEY
 	 */
 	public static final String KEY_SESSION = "session";
+
+	/**
+	 * Other
+	 */
+	public static final String FILE_EXTENSION_ENCRYPTED = "encrypted";
 
 }

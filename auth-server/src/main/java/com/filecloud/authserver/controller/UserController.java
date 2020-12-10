@@ -1,25 +1,24 @@
 package com.filecloud.authserver.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.filecloud.authserver.model.dto.LogInDto;
 import com.filecloud.authserver.model.dto.RegisterUserDto;
+import com.filecloud.authserver.response.Response.Status;
+import com.filecloud.authserver.response.Result;
 import com.filecloud.authserver.service.UserService;
 
 
 @Transactional(readOnly = true)
 @RequestMapping("api/v1")
 @RestController
-public class UserController {
+public class UserController extends BaseController {
 
 	private final UserService userService;
 
@@ -28,32 +27,21 @@ public class UserController {
 		this.userService = userService;
 	}
 
-	// TODO: Login can be achieved from /oauth/token endpoint as well
-	@Deprecated
-	@Transactional
-	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody LogInDto logInDto) throws HttpRequestMethodNotSupportedException {
-		return new ResponseEntity<>(userService.login(logInDto), HttpStatus.OK);
-	}
-
 	@Transactional
 	@PostMapping("/register")
-	public ResponseEntity<?> register(@RequestBody RegisterUserDto userDto) {
+	public Result<?> register(@RequestBody RegisterUserDto userDto) {
 		userService.registerUser(userDto);
-		return new ResponseEntity<>("User registered successfully!", HttpStatus.OK);
-	}
-
-	// TODO: This service is not required anymore. Because oauth/check_token service has been modified.
-	// All necessary user info will be sent once at check token time.
-	@Deprecated
-	@GetMapping("/user-detail")
-	public ResponseEntity<?> detail() {
-		return new ResponseEntity<>(userService.getUserDetail(), HttpStatus.OK);
+		return sendSuccessResponse(Status.ALL_OK, "User registered successfully!");
 	}
 
 	@GetMapping("/list-active-users")
-	public ResponseEntity<?> listActiveUsers() {
-		return new ResponseEntity<>(userService.findAllActiveUsers(), HttpStatus.OK);
+	public Result<?> listActiveUsers() {
+		return sendSuccessResponse(Status.ALL_OK, userService.findAllActiveUsers());
+	}
+
+	@GetMapping("/user/{userId}")
+	public Result<?> getUser(@PathVariable long userId) {
+		return sendSuccessResponse(Status.ALL_OK, userService.getUser(userId));
 	}
 
 }

@@ -20,7 +20,7 @@ public class OAuthAccessTokenService {
         this.oAuthRefreshTokenService = oAuthRefreshTokenService;
     }
 
-    public void deleteUserAccessAndRefreshToken(String username) {
+    public void deleteAccessAndRefreshToken(String username) {
         Optional<OAuthAccessToken> token = oAuthAccessTokenRepository.findByUserName(username);
         token.ifPresent(oAuthAccessToken -> {
             oAuthRefreshTokenService.delete(oAuthAccessToken.getRefreshToken());

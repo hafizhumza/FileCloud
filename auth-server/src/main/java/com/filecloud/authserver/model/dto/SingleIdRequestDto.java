@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RequestUserDto {
+public class SingleIdRequestDto {
 
-    private Long userId;
+    private Long id;
 
 }

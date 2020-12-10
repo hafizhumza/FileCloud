@@ -1,50 +1,56 @@
 package com.filecloud.authserver.controller;
 
-import com.filecloud.authserver.model.dto.RequestUserDto;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.filecloud.authserver.model.dto.SingleIdRequestDto;
+import com.filecloud.authserver.response.Result;
+import com.filecloud.authserver.response.Response.Status;
 import com.filecloud.authserver.security.role.Admin;
 import com.filecloud.authserver.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+
 
 @Admin
 @Transactional(readOnly = true)
 @RequestMapping("api/v1/admin")
 @RestController
-public class AdminController {
+public class AdminController extends BaseController {
 
-    private final UserService userService;
+	private final UserService userService;
 
-    @Autowired
-    public AdminController(UserService userService) {
-        this.userService = userService;
-    }
+	@Autowired
+	public AdminController(UserService userService) {
+		this.userService = userService;
+	}
 
-    @GetMapping("/list-users")
-    public ResponseEntity<?> users() {
-        return new ResponseEntity<>(userService.findAllUsers(), HttpStatus.OK);
-    }
+	@GetMapping("/list-users")
+	public Result<?> users() {
+		return sendSuccessResponse(Status.ALL_OK, userService.findAllUsers());
+	}
 
-    @Transactional
-    @PostMapping("/enable-user")
-    public ResponseEntity<?> enableUser(@RequestBody RequestUserDto dto) {
-        userService.enableUser(dto);
-        return new ResponseEntity<>("User enabled successfully!", HttpStatus.OK);
-    }
+	@Transactional
+	@PostMapping("/enable-user")
+	public Result<?> enableUser(@RequestBody SingleIdRequestDto dto) {
+		userService.enableUser(dto);
+		return sendSuccessResponse(Status.ALL_OK, "User enabled successfully!");
+	}
 
-    @Transactional
-    @PostMapping("/disable-user")
-    public ResponseEntity<?> disableUser(@RequestBody RequestUserDto dto) {
-        userService.disableUser(dto);
-        return new ResponseEntity<>("User disabled successfully!", HttpStatus.OK);
-    }
+	@Transactional
+	@PostMapping("/disable-user")
+	public Result<?> disableUser(@RequestBody SingleIdRequestDto dto) {
+		userService.disableUser(dto);
+		return sendSuccessResponse(Status.ALL_OK, "User disabled successfully!");
+	}
 
-    @Transactional
-    @PostMapping("/delete-user")
-    public ResponseEntity<?> deleteUser(@RequestBody RequestUserDto dto) {
-        userService.deleteUser(dto);
-        return new ResponseEntity<>("User deleted successfully!", HttpStatus.OK);
-    }
+	@Transactional
+	@PostMapping("/delete-user")
+	public Result<?> deleteUser(@RequestBody SingleIdRequestDto dto) {
+		userService.deleteUser(dto);
+		return sendSuccessResponse(Status.ALL_OK, "User deleted successfully!");
+	}
 }
