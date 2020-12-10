@@ -1,6 +1,6 @@
 package com.filecloud.documentservice.controller;
 
-import com.filecloud.documentservice.model.dto.DeleteRequestDto;
+import com.filecloud.documentservice.model.dto.SingleIdRequestDto;
 import com.filecloud.documentservice.model.dto.DownloadDocumentDto;
 import com.filecloud.documentservice.model.dto.ShareDocumentRequestDto;
 import com.filecloud.documentservice.model.dto.UpdateRequestDto;
@@ -66,7 +66,7 @@ public class DocumentController extends BaseController {
 
     @Transactional
     @PostMapping("/delete")
-    public Result<?> delete(@RequestBody @Valid DeleteRequestDto deleteRequestDto) {
+    public Result<?> delete(@RequestBody @Valid SingleIdRequestDto deleteRequestDto) {
         documentService.delete(deleteRequestDto);
         return sendSuccessResponse(Response.Status.ALL_OK, "Document deleted successfully!");
     }
