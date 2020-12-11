@@ -1,6 +1,7 @@
 package com.filecloud.authserver.model.dto;
 
 import com.filecloud.authserver.model.db.AuthUser;
+import com.filecloud.authserver.security.dto.AuthUserDetail;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,13 @@ public class ResponseUserDto {
 		id = user.getId();
 		fullName = user.getFullName();
 		email = user.getEmail();
+		accountNonLocked = user.isAccountNonLocked();
+	}
+
+	public ResponseUserDto(AuthUserDetail user) {
+		id = user.getUserId();
+		fullName = user.getFullName();
+		email = user.getUsername();
 		accountNonLocked = user.isAccountNonLocked();
 	}
 

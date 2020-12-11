@@ -44,4 +44,8 @@ public class UserController extends BaseController {
 		return sendSuccessResponse(Status.ALL_OK, userService.getUser(userId));
 	}
 
+	@GetMapping("/userinfo")
+	public Result<?> userInfo() {
+		return sendSuccessResponse(Status.ALL_OK, userService.getCurrentUser());
+	}
 }

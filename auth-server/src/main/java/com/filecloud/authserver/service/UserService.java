@@ -17,6 +17,8 @@ import com.filecloud.authserver.model.dto.RegisterUserDto;
 import com.filecloud.authserver.model.dto.ResponseUserDto;
 import com.filecloud.authserver.model.dto.SingleIdRequestDto;
 import com.filecloud.authserver.repository.UserRepository;
+import com.filecloud.authserver.security.dto.AuthUserDetail;
+import com.filecloud.authserver.security.util.AuthUtil;
 import com.filecloud.authserver.util.Util;
 
 
@@ -75,27 +77,20 @@ public class UserService extends BaseService {
 	}
 
 	public void enableUser(SingleIdRequestDto dto) {
-		AuthUser authUser = userRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException("User not found"));
+		AuthUser authUser = getUserCheckAdmin(dto.getId());
 		authUser.setAccountNonLocked(true);
 		userRepository.save(authUser);
 	}
 
 	public void disableUser(SingleIdRequestDto dto) {
-		AuthUser authUser = userRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException("User not found"));
-
+		AuthUser authUser = getUserCheckAdmin(dto.getId());
 		oAuthAccessTokenService.deleteAccessAndRefreshToken(authUser.getEmail());
 		authUser.setAccountNonLocked(false);
 		userRepository.save(authUser);
 	}
 
 	public void deleteUser(SingleIdRequestDto dto) {
-		AuthUser authUser = userRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException("User not found"));
-
-		boolean isAdmin = authUser.getRoles().stream().anyMatch(r -> r.getName().equals(ConstUtil.ROLE_ADMIN));
-
-		if (isAdmin)
-			invalidAccess("Admin user cannot be deleted");
-
+		AuthUser authUser = getUserCheckAdmin(dto.getId());
 		oAuthAccessTokenService.deleteAccessAndRefreshToken(authUser.getEmail());
 		userRepository.delete(authUser);
 	}
@@ -122,4 +117,20 @@ public class UserService extends BaseService {
 		AuthUser user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
 		return new ResponseUserDto(user);
 	}
+
+	public ResponseUserDto getCurrentUser() {
+		AuthUserDetail user = AuthUtil.getPrincipal();
+		return new ResponseUserDto(user);
+	}
+
+	private AuthUser getUserCheckAdmin(long id) {
+		AuthUser authUser = userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
+		boolean isAdmin = authUser.getRoles().stream().anyMatch(r -> r.getName().equals(ConstUtil.ROLE_ADMIN));
+
+		if (isAdmin)
+			invalidAccess("Cannot process on admin user");
+
+		return authUser;
+	}
+
 }
