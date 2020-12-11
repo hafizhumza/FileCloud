@@ -91,6 +91,11 @@ public class UserService extends BaseService {
 	public void deleteUser(SingleIdRequestDto dto) {
 		AuthUser authUser = userRepository.findById(dto.getId()).orElseThrow(() -> new RecordNotFoundException("User not found"));
 
+		boolean isAdmin = authUser.getRoles().stream().anyMatch(r -> r.getName().equals(ConstUtil.ROLE_ADMIN));
+
+		if (isAdmin)
+			invalidAccess("Admin user cannot be deleted");
+
 		oAuthAccessTokenService.deleteAccessAndRefreshToken(authUser.getEmail());
 		userRepository.delete(authUser);
 	}
