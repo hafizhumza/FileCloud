@@ -1,8 +1,8 @@
 package com.filecloud.adminservice.service;
 
+import com.filecloud.adminservice.client.AuthServerClient;
+import com.filecloud.adminservice.client.DocumentServiceClient;
 import com.filecloud.adminservice.model.dto.SingleIdRequestDto;
-import com.filecloud.adminservice.network.AuthServerClient;
-import com.filecloud.adminservice.network.DocumentServiceClient;
 import com.filecloud.adminservice.response.Response.Status;
 import com.filecloud.adminservice.response.Result;
 import com.filecloud.adminservice.security.util.AuthUtil;

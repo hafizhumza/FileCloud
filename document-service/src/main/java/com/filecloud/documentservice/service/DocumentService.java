@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.filecloud.documentservice.client.EmailServiceClient;
 import com.filecloud.documentservice.constant.ConstUtil;
 import com.filecloud.documentservice.exception.RecordNotFoundException;
 import com.filecloud.documentservice.model.db.Document;
@@ -30,7 +31,6 @@ import com.filecloud.documentservice.model.dto.SingleIdRequestDto;
 import com.filecloud.documentservice.model.dto.SpaceInfoResponseDto;
 import com.filecloud.documentservice.model.dto.UpdateRequestDto;
 import com.filecloud.documentservice.model.dto.UploadRequestDto;
-import com.filecloud.documentservice.network.EmailServiceClient;
 import com.filecloud.documentservice.properties.DocumentServiceProperties;
 import com.filecloud.documentservice.repository.DocumentRepository;
 import com.filecloud.documentservice.response.Response.Status;

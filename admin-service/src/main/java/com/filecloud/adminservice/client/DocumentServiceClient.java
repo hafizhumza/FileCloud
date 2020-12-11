@@ -1,4 +1,4 @@
-package com.filecloud.adminservice.network;
+package com.filecloud.adminservice.client;
 
 import com.filecloud.adminservice.model.dto.SingleIdRequestDto;
 import com.filecloud.adminservice.response.Result;

@@ -1,4 +1,4 @@
-package com.filecloud.documentservice.network;
+package com.filecloud.documentservice.client;
 
 import com.filecloud.documentservice.model.dto.EmailSharedDocumentDto;
 import com.filecloud.documentservice.response.Result;
