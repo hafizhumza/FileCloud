@@ -1,0 +1,13 @@
+server.port=8751
+
+spring.cloud.gateway.routes[0].id=document-service-route
+spring.cloud.gateway.routes[0].uri=lb://DocumentService
+spring.cloud.gateway.routes[0].predicates[0]=Path=/ds/**
+#spring.cloud.gateway.routes[0].predicates[1]=Method=GET
+spring.cloud.gateway.routes[0].filters[0]=StripPrefix=1
+spring.cloud.gateway.routes[0].filters[1]=RemoveRequestHeader=Cookie
+spring.cloud.gateway.routes[0].filters[2]=AddRequestHeader=X-Additional-Request-Header,Value=GatewayServer
+spring.cloud.gateway.routes[0].filters[3]=AddRequestHeader=X-Additional-Request-Header,Value-One
+spring.cloud.gateway.routes[0].filters[4]=AddRequestParameter=param_1,blue
+spring.cloud.gateway.routes[0].filters[5]=AddRequestParameter=param_2,red
+spring.cloud.gateway.routes[0].filters[6]=AddResponseHeader=X-Additional-Response-Header,Value-Two

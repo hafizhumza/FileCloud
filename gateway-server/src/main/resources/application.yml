@@ -1,0 +1,46 @@
+server:
+  port: 8751
+spring:
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: auth-server-route
+          uri: lb://AuthServer
+          predicates:
+            - Path=/aus/**
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+        - id: document-service-route
+          uri: lb://DocumentService
+          predicates:
+            - Path=/ds/**
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+        - id: admin-service-route
+          uri: lb://AdminService
+          predicates:
+            - Path=/as/**
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+        - id: email-service-route
+          uri: lb://EmailService
+          predicates:
+            - Path=/es/**
+          filters:
+            - StripPrefix=1
+            - RemoveRequestHeader=Cookie
+          # - AddRequestHeader=X-Additional-Request-Header,Value=GatewayServer
+          # - AddRequestHeader=X-Additional-Request-Header,Value-One
+          # - AddRequestParameter=param_1,blue
+          # - AddRequestParameter=param_2,red
+          # - AddResponseHeader=X-Additional-Response-Header,Value-Two
+          # - RewritePath=/ecommerce, /ecommerceV2/
