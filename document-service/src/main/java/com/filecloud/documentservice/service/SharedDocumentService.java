@@ -76,10 +76,13 @@ public class SharedDocumentService extends BaseService {
 		return null;
 	}
 
-	// TODO: append gateway server path, either from .prop file or from code
 	private String getSharedDocumentUrl(String token) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath()
-				.path("api")
+				.scheme(documentServiceProperties.getGatewayServerScheme())
+				.host(documentServiceProperties.getGatewayServerHost())
+				.port(documentServiceProperties.getGatewayServerPort())
+				.path(documentServiceProperties.getDocumentServicePrefix())
+				.path("/api")
 				.path("/v1")
 				.path("/document")
 				.path("/shared/")
