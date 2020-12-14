@@ -16,7 +16,7 @@ public class AuthUtil {
     public static boolean isSecurityEnabled() {
 
         if (securityEnabled == null)
-            securityEnabled = Util.getConfigBoolean("app.security.enabled");
+            securityEnabled = Util.getConfigBoolean("auth-server.security.enabled");
 
         return securityEnabled;
     }
