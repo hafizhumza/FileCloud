@@ -21,7 +21,9 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 		http
 				.authorizeRequests()
 				.antMatchers("/api/v1/admin/**")
-				.access("#oauth2.hasScope('" + ConstUtil.SCOPE_WRITE + "')");
+				.access("#oauth2.hasScope('" + ConstUtil.SCOPE_WRITE + "')")
+				.anyRequest()
+				.authenticated();
 	}
 
 	@Override
@@ -29,13 +31,4 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
 		resources.resourceId("u_437287");
 	}
 
-	/*@Override
-	public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
-	    resources.authenticationEntryPoint(authenticationEntryPoint());
-	}*/
-
-	/*@Bean
-	public AuthenticationEntryPoint authenticationEntryPoint() {
-	    return new AuthRequestEntryPoint();
-	}*/
 }
