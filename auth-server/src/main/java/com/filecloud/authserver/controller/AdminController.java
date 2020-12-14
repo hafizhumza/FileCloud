@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.filecloud.authserver.model.dto.SingleIdRequestDto;
+import com.filecloud.authserver.model.dto.request.SingleIdRequestDto;
 import com.filecloud.authserver.response.Result;
 import com.filecloud.authserver.response.Response.Status;
 import com.filecloud.authserver.security.role.Admin;

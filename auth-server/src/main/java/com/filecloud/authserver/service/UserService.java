@@ -13,9 +13,11 @@ import com.filecloud.authserver.constant.ConstUtil;
 import com.filecloud.authserver.exception.RecordNotFoundException;
 import com.filecloud.authserver.model.db.AuthUser;
 import com.filecloud.authserver.model.db.Role;
-import com.filecloud.authserver.model.dto.RegisterUserDto;
-import com.filecloud.authserver.model.dto.ResponseUserDto;
-import com.filecloud.authserver.model.dto.SingleIdRequestDto;
+import com.filecloud.authserver.model.dto.request.RegisterUserDto;
+import com.filecloud.authserver.model.dto.request.RequestEmailDto;
+import com.filecloud.authserver.model.dto.request.SingleIdRequestDto;
+import com.filecloud.authserver.model.dto.response.ResponseUserDto;
+import com.filecloud.authserver.model.dto.response.ResponseUserTypeDto;
 import com.filecloud.authserver.repository.UserRepository;
 import com.filecloud.authserver.security.dto.AuthUserDetail;
 import com.filecloud.authserver.security.util.AuthUtil;
@@ -45,8 +47,8 @@ public class UserService extends BaseService {
 		Role role = roleService.findByName(ConstUtil.ROLE_USER);
 
 		AuthUser authUser = new AuthUser();
-		authUser.setFullName(userDto.getFullName());
-		authUser.setEmail(userDto.getEmail());
+		authUser.setFullName(userDto.getFullName().trim());
+		authUser.setEmail(userDto.getEmail().trim());
 		authUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
 		authUser.setAccountNonExpired(true);
 		authUser.setAccountNonLocked(false);
@@ -121,6 +123,16 @@ public class UserService extends BaseService {
 	public ResponseUserDto getCurrentUser() {
 		AuthUserDetail user = AuthUtil.getPrincipal();
 		return new ResponseUserDto(user);
+	}
+
+	public ResponseUserTypeDto getUserRole(RequestEmailDto dto) {
+		AuthUser user = userRepository.findByEmail(dto.getEmail().trim())
+				.orElseThrow(() -> new RecordNotFoundException("User not found"));
+
+		boolean isAdmin = user.getRoles().stream()
+				.anyMatch(r -> r.getName().equals(ConstUtil.ROLE_ADMIN));
+
+		return isAdmin ? new ResponseUserTypeDto(ConstUtil.ROLE_ADMIN) : new ResponseUserTypeDto(ConstUtil.ROLE_USER);
 	}
 
 	private AuthUser getUserCheckAdmin(long id) {
