@@ -28,12 +28,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) {
-		boolean securityEnabled = adminServiceProperties.security().isEnabled();
-
-		if (!securityEnabled)
-			web.ignoring().antMatchers("/**").anyRequest();
-
-		if (securityEnabled && Util.isValidArray(adminServiceProperties.security().getIgnoredPaths()))
+		if (Util.isValidArray(adminServiceProperties.security().getIgnoredPaths()))
 			web.ignoring().antMatchers(adminServiceProperties.security().getIgnoredPaths());
 	}
 }

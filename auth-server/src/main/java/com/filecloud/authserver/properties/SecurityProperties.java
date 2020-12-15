@@ -3,8 +3,6 @@ package com.filecloud.authserver.properties;
 
 public class SecurityProperties {
 
-	private boolean enabled;
-
 	private String[] ignoredPaths;
 
 	private String passwordEncodingAlgorithm;
@@ -15,14 +13,6 @@ public class SecurityProperties {
 
 	public void setPasswordEncodingAlgorithm(String passwordEncodingAlgorithm) {
 		this.passwordEncodingAlgorithm = passwordEncodingAlgorithm;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	public String[] getIgnoredPaths() {

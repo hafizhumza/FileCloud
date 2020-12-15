@@ -3,33 +3,23 @@ package com.filecloud.documentservice.properties;
 
 public class SecurityProperties {
 
-    private boolean enabled;
+	private String encryptionKey;
 
-    private String encryptionKey;
+	private String[] ignoredPaths;
 
-    private String[] ignoredPaths;
+	public String getEncryptionKey() {
+		return encryptionKey;
+	}
 
-    public boolean isEnabled() {
-        return enabled;
-    }
+	public void setEncryptionKey(String encryptionKey) {
+		this.encryptionKey = encryptionKey;
+	}
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+	public String[] getIgnoredPaths() {
+		return ignoredPaths;
+	}
 
-    public String getEncryptionKey() {
-        return encryptionKey;
-    }
-
-    public void setEncryptionKey(String encryptionKey) {
-        this.encryptionKey = encryptionKey;
-    }
-
-    public String[] getIgnoredPaths() {
-        return ignoredPaths;
-    }
-
-    public void setIgnoredPaths(String[] ignoredPaths) {
-        this.ignoredPaths = ignoredPaths;
-    }
+	public void setIgnoredPaths(String[] ignoredPaths) {
+		this.ignoredPaths = ignoredPaths;
+	}
 }
