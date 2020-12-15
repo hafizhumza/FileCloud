@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Login</title>
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/css/util.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/material-design-iconic-font.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animate.css}"/>
+    <link rel="stylesheet" th:href="@{/css/hamburgers.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animsition.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/select2.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/daterangepicker.css}"/>
+</head>
+
+<body>
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100 p-t-85 p-b-20">
+            <form class="login100-form validate-form" role="form"
+                  th:object="${loginModel}"
+                  th:action="@{/login}"
+                  method="POST">
+				<span class="login100-form-title p-b-40">
+					Welcome To Login Page
+				</span>
+                <div class="wrap-input100 validate-input m-t-85 m-b-35" data-validate="Enter a valid email">
+                    <input class="input100" type="text" name="email" th:field="*{email}">
+                    <span class="focus-input100" th:data-placeholder="Email"></span>
+                </div>
+                <div class="wrap-input100 validate-input m-b-50" data-validate="Enter password">
+                    <input class="input100" type="password" name="pass" th:field="*{password}">
+                    <span class="focus-input100" th:data-placeholder="Password"></span>
+                </div>
+                <div class="container-login100-form-btn">
+                    <button type="submit" class="login100-form-btn">
+                        Login
+                    </button>
+                </div>
+                <ul class="login-more p-t-80">
+                    <li class="m-b-8">
+						<span class="txt1">
+							Forgot
+						</span>
+                        <a th:href="@{forgot}" class="txt2">
+                            Password?
+                        </a>
+                    </li>
+                    <li>
+                        <span class="txt1">
+							Not a member yet?
+						</span>
+                        <a th:href="@{/SignUp}" class="txt2">
+                            Join now
+                        </a>
+                    </li>
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/animsition.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/popper.js}"></script>
+<script th:inline="javascript" th:src="@{/js/select2.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/moment.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/daterangepicker.js}"></script>
+<script th:inline="javascript" th:src="@{/js/countdowntime.js}"></script>
+<script th:inline="javascript" th:src="@{/js/main.js}"></script>
+
+</body>
+</html>
