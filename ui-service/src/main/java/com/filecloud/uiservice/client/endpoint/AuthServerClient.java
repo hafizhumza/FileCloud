@@ -1,7 +1,7 @@
 package com.filecloud.uiservice.client.endpoint;
 
-import com.filecloud.uiservice.dto.response.LoginResponse;
-import com.filecloud.uiservice.dto.response.ResponseUserDto;
+import com.filecloud.uiservice.client.response.LoginResponse;
+import com.filecloud.uiservice.client.response.ResponseUserDto;
 import com.filecloud.uiservice.response.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;

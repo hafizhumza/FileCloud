@@ -1,4 +1,4 @@
-package com.filecloud.uiservice.dto.response;
+package com.filecloud.uiservice.client.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

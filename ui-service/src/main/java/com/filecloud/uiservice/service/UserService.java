@@ -2,8 +2,8 @@ package com.filecloud.uiservice.service;
 
 import com.filecloud.uiservice.client.endpoint.AuthServerClient;
 import com.filecloud.uiservice.dto.mvcmodel.LoginModel;
-import com.filecloud.uiservice.dto.response.LoginResponse;
-import com.filecloud.uiservice.dto.response.ResponseUserDto;
+import com.filecloud.uiservice.client.response.LoginResponse;
+import com.filecloud.uiservice.client.response.ResponseUserDto;
 import com.filecloud.uiservice.properties.UiServiceProperties;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.security.util.AuthUtil;
