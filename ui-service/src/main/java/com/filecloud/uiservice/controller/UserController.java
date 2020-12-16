@@ -1,5 +1,6 @@
 package com.filecloud.uiservice.controller;
 
+import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.dto.mvcmodel.LoginModel;
 import com.filecloud.uiservice.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,16 @@ public class UserController {
 
     @PostMapping("/login")
     public String postLogin(@Valid LoginModel loginModel, BindingResult result, Model model) {
-        userService.login(loginModel);
-        return "login";
+        if (result.hasErrors())
+            return "login";
+
+        if (userService.login(loginModel)) {
+            return "home";
+        } else {
+            model.addAttribute(UiConst.KEY_ERROR, UiConst.MESSAGE_INVALID_LOGIN);
+            return "login";
+        }
+
     }
 
 }

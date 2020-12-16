@@ -27,6 +27,9 @@
 				<span class="login100-form-title p-b-40">
 					Welcome To Login Page
 				</span>
+                <div class="alert alert-danger" th:inline="text" th:if="${error}">
+                    [[${error}]]
+                </div>
                 <div class="wrap-input100 validate-input m-t-85 m-b-35" data-validate="Enter a valid email">
                     <input class="input100" type="text" name="email" th:field="*{email}">
                     <span class="focus-input100" th:data-placeholder="Email"></span>

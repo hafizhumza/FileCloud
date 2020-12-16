@@ -1,8 +1,11 @@
-package com.filecloud.uiservice.client;
+package com.filecloud.uiservice.client.endpoint;
 
 import com.filecloud.uiservice.dto.response.LoginResponse;
+import com.filecloud.uiservice.dto.response.ResponseUserDto;
+import com.filecloud.uiservice.response.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -17,5 +20,8 @@ public interface AuthServerClient {
             @RequestHeader("Authorization") String basicAuth,
             Map<String, ?> params
     );
+
+    @GetMapping("api/v1/userinfo")
+    Result<ResponseUserDto> userinfo(@RequestHeader("Authorization") String bearerToken);
 
 }

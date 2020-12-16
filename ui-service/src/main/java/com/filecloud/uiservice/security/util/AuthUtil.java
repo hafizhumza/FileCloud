@@ -38,4 +38,8 @@ public class AuthUtil {
         byte[] encodedBytes = Base64Utils.encode((getClientId() + ":" + getClientSecret()).getBytes());
         return "Basic " + new String(encodedBytes);
     }
+
+    public static String getBearerToken(String token) {
+        return "Bearer " + token;
+    }
 }
