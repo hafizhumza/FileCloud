@@ -59,64 +59,58 @@ public class UserService extends BaseService {
 		userRepository.save(authUser);
 	}
 
-	public List<ResponseUserDto> findAllUsers() {
+	public List<ResponseUserDto> findAllUsersExcludeAdmin() {
 		List<AuthUser> dbUsers = userRepository.findAll();
 
 		if (Util.isValidList(dbUsers))
-			return dbUsers
-					.stream()
-					.filter(user -> {
-						// Admin will ignore
-						for (Role role : user.getRoles())
-							if (role.getName().equals(ConstUtil.ROLE_USER))
-								return true;
-						return false;
-					})
-					.map(u -> new ResponseUserDto(u.getId(), u.getFullName(), u.getEmail(), u.isAccountNonLocked()))
-					.collect(Collectors.toList());
+			return getUserResponseExcludeAdmin(dbUsers);
 
 		return new ArrayList<>();
 	}
 
 	public void enableUser(SingleIdRequestDto dto) {
-		AuthUser authUser = getUserCheckAdmin(dto.getId());
+		AuthUser authUser = shouldNotAdmin(dto.getId());
 		authUser.setAccountNonLocked(true);
 		userRepository.save(authUser);
 	}
 
 	public void disableUser(SingleIdRequestDto dto) {
-		AuthUser authUser = getUserCheckAdmin(dto.getId());
+		AuthUser authUser = shouldNotAdmin(dto.getId());
 		oAuthAccessTokenService.deleteAccessAndRefreshToken(authUser.getEmail());
 		authUser.setAccountNonLocked(false);
 		userRepository.save(authUser);
 	}
 
 	public void deleteUser(SingleIdRequestDto dto) {
-		AuthUser authUser = getUserCheckAdmin(dto.getId());
+		AuthUser authUser = shouldNotAdmin(dto.getId());
 		oAuthAccessTokenService.deleteAccessAndRefreshToken(authUser.getEmail());
 		userRepository.delete(authUser);
 	}
 
-	public List<ResponseUserDto> findAllActiveUsers() {
+	public List<ResponseUserDto> findAllActiveUsersExcludeAdmin() {
 		List<AuthUser> dbUsers = userRepository.findByAccountNonLocked(true);
 
 		if (Util.isValidList(dbUsers))
-			return dbUsers
-					.stream()
-					.filter(u -> {
-						for (Role role : u.getRoles())
-							if (role.getName().equals(ConstUtil.ROLE_USER))
-								return true;
-						return false;
-					})
-					.map(u -> new ResponseUserDto(u.getId(), u.getFullName(), u.getEmail(), null))
-					.collect(Collectors.toList());
+			return getUserResponseExcludeAdmin(dbUsers);
 
 		return new ArrayList<>();
 	}
 
+	private List<ResponseUserDto> getUserResponseExcludeAdmin(List<AuthUser> dbUsers) {
+		return dbUsers
+				.stream()
+				.filter(u -> {
+					for (Role role : u.getRoles())
+						if (role.getName().equals(ConstUtil.ROLE_USER))
+							return true;
+					return false;
+				})
+				.map(u -> new ResponseUserDto(u.getId(), u.getFullName(), u.getEmail(), ConstUtil.ROLE_USER, u.isAccountNonLocked()))
+				.collect(Collectors.toList());
+	}
+
 	public ResponseUserDto getUser(long userId) {
-		AuthUser user = userRepository.findById(userId).orElseThrow(() -> new RecordNotFoundException("User not found"));
+		AuthUser user = getAuthUser(userId);
 		return new ResponseUserDto(user);
 	}
 
@@ -126,23 +120,25 @@ public class UserService extends BaseService {
 	}
 
 	public ResponseUserTypeDto getUserRole(RequestEmailDto dto) {
-		AuthUser user = userRepository.findByEmail(dto.getEmail().trim())
-				.orElseThrow(() -> new RecordNotFoundException("User not found"));
-
-		boolean isAdmin = user.getRoles().stream()
-				.anyMatch(r -> r.getName().equals(ConstUtil.ROLE_ADMIN));
-
-		return isAdmin ? new ResponseUserTypeDto(ConstUtil.ROLE_ADMIN) : new ResponseUserTypeDto(ConstUtil.ROLE_USER);
+		AuthUser user = userRepository.findByEmail(dto.getEmail().trim()).orElseThrow(() -> new RecordNotFoundException("User not found"));
+		return isAdmin(user) ? new ResponseUserTypeDto(ConstUtil.ROLE_ADMIN) : new ResponseUserTypeDto(ConstUtil.ROLE_USER);
 	}
 
-	private AuthUser getUserCheckAdmin(long id) {
-		AuthUser authUser = userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
-		boolean isAdmin = authUser.getRoles().stream().anyMatch(r -> r.getName().equals(ConstUtil.ROLE_ADMIN));
+	private AuthUser shouldNotAdmin(long id) {
+		AuthUser authUser = getAuthUser(id);
 
-		if (isAdmin)
+		if (isAdmin(authUser))
 			invalidAccess("Cannot process on admin user");
 
 		return authUser;
+	}
+
+	private boolean isAdmin(AuthUser authUser) {
+		return authUser.getRoles().stream().anyMatch(r -> r.getName().equals(ConstUtil.ROLE_ADMIN));
+	}
+
+	private AuthUser getAuthUser(long id) {
+		return userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
 	}
 
 }

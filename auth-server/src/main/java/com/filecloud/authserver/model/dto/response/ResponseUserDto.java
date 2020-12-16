@@ -16,12 +16,14 @@ public class ResponseUserDto {
 	private Long id;
 	private String fullName;
 	private String email;
+	private String userRole;
 	private Boolean accountNonLocked;
 
 	public ResponseUserDto(AuthUser user) {
 		id = user.getId();
 		fullName = user.getFullName();
 		email = user.getEmail();
+		userRole = user.getRoles().stream().findFirst().get().getName();
 		accountNonLocked = user.isAccountNonLocked();
 	}
 
@@ -29,6 +31,7 @@ public class ResponseUserDto {
 		id = user.getUserId();
 		fullName = user.getFullName();
 		email = user.getUsername();
+		userRole = user.getAuthorities().stream().findFirst().get().getAuthority();
 		accountNonLocked = user.isAccountNonLocked();
 	}
 

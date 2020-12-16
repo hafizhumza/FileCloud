@@ -30,7 +30,7 @@ public class AdminController extends BaseController {
 
 	@GetMapping("/list-users")
 	public Result<?> users() {
-		return sendSuccessResponse(Status.ALL_OK, userService.findAllUsers());
+		return sendSuccessResponse(Status.ALL_OK, userService.findAllUsersExcludeAdmin());
 	}
 
 	@Transactional
