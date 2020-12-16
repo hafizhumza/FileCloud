@@ -14,10 +14,8 @@ import com.filecloud.authserver.exception.RecordNotFoundException;
 import com.filecloud.authserver.model.db.AuthUser;
 import com.filecloud.authserver.model.db.Role;
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
-import com.filecloud.authserver.model.dto.request.RequestEmailDto;
 import com.filecloud.authserver.model.dto.request.SingleIdRequestDto;
 import com.filecloud.authserver.model.dto.response.ResponseUserDto;
-import com.filecloud.authserver.model.dto.response.ResponseUserTypeDto;
 import com.filecloud.authserver.repository.UserRepository;
 import com.filecloud.authserver.security.dto.AuthUserDetail;
 import com.filecloud.authserver.security.util.AuthUtil;
@@ -63,7 +61,7 @@ public class UserService extends BaseService {
 		List<AuthUser> dbUsers = userRepository.findAll();
 
 		if (Util.isValidList(dbUsers))
-			return getUserResponseExcludeAdmin(dbUsers);
+			return getResponseUserDtoExcludeAdmin(dbUsers);
 
 		return new ArrayList<>();
 	}
@@ -91,12 +89,31 @@ public class UserService extends BaseService {
 		List<AuthUser> dbUsers = userRepository.findByAccountNonLocked(true);
 
 		if (Util.isValidList(dbUsers))
-			return getUserResponseExcludeAdmin(dbUsers);
+			return getResponseUserDtoExcludeAdmin(dbUsers);
 
 		return new ArrayList<>();
 	}
 
-	private List<ResponseUserDto> getUserResponseExcludeAdmin(List<AuthUser> dbUsers) {
+	public ResponseUserDto getUser(long userId) {
+		AuthUser user = getUserOrElseThrowException(userId);
+		return new ResponseUserDto(user);
+	}
+
+	public ResponseUserDto getCurrentUser() {
+		AuthUserDetail user = AuthUtil.getPrincipal();
+		return new ResponseUserDto(user);
+	}
+
+	private AuthUser shouldNotAdmin(long id) {
+		AuthUser authUser = getUserOrElseThrowException(id);
+
+		if (isAdmin(authUser))
+			invalidAccess("Cannot process on admin user");
+
+		return authUser;
+	}
+
+	private List<ResponseUserDto> getResponseUserDtoExcludeAdmin(List<AuthUser> dbUsers) {
 		return dbUsers
 				.stream()
 				.filter(u -> {
@@ -109,36 +126,11 @@ public class UserService extends BaseService {
 				.collect(Collectors.toList());
 	}
 
-	public ResponseUserDto getUser(long userId) {
-		AuthUser user = getAuthUser(userId);
-		return new ResponseUserDto(user);
-	}
-
-	public ResponseUserDto getCurrentUser() {
-		AuthUserDetail user = AuthUtil.getPrincipal();
-		return new ResponseUserDto(user);
-	}
-
-	public ResponseUserTypeDto getUserRole(RequestEmailDto dto) {
-		AuthUser user = userRepository.findByEmail(dto.getEmail().trim()).orElseThrow(() -> new RecordNotFoundException("User not found"));
-		return isAdmin(user) ? new ResponseUserTypeDto(ConstUtil.ROLE_ADMIN) : new ResponseUserTypeDto(ConstUtil.ROLE_USER);
-	}
-
-	private AuthUser shouldNotAdmin(long id) {
-		AuthUser authUser = getAuthUser(id);
-
-		if (isAdmin(authUser))
-			invalidAccess("Cannot process on admin user");
-
-		return authUser;
-	}
-
 	private boolean isAdmin(AuthUser authUser) {
 		return authUser.getRoles().stream().anyMatch(r -> r.getName().equals(ConstUtil.ROLE_ADMIN));
 	}
 
-	private AuthUser getAuthUser(long id) {
+	private AuthUser getUserOrElseThrowException(long id) {
 		return userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
 	}
-
 }

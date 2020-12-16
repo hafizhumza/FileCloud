@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
-import com.filecloud.authserver.model.dto.request.RequestEmailDto;
 import com.filecloud.authserver.response.Response.Status;
 import com.filecloud.authserver.response.Result;
 import com.filecloud.authserver.service.UserService;
@@ -50,8 +49,4 @@ public class UserController extends BaseController {
 		return sendSuccessResponse(Status.ALL_OK, userService.getCurrentUser());
 	}
 
-	@PostMapping("/user-type")
-	public Result<?> userInfo(@RequestBody RequestEmailDto dto) {
-		return sendSuccessResponse(Status.ALL_OK, userService.getUserRole(dto));
-	}
 }
