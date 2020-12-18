@@ -1,70 +1,68 @@
 
 package com.filecloud.uiservice.controller;
 
-import com.filecloud.uiservice.response.Result;
-import com.filecloud.uiservice.response.Response.Status;
+import com.filecloud.uiservice.constant.ConstUtil;
+import com.filecloud.uiservice.constant.UiConst;
+import com.filecloud.uiservice.dto.session.UserSession;
+import com.filecloud.uiservice.security.util.AuthUtil;
+import com.filecloud.uiservice.service.BaseService;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 public class BaseController {
 
-    /**
-     * Success Result
-     */
+    public static String getBearerToken(UserSession session) {
+        if (session == null)
+            BaseService.sessionExpired();
 
-    public static <T> Result<?> sendSuccessResponse(Status status) {
-        return sendResponse(true, status.getStatusCode(), null, null, null);
+        return AuthUtil.getBearerToken(session.getAccessToken());
     }
 
-    public static <T> Result<?> sendSuccessResponse(Status status, String message) {
-        return sendResponse(true, status.getStatusCode(), message, null, null);
+    public static UserSession getCurrentUser(HttpSession session) {
+        if (session == null)
+            BaseService.sessionExpired();
+
+        UserSession userSession = (UserSession) session.getAttribute(UiConst.SESSION_CURRENT_USER);
+
+        if (userSession == null)
+            BaseService.sessionExpired();
+
+        return userSession;
     }
 
-    public static <T> Result<?> sendSuccessResponse(Status status, T data) {
-        return sendResponse(true, status.getStatusCode(), null, null, data);
+    public static boolean isAdmin(UserSession session) {
+        if (session == null)
+            BaseService.sessionExpired();
+
+        return session.getRole().equals(ConstUtil.ROLE_ADMIN_WITHOUT_PREFIX);
     }
 
-    public static <T> Result<?> sendSuccessResponse(Status status, String message, T data) {
-        return sendResponse(true, status.getStatusCode(), message, null, data);
+    public static void shouldAdmin(UserSession session) {
+        if (!isAdmin(session))
+            BaseService.invalidAccess();
     }
 
-    /**
-     * Error Result
-     */
-
-    public static <T> Result<?> sendErrorResponse(Status status) {
-        return sendResponse(false, status.getStatusCode(), status.getMessage(), null, null);
+    public static void shouldUser(UserSession session) {
+        if (isAdmin(session))
+            BaseService.invalidAccess();
     }
 
-    public static <T> Result<?> sendErrorResponse(Status status, String message) {
-        return sendResponse(false, status.getStatusCode(), message, null, null);
+    public static void persistSession(HttpServletRequest request, UserSession userSession) {
+        if (request == null)
+            BaseService.invalidInput();
+
+        if (userSession == null)
+            BaseService.sessionExpired();
+
+        request.getSession().setAttribute(UiConst.SESSION_CURRENT_USER, userSession);
     }
 
-    public static <T> Result<?> sendErrorResponse(Status status, String message, String errorMessage) {
-        return sendResponse(false, status.getStatusCode(), message, errorMessage, null);
+    public static void invalidateSession(HttpServletRequest request) {
+        if (request == null)
+            BaseService.invalidInput();
+
+        request.getSession().invalidate();
     }
 
-    public static <T> Result<?> sendErrorResponse(Status status, String message, String errorMessage, T data) {
-        return sendResponse(false, status.getStatusCode(), message, errorMessage, data);
-    }
-
-    public static <T> Result<?> sendErrorResponse(int status, String message, String errorMessage) {
-        return sendResponse(false, status, message, errorMessage, null);
-    }
-
-    public static <T> Result<?> sendErrorResponse(int status, String message, String errorMessage, T data) {
-        return sendResponse(false, status, message, errorMessage, data);
-    }
-
-    /**
-     * Generic Methods
-     */
-
-    public static <T> Result<?> sendResponse(boolean success, int status, String message, String errorMessage, T data) {
-        Result<T> result = new Result<T>();
-        result.setSuccess(success);
-        result.setStatusCode(status);
-        result.setMessage(message);
-        result.setErrorMessage(errorMessage);
-        result.setData(data);
-        return result;
-    }
 }

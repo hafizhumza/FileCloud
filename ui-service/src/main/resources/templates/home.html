@@ -10,16 +10,16 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
     <!--  Bootstrap 3.3.6
-    <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
 
-    <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <!--<link rel="stylesheet" th:href="@{/css/font-awesome.min.css}"/>-->
 
     <!-- Ionicons -->
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
 
-    <link rel="stylesheet" th:href="@{/css/ionicons.min.css}"/>
+    <!--<link rel="stylesheet" th:href="@{/css/ionicons.min.css}"/>-->
 
     <!-- Theme style -->
     <!-- <link rel="stylesheet" href="/css/AdminLTE.min.css"> -->
@@ -61,7 +61,7 @@
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>MSB</b>SC</span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg" th:utext="${auth.role.role}"> </span>
+            <span class="logo-lg" th:utext="${user.role}"> </span>
 
         </a>
         <!-- Header Navbar: style can be found in header.less -->
@@ -80,7 +80,7 @@
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <img src="/images/avatar5.png" class="user-image" alt="User Image">
-                            <span class="hidden-xs" th:utext="${auth.name}"></span>
+                            <span class="hidden-xs" th:utext="${user.name}"></span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
@@ -88,18 +88,18 @@
                                 <img src="/images/avatar5.png" class="img-circle" alt="User Image">
 
                                 <p>
-                                    <span class="hidden-xs" th:utext="${auth.name}"></span>
-                                    <small><span class="hidden-xs" th:utext="${auth.email}"></span></small>
+                                    <span class="hidden-xs" th:utext="${user.name}"></span>
+                                    <small><span class="hidden-xs" th:utext="${user.email}"></span></small>
                                 </p>
                             </li>
-                            <!-- Menu Body --
+                            <!-- Menu Body -->
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
                                     <a th:href="@{/myprofile/inf}" class="btn btn-primary btn-flat">Profile</a>
                                 </div>
                                 <div class="col-xs-offset-1 col-xs-4 text-center">
-                                    <a th:href="@{/myprofile/change_password(id=${auth.id})}"><i
+                                    <a th:href="@{/myprofile/change_password(id=${user.id})}"><i
                                             class="fa fa-gears"></i> Change
                                         Password</a>
                                 </div>
@@ -123,7 +123,7 @@
                     <img src="/images/avatar5.png" class="img-circle" alt="User Image">
                 </div>
                 <div class="pull-left info">
-                    <p><span class="hidden-xs" th:utext="${auth.name}"></span></p>
+                    <p><span class="hidden-xs" th:utext="${user.name}"></span></p>
                 </div>
             </div>
             <!-- search form -->
@@ -147,14 +147,14 @@
             </span>
                     </a>
                 </li>
-                <li th:if="${control != 'ADMIN'}" class="treeview">
-                    <a th:href="@{/myprofile/mytasks(id=${auth.id})}">
+                <li th:if="${user.role != 'ADMIN'}" class="treeview">
+                    <a th:href="@{/myprofile/mytasks(id=${user.id})}">
                         <i class="fa fa-file-text text-green"></i> <span>My Tasks</span>
                         <span class="pull-right-container">
             </span>
                     </a>
                 </li>
-                <li th:if="${control != 'ADMIN'}" class="treeview">
+                <li th:if="${user.role != 'ADMIN'}" class="treeview">
                     <a th:href="@{/myprofile/inf}">
                         <i class="fa fa-gears text-blue"></i> <span>Profile Settings</span>
                         <span class="pull-right-container">
@@ -167,7 +167,7 @@
                         <span>All Users</span>
                     </a>
                 </li>
-                <li th:if="${control == 'ADMIN'}" class="treeview">
+                <li th:if="${user.role == 'ADMIN'}" class="treeview">
                     <a href="#">
                         <i class="fa fa-odnoklassniki text-blue"></i>
                         <span>User Types</span>
@@ -182,7 +182,7 @@
                             All User Types</a></li>
                     </ul>
                 </li>
-                <li th:if="${control == 'ADMIN'}" class="treeview">
+                <li th:if="${user.role == 'ADMIN'}" class="treeview">
                     <a href="#">
                         <i class="fa fa-files-o text-purple"></i>
                         <span>Tasks</span>
@@ -195,7 +195,7 @@
                         <li><a th:href="@{/admin/tasks/all}"><i class="fa fa-file-text"></i> All Tasks</a></li>
                     </ul>
                 </li>
-                <li th:if="${control == 'ADMIN'}" class="treeview">
+                <li th:if="${user.role == 'ADMIN'}" class="treeview">
                     <a href="#">
                         <i class="fa fa-laptop text-red "></i>
                         <span>User-Task Management</span>
@@ -225,16 +225,17 @@
 
         <!-- Main content -->
         <section class="content">
-            <div th:if="${control == 'ADMIN'}">
+            <div th:if="${user.role == 'ADMIN'}">
                 <div class="row">
                     <div class=" col-lg-offset-1   col-lg-3 col-xs-6">
                         <!-- small box -->
                         <div class="small-box bg-yellow">
                             <div class="inner">
-                                <h3>      	<span style="color: white; font-weight: bold"
-                                                  th:utext="${userCount}"></span></h3>
+                                <h3>
+                                    <span style="color: white; font-weight: bold" th:utext="${activeUsersCount}"></span>
+                                </h3>
 
-                                <p>User Registrations</p>
+                                <p>Active Users</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-person"></i>
@@ -247,9 +248,10 @@
                         <!-- small box -->
                         <div class="small-box bg-green">
                             <div class="inner">
-                                <h3>      	<span style="color: white; font-weight: bold"
-                                                  th:utext="${adminCount}"></span></h3>
-                                <p>Admin Registrations</p>
+                                <h3>
+                                    <span style="color: white; font-weight: bold" th:utext="${inActiveUsersCount}"></span>
+                                </h3>
+                                <p>Locked Users</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-person"></i>
@@ -262,9 +264,10 @@
                         <!-- small box -->
                         <div class="small-box bg-blue">
                             <div class="inner">
-                                <h3>      	<span style="color: white; font-weight: bold"
-                                                  th:utext="${taskCount}"></span></h3>
-                                <p>Number of Tasks</p>
+                                <h3>
+                                    <span style="color: white; font-weight: bold" th:utext="${allUsers}"></span>
+                                </h3>
+                                <p>All Users</p>
                             </div>
                             <div class="icon">
                                 <i class="icon ion-compose"></i>
@@ -278,7 +281,7 @@
 
             <div class="row">
                 <div class="col-lg-offset-3 col-lg-4 col-xs-6">
-                    <h2 class="headline text-black"> WELCOME <span class="hidden-xs" th:utext="${auth.name}"></span>
+                    <h2 class="headline text-black"> WELCOME <span class="hidden-xs" th:utext="${user.name}"></span>
                     </h2>
                     <!-- /.error-content -->
                 </div>
@@ -290,9 +293,9 @@
                     <div class="box box-widget widget-user">
                         <!-- Add the bg color to the header using any of the bg-* classes -->
                         <div class="widget-user-header bg-purple-active">
-                            <h3 class="widget-user-username"><span class="hidden-xs" th:utext="${auth.name}"></span>
+                            <h3 class="widget-user-username"><span class="hidden-xs" th:utext="${user.name}"></span>
                             </h3>
-                            <h5 class="widget-user-desc"><span class="hidden-xs" th:utext="${auth.role.role}"></span>
+                            <h5 class="widget-user-desc"><span class="hidden-xs" th:utext="${user.role}"></span>
                             </h5>
                         </div>
                         <div class="widget-user-image">
@@ -308,8 +311,10 @@
                                 <!-- /.col -->
                                 <div class="col-sm-4 border-right">
                                     <div class="description-block">
-                                        <h5 class="description-header"><span class="hidden-xs"
-                                                                             th:utext="${userTaskSize}"></span></h5>
+                                        <!--TODO: to be implemented-->
+                                        <!--<h5 class="description-header"><span class="hidden-xs"
+                                                                             th:utext="${userTaskSize}"></span>
+                                                                             </h5>-->
                                         <span class="description-text">TASKS</span>
                                     </div>
                                     <!-- /.description-block -->

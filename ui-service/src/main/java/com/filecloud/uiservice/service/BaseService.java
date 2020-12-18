@@ -3,16 +3,14 @@ package com.filecloud.uiservice.service;
 
 
 import com.filecloud.uiservice.exception.*;
+import com.filecloud.uiservice.response.Response;
 import com.filecloud.uiservice.response.Response.Status;
+import com.filecloud.uiservice.response.Result;
 
 public class BaseService {
 
     public static void error() {
         throw new ResponseException();
-    }
-
-    public static void error(Throwable ex) {
-        throw new WrappedException(ex);
     }
 
     public static void error(String message) {
@@ -25,14 +23,6 @@ public class BaseService {
 
     public static void error(Status status, String message) {
         throw new ResponseException(status, message);
-    }
-
-    public static void error(int statusCode) {
-        throw new HttpResponseException(statusCode);
-    }
-
-    public static void error(int statusCode, String message) {
-        throw new HttpResponseException(statusCode, message);
     }
 
     public static void notFound() {
@@ -51,14 +41,6 @@ public class BaseService {
         throw new InvalidInputException(message);
     }
 
-    public static void badRequest() {
-        throw new BadRequestException();
-    }
-
-    public static void badRequest(String message) {
-        throw new BadRequestException(message);
-    }
-
     public static void invalidAccess() {
         throw new InvalidAccessException();
     }
@@ -66,4 +48,14 @@ public class BaseService {
     public static void invalidAccess(String message) {
         throw new InvalidAccessException(message);
     }
+
+    public static void sessionExpired() {
+        throw new SessionExpiredException();
+    }
+
+    public static void checkResult(Result<?> result) {
+        if (!(result.isSuccess() && result.getStatusCode() == Response.Status.ALL_OK.getStatusCode()))
+            error(result.getMessage());
+    }
+
 }

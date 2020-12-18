@@ -7,18 +7,9 @@ import org.springframework.util.Base64Utils;
 
 public class AuthUtil {
 
-    private static Boolean securityEnabled = null;
-
     private static String clientId = null;
 
     private static String clientSecret = null;
-
-    public static boolean isSecurityEnabled() {
-        if (securityEnabled == null)
-            securityEnabled = Util.getConfigBoolean("ui-service.security.enabled");
-
-        return securityEnabled;
-    }
 
     public static String getClientId() {
         if (clientId == null)

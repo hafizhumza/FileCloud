@@ -14,4 +14,5 @@ public class InvalidAccessException extends ResponseException {
     public InvalidAccessException(String message) {
         super(Status.INVALID_ACCESS, message);
     }
+
 }

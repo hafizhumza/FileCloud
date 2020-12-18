@@ -12,8 +12,6 @@ public class UiServiceProperties {
 
     String tempDir;
 
-    boolean devMode;
-
     public String getTempDir() {
         return tempDir;
     }
@@ -32,14 +30,6 @@ public class UiServiceProperties {
 
     public void setSecurity(SecurityProperties security) {
         this.security = security;
-    }
-
-    public boolean isDevMode() {
-        return devMode;
-    }
-
-    public void setDevMode(boolean devMode) {
-        this.devMode = devMode;
     }
 
 }
