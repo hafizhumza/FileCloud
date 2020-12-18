@@ -1,6 +1,6 @@
 package com.filecloud.uiservice.service;
 
-import com.filecloud.uiservice.client.endpoint.GatewayServerClient;
+import com.filecloud.uiservice.client.endpoint.AuthServerClient;
 import com.filecloud.uiservice.client.response.LoginDto;
 import com.filecloud.uiservice.client.response.UserDto;
 import com.filecloud.uiservice.dto.mvcmodel.LoginModel;
@@ -18,17 +18,17 @@ public class UserService extends BaseService {
 
     private final UiServiceProperties UiServiceProperties;
 
-    private final GatewayServerClient gatewayServerClient;
+    private final AuthServerClient authServerClient;
 
     @Autowired
-    public UserService(UiServiceProperties uiServiceProperties, GatewayServerClient gatewayServerClient) {
+    public UserService(UiServiceProperties uiServiceProperties, AuthServerClient authServerClient) {
         this.UiServiceProperties = uiServiceProperties;
-        this.gatewayServerClient = gatewayServerClient;
+        this.authServerClient = authServerClient;
     }
 
     public UserSession login(LoginModel model) {
-        LoginDto response = gatewayServerClient.login(AuthUtil.getClientBasicAuthHeader(), RequestUtil.getLoginRequest(model));
-        Result<UserDto> result = gatewayServerClient.userinfo(AuthUtil.getBearerToken(response.getAccess_token()));
+        LoginDto response = authServerClient.login(AuthUtil.getClientBasicAuthHeader(), RequestUtil.getLoginRequest(model));
+        Result<UserDto> result = authServerClient.userinfo(AuthUtil.getBearerToken(response.getAccess_token()));
         checkResult(result);
 
         UserSession session = new UserSession();

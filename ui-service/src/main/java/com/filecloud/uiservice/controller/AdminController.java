@@ -33,10 +33,4 @@ public class AdminController extends BaseController {
         return "home";
     }
 
-    private UserSession getVerifiedAdminUser(HttpSession session) {
-        UserSession currentUser = getCurrentUser(session);
-        shouldAdmin(currentUser);
-        return currentUser;
-    }
-
 }

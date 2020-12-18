@@ -31,6 +31,15 @@ public class BaseController {
         return userSession;
     }
 
+    public static UserSession getVerifiedAdminUser(HttpSession session) {
+        UserSession user = getCurrentUser(session);
+
+        if (!isAdmin(user))
+            BaseService.invalidAccess();
+
+        return user;
+    }
+
     public static boolean isAdmin(UserSession session) {
         if (session == null)
             BaseService.sessionExpired();
@@ -38,14 +47,13 @@ public class BaseController {
         return session.getRole().equals(ConstUtil.ROLE_ADMIN_WITHOUT_PREFIX);
     }
 
-    public static void shouldAdmin(UserSession session) {
-        if (!isAdmin(session))
-            BaseService.invalidAccess();
-    }
+    public static UserSession getVerifiedUser(HttpSession session) {
+        UserSession user = getCurrentUser(session);
 
-    public static void shouldUser(UserSession session) {
-        if (isAdmin(session))
+        if (isAdmin(user))
             BaseService.invalidAccess();
+
+        return user;
     }
 
     public static void persistSession(HttpServletRequest request, UserSession userSession) {

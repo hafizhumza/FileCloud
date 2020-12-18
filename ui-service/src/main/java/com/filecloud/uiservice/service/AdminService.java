@@ -1,6 +1,6 @@
 package com.filecloud.uiservice.service;
 
-import com.filecloud.uiservice.client.endpoint.GatewayServerClient;
+import com.filecloud.uiservice.client.endpoint.AdminServiceClient;
 import com.filecloud.uiservice.client.response.SingleFieldDto;
 import com.filecloud.uiservice.properties.UiServiceProperties;
 import com.filecloud.uiservice.response.Result;
@@ -12,12 +12,12 @@ public class AdminService extends BaseService {
 
     private final UiServiceProperties uiServiceProperties;
 
-    private final GatewayServerClient gatewayServerClient;
+    private final AdminServiceClient adminServiceClient;
 
     @Autowired
-    public AdminService(UiServiceProperties uiServiceProperties, GatewayServerClient gatewayServerClient) {
+    public AdminService(UiServiceProperties uiServiceProperties, AdminServiceClient adminServiceClient) {
         this.uiServiceProperties = uiServiceProperties;
-        this.gatewayServerClient = gatewayServerClient;
+        this.adminServiceClient = adminServiceClient;
     }
 
     public void listUsers() {
@@ -41,19 +41,19 @@ public class AdminService extends BaseService {
     }
 
     public String activeUserCount(String bearerToken) {
-        Result<SingleFieldDto> result = gatewayServerClient.activeUserCount(bearerToken);
+        Result<SingleFieldDto> result = adminServiceClient.activeUserCount(bearerToken);
         checkResult(result);
         return result.getData().getResponse().toString();
     }
 
     public String inActiveUserCount(String bearerToken) {
-        Result<SingleFieldDto> result = gatewayServerClient.inActiveUserCount(bearerToken);
+        Result<SingleFieldDto> result = adminServiceClient.inActiveUserCount(bearerToken);
         checkResult(result);
         return result.getData().getResponse().toString();
     }
 
     public String allUsersCount(String bearerToken) {
-        Result<SingleFieldDto> result = gatewayServerClient.allUsersCount(bearerToken);
+        Result<SingleFieldDto> result = adminServiceClient.allUsersCount(bearerToken);
         checkResult(result);
         return result.getData().getResponse().toString();
     }

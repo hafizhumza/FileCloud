@@ -62,10 +62,4 @@ public class UserController extends BaseController {
         return "home";
     }
 
-    private UserSession getVerifiedUser(HttpSession session) {
-        UserSession currentUser = getCurrentUser(session);
-        shouldUser(currentUser);
-        return currentUser;
-    }
-
 }
