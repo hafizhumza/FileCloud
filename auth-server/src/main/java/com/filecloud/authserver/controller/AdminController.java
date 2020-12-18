@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.filecloud.authserver.model.dto.request.SingleIdRequestDto;
-import com.filecloud.authserver.response.Result;
 import com.filecloud.authserver.response.Response.Status;
+import com.filecloud.authserver.response.Result;
 import com.filecloud.authserver.security.role.Admin;
 import com.filecloud.authserver.service.UserService;
 
@@ -52,5 +52,20 @@ public class AdminController extends BaseController {
 	public Result<?> deleteUser(@RequestBody SingleIdRequestDto dto) {
 		userService.deleteUser(dto);
 		return sendSuccessResponse(Status.ALL_OK, "User deleted successfully!");
+	}
+
+	@GetMapping("/active-users-count")
+	public Result<?> activeUserCount() {
+		return sendSuccessResponse(Status.ALL_OK, userService.getActiveUserCount());
+	}
+
+	@GetMapping("/inactive-users-count")
+	public Result<?> inActiveUserCount() {
+		return sendSuccessResponse(Status.ALL_OK, userService.getInActiveUserCount());
+	}
+
+	@GetMapping("/all-users-count")
+	public Result<?> allUsersCount() {
+		return sendSuccessResponse(Status.ALL_OK, userService.getAllUsersCount());
 	}
 }

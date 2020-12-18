@@ -16,6 +16,7 @@ import com.filecloud.authserver.model.db.Role;
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
 import com.filecloud.authserver.model.dto.request.SingleIdRequestDto;
 import com.filecloud.authserver.model.dto.response.ResponseUserDto;
+import com.filecloud.authserver.model.dto.response.SingleFieldResponse;
 import com.filecloud.authserver.repository.UserRepository;
 import com.filecloud.authserver.security.dto.AuthUserDetail;
 import com.filecloud.authserver.security.util.AuthUtil;
@@ -132,5 +133,17 @@ public class UserService extends BaseService {
 
 	private AuthUser getUserOrElseThrowException(long id) {
 		return userRepository.findById(id).orElseThrow(() -> new RecordNotFoundException("User not found"));
+	}
+
+	public SingleFieldResponse getActiveUserCount() {
+		return new SingleFieldResponse(userRepository.countByAccountNonLocked(true));
+	}
+
+	public SingleFieldResponse getInActiveUserCount() {
+		return new SingleFieldResponse(userRepository.countByAccountNonLocked(false));
+	}
+
+	public SingleFieldResponse getAllUsersCount() {
+		return new SingleFieldResponse(userRepository.count());
 	}
 }

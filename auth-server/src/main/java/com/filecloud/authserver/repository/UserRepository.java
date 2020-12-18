@@ -14,4 +14,6 @@ public interface UserRepository extends JpaRepository<AuthUser, Long> {
 
 	List<AuthUser> findByAccountNonLocked(boolean accountNonLocked);
 
+	Long countByAccountNonLocked(boolean accountNonLocked);
+
 }
