@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,12 +26,20 @@ public class AdminController extends BaseController {
 
     @GetMapping("home")
     public String home(HttpServletRequest request, HttpSession session, Model model) {
-        UserSession currentUser = getVerifiedAdminUser(session);
+        UserSession currentUser = verifyAdmin(session);
         model.addAttribute(UiConst.KEY_USER, currentUser);
         model.addAttribute(UiConst.KEY_ACTIVE_USERS_COUNT, adminService.activeUserCount(getBearerToken(currentUser)));
         model.addAttribute(UiConst.KEY_IN_ACTIVE_USERS_COUNT, adminService.inActiveUserCount(getBearerToken(currentUser)));
         model.addAttribute(UiConst.KEY_ALL_USERS, adminService.allUsersCount(getBearerToken(currentUser)));
-        return "home";
+        return "admin/home";
+    }
+
+    @GetMapping("users")
+    public String users(@RequestParam String mode, HttpServletRequest request, HttpSession session, Model model) {
+        UserSession currentUser = verifyAdmin(session);
+        model.addAttribute(UiConst.KEY_USERS, adminService.listUsers(currentUser.getAccessToken(), mode));
+        model.addAttribute(UiConst.KEY_USER, currentUser);
+        return "admin/users";
     }
 
 }

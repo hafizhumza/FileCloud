@@ -60,11 +60,4 @@ public class Util {
         return TimeUnit.MILLISECONDS.convert(days, TimeUnit.DAYS);
     }
 
-    public static String removeRolePrefix(String role) {
-        if (isValidString(role))
-            return role.substring(role.indexOf("_") + 1).toUpperCase(); // Remove ROLE_ prefix
-
-        return null;
-    }
-
 }

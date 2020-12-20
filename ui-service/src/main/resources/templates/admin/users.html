@@ -126,27 +126,13 @@
             </span>
                     </a>
                 </li>
-                <li th:if="${user.role != 'ADMIN'}" class="treeview">
-                    <a th:href="@{/myprofile/mytasks(id=${user.id})}">
-                        <i class="fa fa-file-text text-green"></i> <span>My Tasks</span>
-                        <span class="pull-right-container">
-            </span>
-                    </a>
-                </li>
-                <li th:if="${user.role != 'ADMIN'}" class="treeview">
-                    <a th:href="@{/myprofile/inf}">
-                        <i class="fa fa-gears text-blue"></i> <span>Profile Settings</span>
-                        <span class="pull-right-container">
-            </span>
-                    </a>
-                </li>
                 <li class="treeview">
                     <a th:href="@{/users/all}">
                         <i class="fa fa-users text-green"></i>
                         <span>All Users</span>
                     </a>
                 </li>
-                <li th:if="${user.role == 'ADMIN'}" class="treeview">
+                <li class="treeview">
                     <a href="#">
                         <i class="fa fa-odnoklassniki text-blue"></i>
                         <span>User Types</span>
@@ -161,7 +147,7 @@
                             All User Types</a></li>
                     </ul>
                 </li>
-                <li th:if="${user.role == 'ADMIN'}" class="treeview">
+                <li class="treeview">
                     <a href="#">
                         <i class="fa fa-files-o text-purple"></i>
                         <span>Tasks</span>
@@ -174,7 +160,7 @@
                         <li><a th:href="@{/admin/tasks/all}"><i class="fa fa-file-text"></i> All Tasks</a></li>
                     </ul>
                 </li>
-                <li th:if="${user.role == 'ADMIN'}" class="treeview">
+                <li class="treeview">
                     <a href="#">
                         <i class="fa fa-laptop text-red "></i>
                         <span>User-Task Management</span>

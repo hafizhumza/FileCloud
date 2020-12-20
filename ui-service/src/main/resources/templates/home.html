@@ -162,7 +162,7 @@
                     </a>
                 </li>
                 <li class="treeview">
-                    <a th:href="@{/users/all}">
+                    <a th:href="@{/admin/users(mode=all)}">
                         <i class="fa fa-users text-green"></i>
                         <span>All Users</span>
                     </a>
@@ -240,7 +240,7 @@
                             <div class="icon">
                                 <i class="ion ion-person"></i>
                             </div>
-                            <a th:href="@{/users/all}" class="small-box-footer">More info <i
+                            <a th:href="@{/admin/users(mode=active)}" class="small-box-footer">More info <i
                                     class="fa fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
@@ -249,14 +249,15 @@
                         <div class="small-box bg-green">
                             <div class="inner">
                                 <h3>
-                                    <span style="color: white; font-weight: bold" th:utext="${inActiveUsersCount}"></span>
+                                    <span style="color: white; font-weight: bold"
+                                          th:utext="${inActiveUsersCount}"></span>
                                 </h3>
                                 <p>Locked Users</p>
                             </div>
                             <div class="icon">
                                 <i class="ion ion-person"></i>
                             </div>
-                            <a th:href="@{/users/all}" class="small-box-footer">More info <i
+                            <a th:href="@{/admin/users(mode=locked)}" class="small-box-footer">More info <i
                                     class="fa fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
@@ -272,8 +273,9 @@
                             <div class="icon">
                                 <i class="icon ion-compose"></i>
                             </div>
-                            <a th:href="@{/admin/tasks/all}" class="small-box-footer">More info <i
-                                    class="fa fa-arrow-circle-right"></i></a>
+                            <a th:href="@{/admin/users(mode=all)}" class="small-box-footer">
+                                More info <i class="fa fa-arrow-circle-right"></i>
+                            </a>
                         </div>
                     </div>
                 </div>

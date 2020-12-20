@@ -62,4 +62,11 @@ public class UserController extends BaseController {
         return "home";
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpSession session, Model model) {
+        invalidateSession(request);
+        model.addAttribute(UiConst.KEY_LOGIN_MODEL, new LoginModel());
+        return "login";
+    }
+
 }

@@ -32,12 +32,7 @@ public class UserService extends BaseService {
         checkResult(result);
 
         UserSession session = new UserSession();
-
-        // Remove Role_ prefix
-        UserDto userDto = result.getData();
-        userDto.setUserRole(Util.removeRolePrefix(userDto.getUserRole()));
-
-        session.setData(response, userDto);
+        session.setData(response, result.getData());
         return session;
     }
 

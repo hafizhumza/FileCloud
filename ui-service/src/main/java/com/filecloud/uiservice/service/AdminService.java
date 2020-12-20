@@ -2,10 +2,14 @@ package com.filecloud.uiservice.service;
 
 import com.filecloud.uiservice.client.endpoint.AdminServiceClient;
 import com.filecloud.uiservice.client.response.SingleFieldDto;
+import com.filecloud.uiservice.client.response.UserDto;
 import com.filecloud.uiservice.properties.UiServiceProperties;
 import com.filecloud.uiservice.response.Result;
+import com.filecloud.uiservice.security.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AdminService extends BaseService {
@@ -20,8 +24,20 @@ public class AdminService extends BaseService {
         this.adminServiceClient = adminServiceClient;
     }
 
-    public void listUsers() {
+    public List<UserDto> listUsers(String token, String mode) {
+        Result<List<UserDto>> result;
+        String bearerToken = AuthUtil.getBearerToken(token);
 
+        if (mode.equalsIgnoreCase("active")) {
+            result = adminServiceClient.activeUsers(bearerToken);
+        } else if (mode.equalsIgnoreCase("locked")) {
+            result = adminServiceClient.inactiveusers(bearerToken);
+        } else {
+            result = adminServiceClient.listUsers(bearerToken);
+        }
+
+        checkResult(result);
+        return result.getData();
     }
 
     public void enableUser(long userId) {

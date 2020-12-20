@@ -1,7 +1,6 @@
 
 package com.filecloud.uiservice.controller;
 
-import com.filecloud.uiservice.constant.ConstUtil;
 import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.dto.session.UserSession;
 import com.filecloud.uiservice.security.util.AuthUtil;
@@ -31,7 +30,7 @@ public class BaseController {
         return userSession;
     }
 
-    public static UserSession getVerifiedAdminUser(HttpSession session) {
+    public static UserSession verifyAdmin(HttpSession session) {
         UserSession user = getCurrentUser(session);
 
         if (!isAdmin(user))
@@ -44,7 +43,7 @@ public class BaseController {
         if (session == null)
             BaseService.sessionExpired();
 
-        return session.getRole().equals(ConstUtil.ROLE_ADMIN_WITHOUT_PREFIX);
+        return session.getRole().equals(UiConst.ROLE_ADMIN);
     }
 
     public static UserSession getVerifiedUser(HttpSession session) {

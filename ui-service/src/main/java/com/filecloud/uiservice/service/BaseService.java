@@ -7,7 +7,11 @@ import com.filecloud.uiservice.response.Response;
 import com.filecloud.uiservice.response.Response.Status;
 import com.filecloud.uiservice.response.Result;
 
+import java.util.logging.Logger;
+
 public class BaseService {
+
+    private static final Logger logger = Logger.getLogger(BaseService.class.getSimpleName());
 
     public static void error() {
         throw new ResponseException();
@@ -55,7 +59,7 @@ public class BaseService {
 
     public static void checkResult(Result<?> result) {
         if (!(result.isSuccess() && result.getStatusCode() == Response.Status.ALL_OK.getStatusCode()))
-            error(result.getMessage());
+            logger.severe(String.format("Service failed with status code %s. Message: %s", result.getStatusCode(), result.getMessage()));
     }
 
 }
