@@ -16,6 +16,12 @@ public interface AuthServerClient {
 	@GetMapping("admin/list-users")
 	Result<?> listUsers(@RequestHeader("Authorization") String bearerToken);
 
+	@GetMapping("admin/list-active-users")
+	Result<?> activeUsers(@RequestHeader("Authorization") String bearerToken);
+
+	@GetMapping("admin/list-inactive-users")
+	Result<?> inactiveusers(@RequestHeader("Authorization") String bearerToken);
+
 	@PostMapping("admin/enable-user")
 	Result<?> enableUser(@RequestHeader("Authorization") String bearerToken, SingleIdRequestDto dto);
 
@@ -25,9 +31,6 @@ public interface AuthServerClient {
 	@PostMapping("admin/delete-user")
 	Result<?> deleteUser(@RequestHeader("Authorization") String bearerToken, SingleIdRequestDto dto);
 
-	@GetMapping("user/{userId}")
-	Result<?> getUser(@RequestHeader("Authorization") String bearerToken, @PathVariable long userId);
-
 	@GetMapping("admin/active-users-count")
 	Result<?> activeUserCount(@RequestHeader("Authorization") String bearerToken);
 
@@ -36,5 +39,8 @@ public interface AuthServerClient {
 
 	@GetMapping("admin/all-users-count")
 	Result<?> allUsersCount(@RequestHeader("Authorization") String bearerToken);
+
+	@GetMapping("user/{userId}")
+	Result<?> getUser(@RequestHeader("Authorization") String bearerToken, @PathVariable long userId);
 
 }

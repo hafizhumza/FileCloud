@@ -31,6 +31,16 @@ public class AdminController extends BaseController {
 		return adminService.listUsers();
 	}
 
+	@GetMapping("/list-active-users")
+	public Result<?> activeUsers() {
+		return adminService.activeUsers();
+	}
+
+	@GetMapping("/list-inactive-users")
+	public Result<?> inactiveusers() {
+		return adminService.inactiveusers();
+	}
+
 	@GetMapping("get-user/{userId}")
 	public Result<?> getUser(@PathVariable long userId) {
 		return adminService.getUser(userId);

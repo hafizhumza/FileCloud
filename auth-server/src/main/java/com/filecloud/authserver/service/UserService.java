@@ -58,6 +58,24 @@ public class UserService extends BaseService {
 		userRepository.save(authUser);
 	}
 
+	public List<ResponseUserDto> findAllUsers() {
+		List<AuthUser> dbUsers = userRepository.findAll();
+		return mapToResponseUserDto(dbUsers);
+	}
+
+	private List<ResponseUserDto> mapToResponseUserDto(List<AuthUser> dbUsers) {
+		if (!Util.isValidList(dbUsers))
+			return new ArrayList<ResponseUserDto>();
+
+		return dbUsers
+				.stream()
+				.map(u -> {
+					String role = Util.removeRolePrefix(u.getRoles().stream().findFirst().get().getName());
+					return new ResponseUserDto(u.getId(), u.getFullName(), u.getEmail(), role, u.isAccountNonLocked());
+				})
+				.collect(Collectors.toList());
+	}
+
 	public List<ResponseUserDto> findAllUsersExcludeAdmin() {
 		List<AuthUser> dbUsers = userRepository.findAll();
 
@@ -84,6 +102,16 @@ public class UserService extends BaseService {
 		AuthUser authUser = shouldNotAdmin(dto.getId());
 		oAuthAccessTokenService.deleteAccessAndRefreshToken(authUser.getEmail());
 		userRepository.delete(authUser);
+	}
+
+	public List<ResponseUserDto> findActiveUsers() {
+		List<AuthUser> dbUsers = userRepository.findByAccountNonLocked(true);
+		return mapToResponseUserDto(dbUsers);
+	}
+
+	public List<ResponseUserDto> findInActiveUsers() {
+		List<AuthUser> dbUsers = userRepository.findByAccountNonLocked(false);
+		return mapToResponseUserDto(dbUsers);
 	}
 
 	public List<ResponseUserDto> findAllActiveUsersExcludeAdmin() {

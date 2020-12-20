@@ -28,6 +28,14 @@ public class AdminService extends BaseService {
 		return authClient.listUsers(AuthUtil.getBearerToken());
 	}
 
+	public Result<?> activeUsers() {
+		return authClient.activeUsers(AuthUtil.getBearerToken());
+	}
+
+	public Result<?> inactiveusers() {
+		return authClient.inactiveusers(AuthUtil.getBearerToken());
+	}
+
 	public Result<?> getUser(long userId) {
 		return authClient.getUser(AuthUtil.getBearerToken(), userId);
 	}
