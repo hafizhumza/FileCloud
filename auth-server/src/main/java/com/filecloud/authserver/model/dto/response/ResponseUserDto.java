@@ -2,6 +2,7 @@ package com.filecloud.authserver.model.dto.response;
 
 import com.filecloud.authserver.model.db.AuthUser;
 import com.filecloud.authserver.security.dto.AuthUserDetail;
+import com.filecloud.authserver.util.Util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class ResponseUserDto {
 		id = user.getId();
 		fullName = user.getFullName();
 		email = user.getEmail();
-		userRole = user.getRoles().stream().findFirst().get().getName();
+		userRole = Util.removeRolePrefix(user.getRoles().stream().findFirst().get().getName());
 		accountNonLocked = user.isAccountNonLocked();
 	}
 
@@ -31,7 +32,7 @@ public class ResponseUserDto {
 		id = user.getUserId();
 		fullName = user.getFullName();
 		email = user.getUsername();
-		userRole = user.getAuthorities().stream().findFirst().get().getAuthority();
+		userRole = Util.removeRolePrefix(user.getAuthorities().stream().findFirst().get().getAuthority());
 		accountNonLocked = user.isAccountNonLocked();
 	}
 

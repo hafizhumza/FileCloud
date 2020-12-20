@@ -151,7 +151,7 @@ public class UserService extends BaseService {
 							return true;
 					return false;
 				})
-				.map(u -> new ResponseUserDto(u.getId(), u.getFullName(), u.getEmail(), ConstUtil.ROLE_USER, u.isAccountNonLocked()))
+				.map(u -> new ResponseUserDto(u.getId(), u.getFullName(), u.getEmail(), Util.removeRolePrefix(ConstUtil.ROLE_USER), u.isAccountNonLocked()))
 				.collect(Collectors.toList());
 	}
 
