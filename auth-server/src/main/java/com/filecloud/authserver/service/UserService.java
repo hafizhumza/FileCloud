@@ -85,6 +85,15 @@ public class UserService extends BaseService {
 		return new ArrayList<>();
 	}
 
+	public List<ResponseUserDto> findAllAdminUsers() {
+		List<AuthUser> dbUsers = userRepository.findAll();
+
+		if (Util.isValidList(dbUsers))
+			return getResponseUserDtoExcludeUser(dbUsers);
+
+		return new ArrayList<>();
+	}
+
 	public void enableUser(SingleIdRequestDto dto) {
 		AuthUser authUser = shouldNotAdmin(dto.getId());
 		authUser.setAccountNonLocked(true);
@@ -140,6 +149,19 @@ public class UserService extends BaseService {
 			invalidAccess("Cannot process on admin user");
 
 		return authUser;
+	}
+
+	private List<ResponseUserDto> getResponseUserDtoExcludeUser(List<AuthUser> dbUsers) {
+		return dbUsers
+				.stream()
+				.filter(u -> {
+					for (Role role : u.getRoles())
+						if (role.getName().equals(ConstUtil.ROLE_ADMIN))
+							return true;
+					return false;
+				})
+				.map(u -> new ResponseUserDto(u.getId(), u.getFullName(), u.getEmail(), Util.removeRolePrefix(ConstUtil.ROLE_ADMIN), u.isAccountNonLocked()))
+				.collect(Collectors.toList());
 	}
 
 	private List<ResponseUserDto> getResponseUserDtoExcludeAdmin(List<AuthUser> dbUsers) {

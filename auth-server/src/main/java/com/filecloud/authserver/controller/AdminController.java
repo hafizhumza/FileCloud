@@ -78,4 +78,15 @@ public class AdminController extends BaseController {
 	public Result<?> allUsersCount() {
 		return sendSuccessResponse(Status.ALL_OK, userService.getAllUsersCount());
 	}
+
+	@GetMapping("/list-role-admin")
+	public Result<?> listRoleAdmin() {
+		return sendSuccessResponse(Status.ALL_OK, userService.findAllAdminUsers());
+	}
+
+	@GetMapping("/list-role-user")
+	public Result<?> listRoleUser() {
+		return sendSuccessResponse(Status.ALL_OK, userService.findAllUsersExcludeAdmin());
+	}
+
 }

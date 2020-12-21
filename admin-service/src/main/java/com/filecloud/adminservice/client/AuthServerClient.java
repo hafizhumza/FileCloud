@@ -43,4 +43,10 @@ public interface AuthServerClient {
 	@GetMapping("user/{userId}")
 	Result<?> getUser(@RequestHeader("Authorization") String bearerToken, @PathVariable long userId);
 
+	@GetMapping("admin/list-role-admin")
+	Result<?> listRoleAdmin(@RequestHeader("Authorization") String bearerToken);
+
+	@GetMapping("admin/list-role-user")
+	Result<?> listRoleUser(@RequestHeader("Authorization") String bearerToken);
+
 }

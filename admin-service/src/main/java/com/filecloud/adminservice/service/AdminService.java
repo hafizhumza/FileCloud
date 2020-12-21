@@ -71,4 +71,12 @@ public class AdminService extends BaseService {
 		return authClient.allUsersCount(AuthUtil.getBearerToken());
 	}
 
+	public Result<?> listRoleAdmin() {
+		return authClient.listRoleAdmin(AuthUtil.getBearerToken());
+	}
+
+	public Result<?> listRoleUser() {
+		return authClient.listRoleUser(AuthUtil.getBearerToken());
+	}
+
 }

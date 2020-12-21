@@ -76,4 +76,14 @@ public class AdminController extends BaseController {
 		return adminService.getAllUsersCount();
 	}
 
+	@GetMapping("/list-role-admin")
+	public Result<?> listRoleAdmin() {
+		return adminService.listRoleAdmin();
+	}
+
+	@GetMapping("/list-role-user")
+	public Result<?> listRoleUser() {
+		return adminService.listRoleUser();
+	}
+
 }
