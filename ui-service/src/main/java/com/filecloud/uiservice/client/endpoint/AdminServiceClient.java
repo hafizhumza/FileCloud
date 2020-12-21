@@ -7,7 +7,6 @@ import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.response.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -20,23 +19,20 @@ public interface AdminServiceClient {
     @GetMapping("list-users")
     Result<List<UserDto>> listUsers(@RequestHeader("Authorization") String bearerToken);
 
-    @GetMapping("/list-active-users")
+    @GetMapping("list-active-users")
     Result<List<UserDto>> activeUsers(@RequestHeader("Authorization") String bearerToken);
 
-    @GetMapping("/list-inactive-users")
+    @GetMapping("list-inactive-users")
     Result<List<UserDto>> inactiveusers(@RequestHeader("Authorization") String bearerToken);
 
     @PostMapping("enable-user")
-    Result<?> enableUser(@RequestHeader("Authorization") String bearerToken, IdDto dto);
+    Result<String> enableUser(@RequestHeader("Authorization") String bearerToken, IdDto dto);
 
     @PostMapping("disable-user")
-    Result<?> disableUser(@RequestHeader("Authorization") String bearerToken, IdDto dto);
+    Result<String> disableUser(@RequestHeader("Authorization") String bearerToken, IdDto dto);
 
     @PostMapping("delete-user")
-    Result<?> deleteUser(@RequestHeader("Authorization") String bearerToken, IdDto dto);
-
-    @GetMapping("user/{userId}")
-    Result<?> getUser(@RequestHeader("Authorization") String bearerToken, @PathVariable long userId);
+    Result<String> deleteUser(@RequestHeader("Authorization") String bearerToken, IdDto dto);
 
     @GetMapping("active-users-count")
     Result<SingleFieldDto> activeUserCount(@RequestHeader("Authorization") String bearerToken);
@@ -46,5 +42,11 @@ public interface AdminServiceClient {
 
     @GetMapping("all-users-count")
     Result<SingleFieldDto> allUsersCount(@RequestHeader("Authorization") String bearerToken);
+
+    @GetMapping("list-role-admin")
+    Result<List<UserDto>> listRoleAdmin(@RequestHeader("Authorization") String bearerToken);
+
+    @GetMapping("list-role-user")
+    Result<List<UserDto>> listRoleUser(@RequestHeader("Authorization") String bearerToken);
 
 }

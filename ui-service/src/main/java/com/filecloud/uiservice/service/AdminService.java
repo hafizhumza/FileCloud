@@ -1,9 +1,10 @@
 package com.filecloud.uiservice.service;
 
 import com.filecloud.uiservice.client.endpoint.AdminServiceClient;
+import com.filecloud.uiservice.client.endpoint.AuthServerClient;
+import com.filecloud.uiservice.client.request.IdDto;
 import com.filecloud.uiservice.client.response.SingleFieldDto;
 import com.filecloud.uiservice.client.response.UserDto;
-import com.filecloud.uiservice.properties.UiServiceProperties;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.security.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,46 +15,58 @@ import java.util.List;
 @Service
 public class AdminService extends BaseService {
 
-    private final UiServiceProperties uiServiceProperties;
+    private final AuthServerClient authServerClient;
 
     private final AdminServiceClient adminServiceClient;
 
     @Autowired
-    public AdminService(UiServiceProperties uiServiceProperties, AdminServiceClient adminServiceClient) {
-        this.uiServiceProperties = uiServiceProperties;
+    public AdminService(AdminServiceClient adminServiceClient, AuthServerClient authServerClient) {
         this.adminServiceClient = adminServiceClient;
+        this.authServerClient = authServerClient;
     }
 
     public List<UserDto> listUsers(String token, String mode) {
         Result<List<UserDto>> result;
         String bearerToken = AuthUtil.getBearerToken(token);
 
-        if (mode.equalsIgnoreCase("active")) {
+        if (mode.equalsIgnoreCase("active"))
             result = adminServiceClient.activeUsers(bearerToken);
-        } else if (mode.equalsIgnoreCase("locked")) {
+        else if (mode.equalsIgnoreCase("locked"))
             result = adminServiceClient.inactiveusers(bearerToken);
-        } else {
+        else if (mode.equalsIgnoreCase("admin"))
+            result = adminServiceClient.listRoleAdmin(bearerToken);
+        else if (mode.equalsIgnoreCase("user"))
+            result = adminServiceClient.listRoleUser(bearerToken);
+        else
             result = adminServiceClient.listUsers(bearerToken);
-        }
 
         checkResult(result);
         return result.getData();
     }
 
-    public void enableUser(long userId) {
-
+    public String enableUser(String token, long userId) {
+        Result<String> result = adminServiceClient.enableUser(AuthUtil.getBearerToken(token), new IdDto(userId));
+        checkResult(result);
+        return result.getMessage();
     }
 
-    public void disableUser(long userId) {
-
+    public String disableUser(String token, long userId) {
+        Result<String> result = adminServiceClient.disableUser(AuthUtil.getBearerToken(token), new IdDto(userId));
+        checkResult(result);
+        return result.getMessage();
     }
 
-    public void deleteUser(long userId) {
-
+    public String deleteUser(String token, long userId) {
+        Result<String> result = adminServiceClient.deleteUser(AuthUtil.getBearerToken(token), new IdDto(userId));
+        checkResult(result);
+        return result.getMessage();
     }
 
-    public void getUser(long userId) {
-
+    public UserDto getUser(String token, long userId) {
+        String bearerToken = AuthUtil.getBearerToken(token);
+        Result<UserDto> result = authServerClient.getUser(bearerToken, userId);
+        checkResult(result);
+        return result.getData();
     }
 
     public String activeUserCount(String bearerToken) {

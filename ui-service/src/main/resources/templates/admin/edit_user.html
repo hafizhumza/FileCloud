@@ -1,65 +1,45 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org" lang="en">
-
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>HOME</title>
+    <title>USERS</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-
-    <!--  Bootstrap 3.3.6
-    <link rel="stylesheet" href="/css/bootstrap.min.css">-->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-
+    <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-    <!--<link rel="stylesheet" th:href="@{/css/font-awesome.min.css}"/>-->
-
+    <!-- Font Awesome -->
+    <!--<link rel="stylesheet" th:href="@{/css/font-awesome.min.css}">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
     <!-- Ionicons -->
+    <!--<link rel="stylesheet" th:href="@{/css/ionicons.min.css}">-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
-
-    <!--<link rel="stylesheet" th:href="@{/css/ionicons.min.css}"/>-->
-
+    <!-- DataTables -->
+    <link rel="stylesheet" th:href="@{/css/dataTables.bootstrap.css}">
     <!-- Theme style -->
-    <!-- <link rel="stylesheet" href="/css/AdminLTE.min.css"> -->
-    <link rel="stylesheet" th:href="@{/css/AdminLTE.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/AdminLTE.min.css}">
 
-    <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" th:href="@{/css/_all-skins.min.css}">
+    <link th:href="@{/css/bootselect.css}" rel="stylesheet">
 
-    <!-- <link rel="stylesheet" href="/css/_all-skins.min.css">
-    <link rel="stylesheet" href="/css/datepicker3.css"> -->
-
-    <link rel="stylesheet" th:href="@{/css/_all-skins.min.css}"/>
-    <link rel="stylesheet" th:href="@{/css/datepicker3.css}"/>
-
-    <!-- Theme style -->
-    <!-- iCheck -->
-    <!-- <link rel="stylesheet" href="/css/blue.css"> -->
-    <link rel="stylesheet" th:href="@{/css/blue.css}"/>
-
-    <!-- Morris chart -->
-    <!-- <link rel="stylesheet" href="/css/morris.css"> -->
-    <link rel="stylesheet" th:href="@{/css/morris.css}"/>
-
-    <!-- bootstrap wysihtml5 - text editor -->
-    <!-- <link rel="stylesheet" href="/css/bootstrap3-wysihtml5.min.css"> -->
-    <link rel="stylesheet" th:href="@{/css/bootstrap3-wysihtml5.min.css}"/>
-
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
     <![endif]-->
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
-
+    <!-- Content Wrapper. Contains page content -->
     <header class="main-header">
         <!-- Logo -->
         <a th:href="@{/home}" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>MSB</b>SC</span>
+            <span class="logo-mini"><b>M</b>RT</span>
             <!-- logo for regular state and mobile devices -->
             <span class="logo-lg" th:utext="${user.role}"> </span>
 
@@ -92,7 +72,6 @@
                                     <small><span class="hidden-xs" th:utext="${user.email}"></span></small>
                                 </p>
                             </li>
-                            <!-- Menu Body -->
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
@@ -148,7 +127,7 @@
                     </a>
                 </li>
                 <li class="treeview">
-                    <a th:href="@{/admin/users(mode=all)}">
+                    <a th:href="@{/users/all}">
                         <i class="fa fa-users text-green"></i>
                         <span>All Users</span>
                     </a>
@@ -203,134 +182,85 @@
         </section>
         <!-- /.sidebar -->
     </aside>
-
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
-                Home Page
-            </h1>
         </section>
 
         <!-- Main content -->
         <section class="content">
             <div>
-                <div class="row">
-                    <div class=" col-lg-offset-1   col-lg-3 col-xs-6">
-                        <!-- small box -->
-                        <div class="small-box bg-yellow">
-                            <div class="inner">
-                                <h3>
-                                    <span style="color: white; font-weight: bold" th:utext="${activeUsersCount}"></span>
-                                </h3>
+                <div class="container">
+                    <div class="row">
+                        <form autocomplete="off" action="#" th:action="@{/admin/update-user}"
+                              th:object="${processUser}" method="post" class="form-horizontal"
+                              role="form">
+                            <fieldset>
+                                <!-- Form Name -->
+                                <legend>Edit User</legend>
+                                <!-- Text input-->
+                                <input type="hidden" name="id" th:field="${processUser.id}"/>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="fullName">User Name
+                                    </label>
+                                    <div class="col-md-4">
+                                        <input type="text" id="fullName" th:field="${processUser.fullName}"
+                                               placeholder="Name" class="form-control" disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="email">User Email</label>
+                                    <div class="col-md-4">
+                                        <input type="text" id="email" th:field="${processUser.email}"
+                                               placeholder="Name" class="form-control" disabled/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="accountNonLocked">Account Status</label>
+                                    <div class="col-md-4">
+                                        <select
+                                                id="accountNonLocked"
+                                                th:disabled="${processUser.userRole == 'ADMIN'}"
+                                                class="form-control"
+                                                data-live-search="true"
+                                                name="accountNonLocked"
+                                                th:field="${processUser.accountNonLocked}">
+                                            <option th:value="true" th:text="Active">Active</option>
+                                            <option th:value="false" th:text="Locked">Locked</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                                <p>Active Users</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person"></i>
-                            </div>
-                            <a th:href="@{/admin/users(mode=active)}" class="small-box-footer">More info <i
-                                    class="fa fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-xs-6">
-                        <!-- small box -->
-                        <div class="small-box bg-green">
-                            <div class="inner">
-                                <h3>
-                                    <span style="color: white; font-weight: bold"
-                                          th:utext="${inActiveUsersCount}"></span>
-                                </h3>
-                                <p>Locked Users</p>
-                            </div>
-                            <div class="icon">
-                                <i class="ion ion-person"></i>
-                            </div>
-                            <a th:href="@{/admin/users(mode=locked)}" class="small-box-footer">More info <i
-                                    class="fa fa-arrow-circle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-xs-6">
-                        <!-- small box -->
-                        <div class="small-box bg-blue">
-                            <div class="inner">
-                                <h3>
-                                    <span style="color: white; font-weight: bold" th:utext="${allUsers}"></span>
-                                </h3>
-                                <p>All Users</p>
-                            </div>
-                            <div class="icon">
-                                <i class="icon ion-compose"></i>
-                            </div>
-                            <a th:href="@{/admin/users(mode=all)}" class="small-box-footer">
-                                More info <i class="fa fa-arrow-circle-right"></i>
-                            </a>
-                        </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">User Type</label>
+                                    <div class="col-md-4 text-left">
+                                        <input type="text" id="userRole" th:field="${processUser.userRole}"
+                                               placeholder="Name" class="form-control" disabled/>
+                                    </div>
+                                </div>
+
+                                <!-- Button (Double) -->
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="submitButton"></label>
+                                    <div class="col-md-8">
+                                        <button type="submit" id="submitButton" name="submitButton"
+                                                class="btn btn-success">Save
+                                        </button>
+                                        <button type="button" class="btn btn-inverse" onclick="window.history.back()">
+                                            Cancel
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </fieldset>
+                        </form>
                     </div>
                 </div>
             </div>
-
-            <div class="row">
-                <div class="col-lg-offset-3 col-lg-4 col-xs-6">
-                    <h2 class="headline text-black"> WELCOME <span class="hidden-xs" th:utext="${user.name}"></span>
-                    </h2>
-                    <!-- /.error-content -->
-                </div>
-            </div>
-            <div class="row">
-
-                <div class="col-lg-offset-3 col-md-4">
-                    <!-- Widget: user widget style 1 -->
-                    <div class="box box-widget widget-user">
-                        <!-- Add the bg color to the header using any of the bg-* classes -->
-                        <div class="widget-user-header bg-purple-active">
-                            <h3 class="widget-user-username"><span class="hidden-xs" th:utext="${user.name}"></span>
-                            </h3>
-                            <h5 class="widget-user-desc"><span class="hidden-xs" th:utext="${user.role}"></span>
-                            </h5>
-                        </div>
-                        <div class="widget-user-image">
-                            <img class="img-circle" src="/images/avatar5.png" alt="User Avatar">
-                        </div>
-                        <div class="box-footer">
-                            <div class="row">
-                                <div class="col-sm-4 border-right">
-                                    <div class="description-block">
-                                    </div>
-                                    <!-- /.description-block -->
-                                </div>
-                                <!-- /.col -->
-                                <div class="col-sm-4 border-right">
-                                    <div class="description-block">
-                                        <!--TODO: to be implemented-->
-                                        <!--<h5 class="description-header"><span class="hidden-xs"
-                                                                             th:utext="${userTaskSize}"></span>
-                                                                             </h5>-->
-                                        <span class="description-text">TASKS</span>
-                                    </div>
-                                    <!-- /.description-block -->
-                                </div>
-                                <!-- /.col -->
-                                <div class="col-sm-4">
-                                    <div class="description-block">
-                                    </div>
-                                    <!-- /.description-block -->
-                                </div>
-                                <!-- /.col -->
-                            </div>
-                            <!-- /.row -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- /.error-page -->
         </section>
-        <!-- /.content -->
     </div>
-
-    <div class="control-sidebar-bg"></div>
 </div>
 <!-- ./wrapper -->
 
@@ -338,38 +268,27 @@
 <script th:src="@{/js/jquery-2.2.3.min.js}"></script>
 <!-- Bootstrap 3.3.6 -->
 <script th:src="@{/js/bootstrap.min.js}"></script>
+<!-- DataTables -->
 
+<!-- SlimScroll -->
+<script th:src="@{/js/jquery.slimscroll.min.js}"></script>
 <!-- FastClick -->
 <script th:src="@{/js/fastclick.js}"></script>
-
 <!-- AdminLTE App -->
 <script th:src="@{/js/app.min.js}"></script>
-
 <!-- AdminLTE for demo purposes -->
 <script th:src="@{/js/demo.js}"></script>
-
-<!-- jQuery UI 1.11.4 -->
-<script th:src="@{/js/jquery-ui.min.js}"></script>
-
-<!-- Slimscroll -->
-<script th:src="@{/js/jquery.slimscroll.min.js}"></script>
-
-<!-- Morris.js charts -->
-<script th:src="@{/js/raphael-min.js}"></script>
-<script th:src="@{/js/morris.min.js}"></script>
-
-<!-- Sparkline -->
-<script th:src="@{/js/jquery.sparkline.min.js}"></script>
-<!-- jQuery Knob Chart -->
-
-<script th:src="@{/js/jquery.knob.js}"></script>
-
-<!-- Bootstrap WYSIHTML5 -->
-<script th:src="@{/js/bootstrap3-wysihtml5.all.min.js}"></script>
-,
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="@{/js/dashboard.js}"></script>
-<script src="@{/js/raphael-min.js}"></script>
-<script src="@{/js/moment.min.js}"></script>
+<!-- page script -->
+<script th:src="@{/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+<script src="@{/js/bootstrap-select.min.js}"></script>
+<script>
+    $(function () {
+        $('#example1').DataTable({
+            "ordering": false
+        });
+        $('#table2').DataTable();
+    });
+</script>
 </body>
 </html>

@@ -8,10 +8,12 @@ public class UiConst {
     public static final String KEY_LOGIN_MODEL = "loginModel";
     public static final String KEY_ERROR = "error";
     public static final String KEY_USER = "user";
+    public static final String KEY_PROCESS_USER = "processUser";
     public static final String KEY_USERS = "users";
     public static final String KEY_ACTIVE_USERS_COUNT = "activeUsersCount";
     public static final String KEY_IN_ACTIVE_USERS_COUNT = "inActiveUsersCount";
     public static final String KEY_ALL_USERS = "allUsers";
+    public static final String KEY_RESULT_MESSAGE = "ResultMessage";
     public static final String KEY_SESSION = "session";
 
     /**
