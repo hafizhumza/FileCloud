@@ -27,8 +27,18 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/login")
-    public String login(HttpServletRequest request, Model model) {
-        invalidateSession(request);
+    public String login(HttpSession session, Model model) {
+        if (session != null) {
+            UserSession userSession = (UserSession) session.getAttribute(UiConst.SESSION_CURRENT_USER);
+
+            if (userSession != null) {
+                if (isAdmin(userSession))
+                    return "redirect:/admin/home";
+                else
+                    return "redirect:/home";
+            }
+        }
+
         model.addAttribute(UiConst.KEY_LOGIN_MODEL, new LoginModel());
         return "login";
     }
@@ -64,10 +74,9 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest request, Model model) {
+    public String logout(HttpServletRequest request) {
         invalidateSession(request);
-        model.addAttribute(UiConst.KEY_LOGIN_MODEL, new LoginModel());
-        return "login";
+        return "redirect:/login";
     }
 
 }
