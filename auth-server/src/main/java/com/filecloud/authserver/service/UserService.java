@@ -10,13 +10,20 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.filecloud.authserver.constant.ConstUtil;
+import com.filecloud.authserver.exception.InvalidAccessException;
 import com.filecloud.authserver.exception.RecordNotFoundException;
 import com.filecloud.authserver.model.db.AuthUser;
+import com.filecloud.authserver.model.db.ForgotPassword;
 import com.filecloud.authserver.model.db.Role;
+import com.filecloud.authserver.model.dto.request.ChangePasswordDto;
+import com.filecloud.authserver.model.dto.request.EmailRequestDto;
+import com.filecloud.authserver.model.dto.request.ForgotPasswordDto;
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
 import com.filecloud.authserver.model.dto.request.SingleIdRequestDto;
+import com.filecloud.authserver.model.dto.response.ForgotPasswordVerifiedDto;
 import com.filecloud.authserver.model.dto.response.ResponseUserDto;
 import com.filecloud.authserver.model.dto.response.SingleFieldResponse;
+import com.filecloud.authserver.properties.AuthServerProperties;
 import com.filecloud.authserver.repository.UserRepository;
 import com.filecloud.authserver.security.dto.AuthUserDetail;
 import com.filecloud.authserver.security.util.AuthUtil;
@@ -30,16 +37,22 @@ public class UserService extends BaseService {
 
 	private final OAuthAccessTokenService oAuthAccessTokenService;
 
+	private final ForgotPasswordService forgotPasswordService;
+
 	private final UserRepository userRepository;
 
 	private final PasswordEncoder passwordEncoder;
 
+	private final AuthServerProperties authServerProperties;
+
 	@Autowired
-	public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder, OAuthAccessTokenService oAuthAccessTokenService) {
+	public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder, OAuthAccessTokenService oAuthAccessTokenService, ForgotPasswordService forgotPasswordService, AuthServerProperties authServerProperties) {
 		this.userRepository = userRepository;
 		this.roleService = roleService;
 		this.passwordEncoder = passwordEncoder;
 		this.oAuthAccessTokenService = oAuthAccessTokenService;
+		this.forgotPasswordService = forgotPasswordService;
+		this.authServerProperties = authServerProperties;
 	}
 
 	public void registerUser(RegisterUserDto userDto) {
@@ -195,5 +208,71 @@ public class UserService extends BaseService {
 
 	public SingleFieldResponse getAllUsersCount() {
 		return new SingleFieldResponse(userRepository.count());
+	}
+
+	private ForgotPassword getVerifiedForgotPassword(String token) {
+		ForgotPassword forgotPassword = forgotPasswordService.findByToken(token);
+
+		if (forgotPassword != null && forgotPassword.getAvailed())
+			invalidAccess("Link is expired");
+
+		long expiryDaysMillis = Util.getDaysMillis(authServerProperties.security().getForgotPasswordLinkExpiryDays());
+		long createDate = forgotPassword.getCreateDate();
+		long expiryDate = expiryDaysMillis + createDate;
+		long currentTimeMillis = System.currentTimeMillis();
+
+		if (currentTimeMillis > expiryDate)
+			invalidAccess("Link is expired");
+
+		return forgotPassword;
+	}
+
+	public ForgotPasswordVerifiedDto verifyForgotPasswordToken(String token) {
+		ForgotPassword forgotPassword = getVerifiedForgotPassword(token);
+		return new ForgotPasswordVerifiedDto(forgotPassword.getUserId(), forgotPassword.getToken());
+	}
+
+	public void changeForgotPassword(ForgotPasswordDto dto) {
+		ForgotPassword forgotPassword = this.getVerifiedForgotPassword(dto.getToken());
+
+		if (dto.getId() != forgotPassword.getId())
+			invalidAccess("Unauthorize user");
+
+		if (!dto.getPassword().equals(dto.getConfirmPassword()))
+			invalidInput("Passwords not match");
+
+		AuthUser user = userRepository.findById(dto.getId()).orElseThrow(RecordNotFoundException::new);
+		user.setPassword(passwordEncoder.encode(dto.getPassword()));
+		userRepository.save(user);
+		forgotPassword.setAvailed(true);
+		forgotPasswordService.save(forgotPassword);
+		AuthUtil.revokeCurrentToken();
+	}
+
+	public void changePassword(ChangePasswordDto dto) {
+		String email = AuthUtil.getPrincipal();
+		AuthUser user = userRepository.findByEmail(email).orElseThrow(RecordNotFoundException::new);
+
+		if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword()))
+			invalidAccess("Invalid current password");
+
+		if (!dto.getNewPassword().equals(dto.getConfirmPassword()))
+			invalidInput("Passwords not match");
+
+		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
+		userRepository.save(user);
+	}
+
+	public void forgotPassword(EmailRequestDto dto) {
+		AuthUser user = userRepository.findByEmail(dto.getEmail()).orElseThrow(InvalidAccessException::new);
+
+		ForgotPassword forgotPassword = new ForgotPassword();
+		forgotPassword.setAvailed(false);
+		forgotPassword.setUserId(user.getId());
+		forgotPassword.setToken(Util.getRandomUUID());
+
+		forgotPasswordService.save(forgotPassword);
+
+		// TODO: email path of forgot password
 	}
 }

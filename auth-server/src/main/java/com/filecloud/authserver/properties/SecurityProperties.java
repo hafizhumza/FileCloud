@@ -5,15 +5,7 @@ public class SecurityProperties {
 
 	private String[] ignoredPaths;
 
-	private String passwordEncodingAlgorithm;
-
-	public String getPasswordEncodingAlgorithm() {
-		return passwordEncodingAlgorithm;
-	}
-
-	public void setPasswordEncodingAlgorithm(String passwordEncodingAlgorithm) {
-		this.passwordEncodingAlgorithm = passwordEncodingAlgorithm;
-	}
+	private int forgotPasswordLinkExpiryDays;
 
 	public String[] getIgnoredPaths() {
 		return ignoredPaths;
@@ -22,4 +14,13 @@ public class SecurityProperties {
 	public void setIgnoredPaths(String[] ignoredPaths) {
 		this.ignoredPaths = ignoredPaths;
 	}
+
+	public int getForgotPasswordLinkExpiryDays() {
+		return forgotPasswordLinkExpiryDays;
+	}
+
+	public void setForgotPasswordLinkExpiryDays(int forgotPasswordLinkExpiryDays) {
+		this.forgotPasswordLinkExpiryDays = forgotPasswordLinkExpiryDays;
+	}
+
 }

@@ -2,6 +2,8 @@
 package com.filecloud.authserver.util;
 
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import com.filecloud.authserver.configuration.ConfigurationConstant;
 
@@ -30,5 +32,13 @@ public class Util {
 			return role.substring(role.indexOf("_") + 1).toUpperCase(); // Remove ROLE_ prefix
 
 		return null;
+	}
+
+	public static String getRandomUUID() {
+		return UUID.randomUUID().toString();
+	}
+
+	public static long getDaysMillis(long days) {
+		return TimeUnit.MILLISECONDS.convert(days, TimeUnit.DAYS);
 	}
 }
