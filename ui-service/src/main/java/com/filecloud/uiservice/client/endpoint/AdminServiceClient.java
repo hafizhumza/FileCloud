@@ -1,7 +1,7 @@
 package com.filecloud.uiservice.client.endpoint;
 
-import com.filecloud.uiservice.client.request.IdDto;
-import com.filecloud.uiservice.client.response.SingleFieldDto;
+import com.filecloud.uiservice.client.request.IdRequest;
+import com.filecloud.uiservice.client.response.SingleFieldResponse;
 import com.filecloud.uiservice.client.response.UserDto;
 import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.response.Result;
@@ -26,22 +26,22 @@ public interface AdminServiceClient {
     Result<List<UserDto>> inactiveusers(@RequestHeader("Authorization") String bearerToken);
 
     @PostMapping("enable-user")
-    Result<String> enableUser(@RequestHeader("Authorization") String bearerToken, IdDto dto);
+    Result<String> enableUser(@RequestHeader("Authorization") String bearerToken, IdRequest dto);
 
     @PostMapping("disable-user")
-    Result<String> disableUser(@RequestHeader("Authorization") String bearerToken, IdDto dto);
+    Result<String> disableUser(@RequestHeader("Authorization") String bearerToken, IdRequest dto);
 
     @PostMapping("delete-user")
-    Result<String> deleteUser(@RequestHeader("Authorization") String bearerToken, IdDto dto);
+    Result<String> deleteUser(@RequestHeader("Authorization") String bearerToken, IdRequest dto);
 
     @GetMapping("active-users-count")
-    Result<SingleFieldDto> activeUserCount(@RequestHeader("Authorization") String bearerToken);
+    Result<SingleFieldResponse> activeUserCount(@RequestHeader("Authorization") String bearerToken);
 
     @GetMapping("inactive-users-count")
-    Result<SingleFieldDto> inActiveUserCount(@RequestHeader("Authorization") String bearerToken);
+    Result<SingleFieldResponse> inActiveUserCount(@RequestHeader("Authorization") String bearerToken);
 
     @GetMapping("all-users-count")
-    Result<SingleFieldDto> allUsersCount(@RequestHeader("Authorization") String bearerToken);
+    Result<SingleFieldResponse> allUsersCount(@RequestHeader("Authorization") String bearerToken);
 
     @GetMapping("list-role-admin")
     Result<List<UserDto>> listRoleAdmin(@RequestHeader("Authorization") String bearerToken);

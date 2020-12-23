@@ -1,6 +1,6 @@
 package com.filecloud.uiservice.dto.session;
 
-import com.filecloud.uiservice.client.response.LoginDto;
+import com.filecloud.uiservice.client.response.LoginResponse;
 import com.filecloud.uiservice.client.response.UserDto;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public class UserSession implements Serializable {
     private String expiresIn;
     private String scope;
 
-    public void setData(LoginDto response, UserDto dto) {
+    public void setData(LoginResponse response, UserDto dto) {
         accessToken = response.getAccess_token();
         expiresIn = response.getExpires_in();
         refreshToken = response.getRefresh_token();

@@ -2,8 +2,8 @@ package com.filecloud.uiservice.service;
 
 import com.filecloud.uiservice.client.endpoint.AdminServiceClient;
 import com.filecloud.uiservice.client.endpoint.AuthServerClient;
-import com.filecloud.uiservice.client.request.IdDto;
-import com.filecloud.uiservice.client.response.SingleFieldDto;
+import com.filecloud.uiservice.client.request.IdRequest;
+import com.filecloud.uiservice.client.response.SingleFieldResponse;
 import com.filecloud.uiservice.client.response.UserDto;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.security.util.AuthUtil;
@@ -45,19 +45,19 @@ public class AdminService extends BaseService {
     }
 
     public String enableUser(String token, long userId) {
-        Result<String> result = adminServiceClient.enableUser(AuthUtil.getBearerToken(token), new IdDto(userId));
+        Result<String> result = adminServiceClient.enableUser(AuthUtil.getBearerToken(token), new IdRequest(userId));
         checkResult(result);
         return result.getMessage();
     }
 
     public String disableUser(String token, long userId) {
-        Result<String> result = adminServiceClient.disableUser(AuthUtil.getBearerToken(token), new IdDto(userId));
+        Result<String> result = adminServiceClient.disableUser(AuthUtil.getBearerToken(token), new IdRequest(userId));
         checkResult(result);
         return result.getMessage();
     }
 
     public String deleteUser(String token, long userId) {
-        Result<String> result = adminServiceClient.deleteUser(AuthUtil.getBearerToken(token), new IdDto(userId));
+        Result<String> result = adminServiceClient.deleteUser(AuthUtil.getBearerToken(token), new IdRequest(userId));
         checkResult(result);
         return result.getMessage();
     }
@@ -70,19 +70,19 @@ public class AdminService extends BaseService {
     }
 
     public String activeUserCount(String bearerToken) {
-        Result<SingleFieldDto> result = adminServiceClient.activeUserCount(bearerToken);
+        Result<SingleFieldResponse> result = adminServiceClient.activeUserCount(bearerToken);
         checkResult(result);
         return result.getData().getResponse().toString();
     }
 
     public String inActiveUserCount(String bearerToken) {
-        Result<SingleFieldDto> result = adminServiceClient.inActiveUserCount(bearerToken);
+        Result<SingleFieldResponse> result = adminServiceClient.inActiveUserCount(bearerToken);
         checkResult(result);
         return result.getData().getResponse().toString();
     }
 
     public String allUsersCount(String bearerToken) {
-        Result<SingleFieldDto> result = adminServiceClient.allUsersCount(bearerToken);
+        Result<SingleFieldResponse> result = adminServiceClient.allUsersCount(bearerToken);
         checkResult(result);
         return result.getData().getResponse().toString();
     }

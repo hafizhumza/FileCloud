@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class IdDto {
+public class IdRequest {
 
     @NotNull(message = "ID cannot be null")
     @Min(value = 1, message = "Invalid ID")
