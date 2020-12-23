@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.filecloud.authserver.model.dto.request.ChangePasswordDto;
 import com.filecloud.authserver.model.dto.request.EmailRequestDto;
-import com.filecloud.authserver.model.dto.request.ForgotPasswordDto;
+import com.filecloud.authserver.model.dto.request.ForgotPasswordRequestDto;
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
 import com.filecloud.authserver.response.Response.Status;
 import com.filecloud.authserver.response.Result;
@@ -39,10 +39,11 @@ public class UserController extends BaseController {
 		return sendSuccessResponse(Status.ALL_OK, "User registered successfully!");
 	}
 
+	@Transactional
 	@PostMapping("/forgot-password")
 	public Result<?> forgotPassword(@RequestBody @Valid EmailRequestDto dto) {
 		userService.forgotPassword(dto);
-		return sendSuccessResponse(Status.ALL_OK, "Please check your email address. A forgot password email has been sent to your given address");
+		return sendSuccessResponse(Status.ALL_OK, "Please check your email address to reset your password");
 	}
 
 	@PostMapping("/verify-forgot-password-token/{token}")
@@ -52,13 +53,14 @@ public class UserController extends BaseController {
 
 	@Transactional
 	@PostMapping("/change-forgot-password")
-	public Result<?> changeForgotPassword(@Valid ForgotPasswordDto dto) {
+	public Result<?> changeForgotPassword(@RequestBody @Valid ForgotPasswordRequestDto dto) {
 		userService.changeForgotPassword(dto);
 		return sendSuccessResponse(Status.ALL_OK, "Password changed successfully!");
 	}
 
+	@Transactional
 	@PostMapping("/change-password")
-	public Result<?> changePassword(@Valid ChangePasswordDto dto) {
+	public Result<?> changePassword(@RequestBody @Valid ChangePasswordDto dto) {
 		userService.changePassword(dto);
 		return sendSuccessResponse(Status.ALL_OK, "Password changed successfully!");
 	}

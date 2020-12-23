@@ -1,6 +1,6 @@
-package com.filecloud.emailservice.model.dto;
+package com.filecloud.authserver.client.dto;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
@@ -11,14 +11,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailSharedDocumentDto {
+public class ForgotPasswordEmailDto {
 
-	@NotBlank(message = "Email cannot be empty")
-	@NotNull(message = "Email cannot be null")
+	@Email(message = "Invalid email")
 	private String receiverEmail;
 
-	private String senderName;
+	private String name;
 
+	@NotNull(message = "URL cannot be null")
 	private String url;
 
 	private long expiryDays;

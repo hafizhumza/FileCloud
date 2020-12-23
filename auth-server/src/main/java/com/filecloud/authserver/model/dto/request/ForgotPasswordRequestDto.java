@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ForgotPasswordDto {
+public class ForgotPasswordRequestDto {
 
 	@Min(value = 1)
 	private long id;

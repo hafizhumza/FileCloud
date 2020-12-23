@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.filecloud.emailservice.model.db.Email;
-import com.filecloud.emailservice.model.dto.EmailSharedDocumentDto;
+import com.filecloud.emailservice.model.dto.ForgotPasswordEmailDto;
+import com.filecloud.emailservice.model.dto.SharedDocumentEmailDto;
 import com.filecloud.emailservice.repository.EmailRepository;
 import com.filecloud.emailservice.security.dto.UserSession;
 import com.filecloud.emailservice.security.util.AuthUtil;
@@ -27,7 +28,7 @@ public class EmailService extends BaseService {
 		this.emailUtilService = emailUtilService;
 	}
 
-	public void saveAndSend(EmailSharedDocumentDto dto) {
+	public void saveAndSend(SharedDocumentEmailDto dto) {
 		UserSession session = AuthUtil.getCurrentLoggedInUser();
 		boolean sent = false;
 
@@ -43,6 +44,23 @@ public class EmailService extends BaseService {
 		email.setSenderName(dto.getSenderName());
 		email.setSenderId(session.getUserId());
 		email.setDescription(String.format("Share document URL: %s. URL valid for %s days.", dto.getUrl(), dto.getExpiryDays()));
+		email.setWasSent(sent);
+
+		emailRepository.save(email);
+	}
+
+	public void saveAndSend(ForgotPasswordEmailDto dto) {
+		boolean sent = false;
+
+		try {
+			sent = emailUtilService.sendMail(dto).get();
+		} catch (MessagingException | InterruptedException | ExecutionException e) {
+			error(e);
+		}
+
+		Email email = new Email();
+		email.setReceiverEmail(dto.getReceiverEmail());
+		email.setDescription(String.format("Forgot password URL: %s. URL valid for %s days.", dto.getUrl(), dto.getExpiryDays()));
 		email.setWasSent(sent);
 
 		emailRepository.save(email);

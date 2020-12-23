@@ -1,5 +1,7 @@
 package com.filecloud.emailservice.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -7,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.filecloud.emailservice.model.dto.EmailSharedDocumentDto;
+import com.filecloud.emailservice.model.dto.ForgotPasswordEmailDto;
+import com.filecloud.emailservice.model.dto.SharedDocumentEmailDto;
 import com.filecloud.emailservice.response.Response;
 import com.filecloud.emailservice.response.Result;
 import com.filecloud.emailservice.service.EmailService;
@@ -27,7 +30,14 @@ public class EmailController extends BaseController {
 
 	@Transactional
 	@PostMapping("/email-shared-document")
-	public Result<?> emailSharedDocumentUrl(@RequestBody EmailSharedDocumentDto dto) {
+	public Result<?> emailSharedDocumentUrl(@RequestBody @Valid SharedDocumentEmailDto dto) {
+		emailService.saveAndSend(dto);
+		return sendSuccessResponse(Response.Status.ALL_OK, "Email has been sent successfully");
+	}
+
+	@Transactional
+	@PostMapping("/email-forgot-password")
+	public Result<?> emailForgotPassword(@RequestBody @Valid ForgotPasswordEmailDto dto) {
 		emailService.saveAndSend(dto);
 		return sendSuccessResponse(Response.Status.ALL_OK, "Email has been sent successfully");
 	}

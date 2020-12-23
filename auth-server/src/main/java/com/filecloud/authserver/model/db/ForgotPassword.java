@@ -8,14 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import lombok.Data;
 
 
 @Entity
-@Table(name = "auth_user")
+@Table(name = "forgot_password")
 @Data
 public class ForgotPassword implements Serializable {
 
@@ -35,13 +34,5 @@ public class ForgotPassword implements Serializable {
 
 	@Column
 	private Long createDate;
-
-	public ForgotPassword() {
-	}
-
-	@PrePersist
-	protected void onCreate() {
-		createDate = System.currentTimeMillis();
-	}
 
 }

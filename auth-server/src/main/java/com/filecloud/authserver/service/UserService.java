@@ -3,12 +3,16 @@ package com.filecloud.authserver.service;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.filecloud.authserver.client.dto.ForgotPasswordEmailDto;
+import com.filecloud.authserver.client.endpoint.EmailServiceClient;
 import com.filecloud.authserver.constant.ConstUtil;
 import com.filecloud.authserver.exception.InvalidAccessException;
 import com.filecloud.authserver.exception.RecordNotFoundException;
@@ -17,7 +21,7 @@ import com.filecloud.authserver.model.db.ForgotPassword;
 import com.filecloud.authserver.model.db.Role;
 import com.filecloud.authserver.model.dto.request.ChangePasswordDto;
 import com.filecloud.authserver.model.dto.request.EmailRequestDto;
-import com.filecloud.authserver.model.dto.request.ForgotPasswordDto;
+import com.filecloud.authserver.model.dto.request.ForgotPasswordRequestDto;
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
 import com.filecloud.authserver.model.dto.request.SingleIdRequestDto;
 import com.filecloud.authserver.model.dto.response.ForgotPasswordVerifiedDto;
@@ -25,6 +29,7 @@ import com.filecloud.authserver.model.dto.response.ResponseUserDto;
 import com.filecloud.authserver.model.dto.response.SingleFieldResponse;
 import com.filecloud.authserver.properties.AuthServerProperties;
 import com.filecloud.authserver.repository.UserRepository;
+import com.filecloud.authserver.response.Result;
 import com.filecloud.authserver.security.dto.AuthUserDetail;
 import com.filecloud.authserver.security.util.AuthUtil;
 import com.filecloud.authserver.util.Util;
@@ -45,14 +50,17 @@ public class UserService extends BaseService {
 
 	private final AuthServerProperties authServerProperties;
 
+	private final EmailServiceClient emailServiceClient;
+
 	@Autowired
-	public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder, OAuthAccessTokenService oAuthAccessTokenService, ForgotPasswordService forgotPasswordService, AuthServerProperties authServerProperties) {
+	public UserService(UserRepository userRepository, RoleService roleService, PasswordEncoder passwordEncoder, OAuthAccessTokenService oAuthAccessTokenService, ForgotPasswordService forgotPasswordService, AuthServerProperties authServerProperties, EmailServiceClient emailServiceClient) {
 		this.userRepository = userRepository;
 		this.roleService = roleService;
 		this.passwordEncoder = passwordEncoder;
 		this.oAuthAccessTokenService = oAuthAccessTokenService;
 		this.forgotPasswordService = forgotPasswordService;
 		this.authServerProperties = authServerProperties;
+		this.emailServiceClient = emailServiceClient;
 	}
 
 	public void registerUser(RegisterUserDto userDto) {
@@ -211,9 +219,9 @@ public class UserService extends BaseService {
 	}
 
 	private ForgotPassword getVerifiedForgotPassword(String token) {
-		ForgotPassword forgotPassword = forgotPasswordService.findByToken(token);
+		ForgotPassword forgotPassword = forgotPasswordService.findByTokenOrElseThrow(token);
 
-		if (forgotPassword != null && forgotPassword.getAvailed())
+		if (forgotPassword.getAvailed())
 			invalidAccess("Link is expired");
 
 		long expiryDaysMillis = Util.getDaysMillis(authServerProperties.security().getForgotPasswordLinkExpiryDays());
@@ -232,10 +240,10 @@ public class UserService extends BaseService {
 		return new ForgotPasswordVerifiedDto(forgotPassword.getUserId(), forgotPassword.getToken());
 	}
 
-	public void changeForgotPassword(ForgotPasswordDto dto) {
+	public void changeForgotPassword(ForgotPasswordRequestDto dto) {
 		ForgotPassword forgotPassword = this.getVerifiedForgotPassword(dto.getToken());
 
-		if (dto.getId() != forgotPassword.getId())
+		if (dto.getId() != forgotPassword.getUserId())
 			invalidAccess("Unauthorize user");
 
 		if (!dto.getPassword().equals(dto.getConfirmPassword()))
@@ -246,12 +254,15 @@ public class UserService extends BaseService {
 		userRepository.save(user);
 		forgotPassword.setAvailed(true);
 		forgotPasswordService.save(forgotPassword);
-		AuthUtil.revokeCurrentToken();
+		oAuthAccessTokenService.deleteAccessAndRefreshToken(user.getEmail());
 	}
 
 	public void changePassword(ChangePasswordDto dto) {
-		String email = AuthUtil.getPrincipal();
+		String email = ((AuthUserDetail) AuthUtil.getPrincipal()).getUsername();
 		AuthUser user = userRepository.findByEmail(email).orElseThrow(RecordNotFoundException::new);
+
+		if (!user.isAccountNonLocked())
+			invalidAccess("User account is locked");
 
 		if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword()))
 			invalidAccess("Invalid current password");
@@ -261,18 +272,47 @@ public class UserService extends BaseService {
 
 		user.setPassword(passwordEncoder.encode(dto.getNewPassword()));
 		userRepository.save(user);
+		oAuthAccessTokenService.deleteAccessAndRefreshToken(user.getEmail());
 	}
 
 	public void forgotPassword(EmailRequestDto dto) {
 		AuthUser user = userRepository.findByEmail(dto.getEmail()).orElseThrow(InvalidAccessException::new);
+		String token = Util.getRandomUUID();
 
-		ForgotPassword forgotPassword = new ForgotPassword();
+		Optional<ForgotPassword> optionalForgotPassword = forgotPasswordService.findByUserId(user.getId());
+		ForgotPassword forgotPassword;
+
+		if (optionalForgotPassword.isPresent()) {
+			forgotPassword = optionalForgotPassword.get();
+		} else {
+			forgotPassword = new ForgotPassword();
+			forgotPassword.setUserId(user.getId());
+		}
+
 		forgotPassword.setAvailed(false);
-		forgotPassword.setUserId(user.getId());
-		forgotPassword.setToken(Util.getRandomUUID());
-
+		forgotPassword.setToken(token);
+		forgotPassword.setCreateDate(System.currentTimeMillis());
 		forgotPasswordService.save(forgotPassword);
 
-		// TODO: email path of forgot password
+		ForgotPasswordEmailDto emailDto = new ForgotPasswordEmailDto();
+		emailDto.setName(user.getFullName());
+		emailDto.setReceiverEmail(user.getEmail());
+		emailDto.setExpiryDays(authServerProperties.security().getForgotPasswordLinkExpiryDays());
+		emailDto.setUrl(getForgotPasswordUrl(token));
+		Result<?> result = emailServiceClient.emailForgotPassword(emailDto);
+
+		if (!result.isSuccess())
+			error(result.getMessage());
 	}
+
+	private String getForgotPasswordUrl(String token) {
+		return ServletUriComponentsBuilder.fromCurrentContextPath()
+				.scheme(authServerProperties.getUiServiceScheme())
+				.host(authServerProperties.getUiServiceHost())
+				.port(authServerProperties.getUiServicePort())
+				.path(authServerProperties.getUiServiceForgotPasswordUrl())
+				.path("/" + token)
+				.toUriString();
+	}
+
 }

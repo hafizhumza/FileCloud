@@ -7,13 +7,14 @@ import org.springframework.security.oauth2.provider.authentication.OAuth2Authent
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 
 import com.filecloud.authserver.configuration.ApplicationContextUtil;
+import com.filecloud.authserver.exception.InvalidAccessException;
 import com.filecloud.authserver.util.Util;
 
 
 public class AuthUtil {
 
 	public static boolean revokeCurrentToken() {
-		return revokeToken(((OAuth2AuthenticationDetails) AuthUtil.getAuthenticationDetails()).getTokenValue());
+		return revokeToken(((OAuth2AuthenticationDetails) getAuthenticationDetails()).getTokenValue());
 	}
 
 	public static boolean revokeToken(String token) {
@@ -40,5 +41,14 @@ public class AuthUtil {
 	@SuppressWarnings("unchecked")
 	public static <T> T getAuthenticationDetails() {
 		return (T) ((Authentication) getAuthentication()).getDetails();
+	}
+
+	public static String getBearerToken() {
+		OAuth2AuthenticationDetails authenticationDetails = getAuthenticationDetails();
+
+		if (authenticationDetails == null)
+			throw new InvalidAccessException();
+
+		return authenticationDetails.getTokenType().concat(" ").concat(authenticationDetails.getTokenValue());
 	}
 }
