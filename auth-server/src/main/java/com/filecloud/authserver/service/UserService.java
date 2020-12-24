@@ -258,13 +258,13 @@ public class UserService extends BaseService {
 
 	public void changePassword(ChangePasswordDto dto) {
 		String email = ((AuthUserDetail) AuthUtil.getPrincipal()).getUsername();
-		AuthUser user = userRepository.findByEmail(email).orElseThrow(RecordNotFoundException::new);
+		AuthUser user = userRepository.findByEmail(email).orElseThrow(() -> new RecordNotFoundException("User not found with associated email address"));
 
 		if (!user.isAccountNonLocked())
 			invalidAccess("User account is locked");
 
 		if (!passwordEncoder.matches(dto.getCurrentPassword(), user.getPassword()))
-			invalidAccess("Invalid current password");
+			invalidInput("Invalid current password");
 
 		if (!dto.getNewPassword().equals(dto.getConfirmPassword()))
 			invalidInput("Passwords not match");
@@ -275,7 +275,7 @@ public class UserService extends BaseService {
 	}
 
 	public void forgotPassword(EmailRequestDto dto) {
-		AuthUser user = userRepository.findByEmail(dto.getEmail()).orElseThrow(RecordNotFoundException::new);
+		AuthUser user = userRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new RecordNotFoundException("No account found with given email address"));
 		String token = Util.getRandomUUID();
 
 		Optional<ForgotPassword> optionalForgotPassword = forgotPasswordService.findByUserId(user.getId());
