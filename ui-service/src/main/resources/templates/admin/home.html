@@ -99,7 +99,7 @@
                                     <a th:href="@{/myprofile/inf}" class="btn btn-primary btn-flat">Profile</a>
                                 </div>
                                 <div class="col-xs-offset-1 col-xs-4 text-center">
-                                    <a th:href="@{/myprofile/change_password(id=${user.id})}"><i
+                                    <a th:href="@{/change-password}"><i
                                             class="fa fa-gears"></i> Change
                                         Password</a>
                                 </div>
@@ -208,9 +208,15 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
-            <h1>
+            <h1 style="display: inline;">
                 Home Page
             </h1>
+            <div style="display: inline;" class=" alert alert-danger" th:inline="text" th:if="${error}">
+                [[${error}]]
+            </div>
+            <div style="display: inline;" class="alert alert-success" th:inline="text" th:if="${ResultMessage}">
+                [[${ResultMessage}]]
+            </div>
         </section>
 
         <!-- Main content -->

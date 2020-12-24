@@ -10,7 +10,6 @@ import com.filecloud.uiservice.client.response.LoginResponse;
 import com.filecloud.uiservice.client.response.UserDto;
 import com.filecloud.uiservice.dto.mvcmodel.LoginModel;
 import com.filecloud.uiservice.dto.session.UserSession;
-import com.filecloud.uiservice.response.Response.Status;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.security.util.AuthUtil;
 import com.filecloud.uiservice.util.RequestUtil;
@@ -42,34 +41,28 @@ public class UserService extends BaseService {
         // TODO
     }
 
-    public String forgotPassword(ForgotPasswordRequest request) {
+    public Result<String> forgotPassword(ForgotPasswordRequest request) {
         Result<String> result = authServerClient.forgotPassword(request);
-
-        if (result.getStatusCode() == Status.RECORD_NOT_FOUND.getStatusCode())
-            return "No account found with given email address";
-
-        throwIfError(result);
-        return result.getMessage();
+        throwIfInvalidAccessOrInternalError(result);
+        return result;
     }
 
-    public ForgotPasswordVerifiedResponse verifyForgotPasswordToken(String token) {
+    public Result<ForgotPasswordVerifiedResponse> verifyForgotPasswordToken(String token) {
         Result<ForgotPasswordVerifiedResponse> result = authServerClient.verifyForgotPasswordToken(token);
-        throwIfError(result);
-        return result.getData();
+        throwIfInvalidAccessOrInternalError(result);
+        return result;
     }
 
-    public String changeForgotPassword(ChangeForgotPasswordRequest request) {
+    public Result<String> changeForgotPassword(ChangeForgotPasswordRequest request) {
         Result<String> result = authServerClient.changeForgotPassword(request);
-
-        if (result.getStatusCode() == Status.INVALID_INPUT.getStatusCode())
-            return "Passwords not match";
-
-        throwIfError(result);
-        return result.getMessage();
+        throwIfInvalidAccessOrInternalError(result);
+        return result;
     }
 
-    public void changePassword(String token, ChangePasswordRequest request) {
-        // TODO
+    public Result<String> changePassword(String token, ChangePasswordRequest request) {
+        Result<String> result = authServerClient.changePassword(AuthUtil.getBearerToken(token), request);
+        throwIfInvalidAccessOrInternalError(result);
+        return result;
     }
 
     public void listActiveUsers(String token) {

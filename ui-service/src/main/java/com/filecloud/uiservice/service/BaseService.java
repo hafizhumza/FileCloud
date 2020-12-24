@@ -62,12 +62,11 @@ public class BaseService {
             logger.severe(String.format("Service failed with status code %s. Message: %s", result.getStatusCode(), result.getMessage()));
     }
 
-    public static void throwIfError(Result<?> result) {
-        if (!(result.isSuccess() && result.getStatusCode() == Status.ALL_OK.getStatusCode())) {
-            if (result.getStatusCode() >= 400 && result.getStatusCode() < 500)
-                invalidAccess();
+    public static void throwIfInvalidAccessOrInternalError(Result<?> result) {
+        if (result.getStatusCode() == Status.INVALID_ACCESS.getStatusCode())
+            invalidAccess();
 
+        if (result.getStatusCode() == Status.INTERNAL_SERVER_ERROR.getStatusCode())
             error();
-        }
     }
 }

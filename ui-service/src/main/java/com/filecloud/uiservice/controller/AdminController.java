@@ -25,12 +25,14 @@ public class AdminController extends BaseController {
     }
 
     @GetMapping("home")
-    public String home(HttpSession session, Model model) {
+    public String home(HttpSession session, Model model, @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage, @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
         UserSession currentUser = verifyAdmin(session);
         model.addAttribute(UiConst.KEY_USER, currentUser);
         model.addAttribute(UiConst.KEY_ACTIVE_USERS_COUNT, adminService.activeUserCount(getBearerToken(currentUser)));
         model.addAttribute(UiConst.KEY_IN_ACTIVE_USERS_COUNT, adminService.inActiveUserCount(getBearerToken(currentUser)));
         model.addAttribute(UiConst.KEY_ALL_USERS, adminService.allUsersCount(getBearerToken(currentUser)));
+        model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
+        model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
         return "admin/home";
     }
 

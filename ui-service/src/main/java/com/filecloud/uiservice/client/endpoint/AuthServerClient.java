@@ -41,7 +41,7 @@ public interface AuthServerClient {
     Result<String> changeForgotPassword(@RequestBody ChangeForgotPasswordRequest request);
 
     @PostMapping(UiConst.URL_AUTH_SERVER + "change-password")
-    Result<?> changePassword(@RequestHeader("Authorization") String bearerToken, @RequestBody ChangePasswordRequest request);
+    Result<String> changePassword(@RequestHeader("Authorization") String bearerToken, @RequestBody ChangePasswordRequest request);
 
     @GetMapping(UiConst.URL_AUTH_SERVER + "list-active-users")
     Result<?> listActiveUsers(@RequestHeader("Authorization") String bearerToken);
