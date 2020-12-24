@@ -3,76 +3,72 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Forgot</title>
-  
-<link rel="icon" type="image/png" th:href="@{/images/favicon.ico}"/>
-    <link rel="stylesheet" th:href="@{/css/util.css}" />
-     <link rel="stylesheet"  th:href="@{/css/main.css}" />
+
+    <link rel="icon" type="image/png" th:href="@{/images/favicon.ico}"/>
+    <link rel="stylesheet" th:href="@{/css/util.css}"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
     <link rel="stylesheet" th:href="@{css/bootstrap.min.css}">
-    <link rel="stylesheet"  th:href="@{/css/font-awesome.min.css}" />
-    <link rel="stylesheet"  th:href="@{/css/material-design-iconic-font.min.css}" />
-    <link rel="stylesheet"  th:href="@{/css/animate.css}" />
-    <link rel="stylesheet"  th:href="@{/css/hamburgers.min.css}" />
-     <link rel="stylesheet"  th:href="@{/css/animsition.min.css}" />
-      <link rel="stylesheet"  th:href="@{/css/select2.min.css}" />
-       <link rel="stylesheet"  th:href="@{/css/daterangepicker.css}" />
-       
-           
-<!--  <link rel="stylesheet" th:href="@{/css/login.css}" />
-     <link rel="stylesheet"  th:href="@{/css/register.css}" /> -->
-       
+    <link rel="stylesheet" th:href="@{/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/material-design-iconic-font.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animate.css}"/>
+    <link rel="stylesheet" th:href="@{/css/hamburgers.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/animsition.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/select2.min.css}"/>
+    <link rel="stylesheet" th:href="@{/css/daterangepicker.css}"/>
+
+    <!--  <link rel="stylesheet" th:href="@{/css/login.css}" />
+         <link rel="stylesheet"  th:href="@{/css/register.css}" /> -->
+
 </head>
 <body>
-    
-    <div class="limiter">
-        <div class="container-login100">
-            <div class="wrap-login100 p-t-85 p-b-20">
-                <form class="login100-form validate-form" method="post" th:action="@{/forgot}" >
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100 p-t-85 p-b-20">
+            <form class="login100-form validate-form" method="post"
+                  th:object="${forgotPassword}"
+                  th:action="@{/forgot-password}">
                     <span class="login100-form-title p-b-80">
                             <p id="reset">Reset Password</p>
                             <p style="font-size: 16px;">Please enter your email address and we'll send you a link to reset your password.</p>
                     </span>
-                    
-                   
+                <div class="alert alert-danger" th:inline="text" th:if="${error}">
+                    [[${error}]]
+                </div>
+                <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate="Please Enter Email">
+                    <input class="input100" type="text" th:field="*{email}" name="email">
+                    <span class="focus-input100" data-placeholder="Email"></span>
+                </div>
+                <div class="container-login100-form-btn">
+                    <button class="login100-form-btn">
+                        SUBMIT
+                    </button>
+                </div>
 
-                     <div class="wrap-input100 validate-input m-t-50 m-b-35" data-validate = "Please Enter Email">
-                        <input class="input100" type="text" name="username">
-                        <span class="focus-input100" th:data-placeholder="Enter Your Email"></span>
-                    </div>
-
-                    
-
-                    <div class="container-login100-form-btn">
-                        <button class="login100-form-btn">
-                            SUBMIT
-                        </button>
-                    </div>
-
-                    <ul class="login-more p-t-32">
-                        <li class="m-b-8">
-                            <a th:href="@{/login}" class="txt2">
-                                I am Already Member
-                            </a>
-                        </li>
-
-                        
-                    </ul>
-                </form>
-            </div>
+                <ul class="login-more p-t-32">
+                    <li class="m-b-8">
+                        <a th:href="@{/login}" class="txt2">
+                            I am Already Member
+                        </a>
+                    </li>
+                </ul>
+            </form>
         </div>
     </div>
-    
+</div>
 
-    <div id="dropDownSelect1"></div>
-    
-<scrip th:inline="javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
-<scrip th:inline="javascript" th:src="@{/js/bootstrap.min.js}"></script>
-<scrip th:inline="javascript" th:src="@{/js/animsition.min.js}"></script>
-<scrip th:inline="javascript" th:src="@{/js/popper.js}"></script>
-<scrip th:inline="javascript" th:src="@{/js/select2.min.js}"></script>
-<scrip th:inline="javascript" th:src="@{/js/moment.min.js}"></script>
-<scrip th:inline="javascript" th:src="@{/js/daterangepicker.js}"></script>
-<scrip th:inline="javascript" th:src="@{/js/countdowntime.js}"></script>
-<scrip th:inline="javascript" th:src="@{/js/main.js}"></script>
+
+<div id="dropDownSelect1"></div>
+
+<script th:inline="javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/bootstrap.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/animsition.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/popper.js}"></script>
+<script th:inline="javascript" th:src="@{/js/select2.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/moment.min.js}"></script>
+<script th:inline="javascript" th:src="@{/js/daterangepicker.js}"></script>
+<script th:inline="javascript" th:src="@{/js/countdowntime.js}"></script>
+<script th:inline="javascript" th:src="@{/js/main.js}"></script>
 
 
 <!-- <script

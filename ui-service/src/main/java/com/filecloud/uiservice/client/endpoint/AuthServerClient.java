@@ -4,6 +4,7 @@ import com.filecloud.uiservice.client.request.ChangeForgotPasswordRequest;
 import com.filecloud.uiservice.client.request.ChangePasswordRequest;
 import com.filecloud.uiservice.client.request.ForgotPasswordRequest;
 import com.filecloud.uiservice.client.request.RegisterUserRequest;
+import com.filecloud.uiservice.client.response.ForgotPasswordVerifiedResponse;
 import com.filecloud.uiservice.client.response.LoginResponse;
 import com.filecloud.uiservice.client.response.UserDto;
 import com.filecloud.uiservice.constant.UiConst;
@@ -31,13 +32,13 @@ public interface AuthServerClient {
     Result<?> register(@RequestHeader("Authorization") String bearerToken, @RequestBody RegisterUserRequest request);
 
     @PostMapping(UiConst.URL_AUTH_SERVER + "forgot-password")
-    Result<?> forgotPassword(@RequestBody ForgotPasswordRequest request);
+    Result<String> forgotPassword(@RequestBody ForgotPasswordRequest request);
 
     @PostMapping(UiConst.URL_AUTH_SERVER + "verify-forgot-password-token/{token}")
-    Result<?> verifyForgotPasswordToken(@PathVariable String token);
+    Result<ForgotPasswordVerifiedResponse> verifyForgotPasswordToken(@PathVariable String token);
 
     @PostMapping(UiConst.URL_AUTH_SERVER + "change-forgot-password")
-    Result<?> changeForgotPassword(@RequestBody ChangeForgotPasswordRequest request);
+    Result<String> changeForgotPassword(@RequestBody ChangeForgotPasswordRequest request);
 
     @PostMapping(UiConst.URL_AUTH_SERVER + "change-password")
     Result<?> changePassword(@RequestHeader("Authorization") String bearerToken, @RequestBody ChangePasswordRequest request);

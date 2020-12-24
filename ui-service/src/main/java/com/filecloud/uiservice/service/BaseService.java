@@ -57,9 +57,17 @@ public class BaseService {
         throw new SessionExpiredException();
     }
 
-    public static void checkResult(Result<?> result) {
+    public static void logIfError(Result<?> result) {
         if (!(result.isSuccess() && result.getStatusCode() == Response.Status.ALL_OK.getStatusCode()))
             logger.severe(String.format("Service failed with status code %s. Message: %s", result.getStatusCode(), result.getMessage()));
     }
 
+    public static void throwIfError(Result<?> result) {
+        if (!(result.isSuccess() && result.getStatusCode() == Status.ALL_OK.getStatusCode())) {
+            if (result.getStatusCode() >= 400 && result.getStatusCode() < 500)
+                invalidAccess();
+
+            error();
+        }
+    }
 }

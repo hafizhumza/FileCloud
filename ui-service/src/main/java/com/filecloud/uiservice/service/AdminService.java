@@ -40,50 +40,50 @@ public class AdminService extends BaseService {
         else
             result = adminServiceClient.listUsers(bearerToken);
 
-        checkResult(result);
+        logIfError(result);
         return result.getData();
     }
 
     public String enableUser(String token, long userId) {
         Result<String> result = adminServiceClient.enableUser(AuthUtil.getBearerToken(token), new IdRequest(userId));
-        checkResult(result);
+        logIfError(result);
         return result.getMessage();
     }
 
     public String disableUser(String token, long userId) {
         Result<String> result = adminServiceClient.disableUser(AuthUtil.getBearerToken(token), new IdRequest(userId));
-        checkResult(result);
+        logIfError(result);
         return result.getMessage();
     }
 
     public String deleteUser(String token, long userId) {
         Result<String> result = adminServiceClient.deleteUser(AuthUtil.getBearerToken(token), new IdRequest(userId));
-        checkResult(result);
+        logIfError(result);
         return result.getMessage();
     }
 
     public UserDto getUser(String token, long userId) {
         String bearerToken = AuthUtil.getBearerToken(token);
         Result<UserDto> result = authServerClient.getUser(bearerToken, userId);
-        checkResult(result);
+        logIfError(result);
         return result.getData();
     }
 
     public String activeUserCount(String bearerToken) {
         Result<SingleFieldResponse> result = adminServiceClient.activeUserCount(bearerToken);
-        checkResult(result);
+        logIfError(result);
         return result.getData().getResponse().toString();
     }
 
     public String inActiveUserCount(String bearerToken) {
         Result<SingleFieldResponse> result = adminServiceClient.inActiveUserCount(bearerToken);
-        checkResult(result);
+        logIfError(result);
         return result.getData().getResponse().toString();
     }
 
     public String allUsersCount(String bearerToken) {
         Result<SingleFieldResponse> result = adminServiceClient.allUsersCount(bearerToken);
-        checkResult(result);
+        logIfError(result);
         return result.getData().getResponse().toString();
     }
 
