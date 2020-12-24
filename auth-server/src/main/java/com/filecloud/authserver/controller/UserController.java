@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.filecloud.authserver.model.dto.request.ChangePasswordDto;
 import com.filecloud.authserver.model.dto.request.EmailRequestDto;
-import com.filecloud.authserver.model.dto.request.ForgotPasswordRequestDto;
+import com.filecloud.authserver.model.dto.request.ChangeForgotPasswordRequest;
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
 import com.filecloud.authserver.response.Response.Status;
 import com.filecloud.authserver.response.Result;
@@ -53,9 +53,9 @@ public class UserController extends BaseController {
 
 	@Transactional
 	@PostMapping("/change-forgot-password")
-	public Result<?> changeForgotPassword(@RequestBody @Valid ForgotPasswordRequestDto dto) {
+	public Result<?> changeForgotPassword(@RequestBody @Valid ChangeForgotPasswordRequest dto) {
 		userService.changeForgotPassword(dto);
-		return sendSuccessResponse(Status.ALL_OK, "Password changed successfully!");
+		return sendSuccessResponse(Status.ALL_OK, "Password change successfully!");
 	}
 
 	@Transactional

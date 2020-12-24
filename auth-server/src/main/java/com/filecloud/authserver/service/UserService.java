@@ -14,14 +14,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.filecloud.authserver.client.dto.ForgotPasswordEmailDto;
 import com.filecloud.authserver.client.endpoint.EmailServiceClient;
 import com.filecloud.authserver.constant.ConstUtil;
-import com.filecloud.authserver.exception.InvalidAccessException;
 import com.filecloud.authserver.exception.RecordNotFoundException;
 import com.filecloud.authserver.model.db.AuthUser;
 import com.filecloud.authserver.model.db.ForgotPassword;
 import com.filecloud.authserver.model.db.Role;
+import com.filecloud.authserver.model.dto.request.ChangeForgotPasswordRequest;
 import com.filecloud.authserver.model.dto.request.ChangePasswordDto;
 import com.filecloud.authserver.model.dto.request.EmailRequestDto;
-import com.filecloud.authserver.model.dto.request.ForgotPasswordRequestDto;
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
 import com.filecloud.authserver.model.dto.request.SingleIdRequestDto;
 import com.filecloud.authserver.model.dto.response.ForgotPasswordVerifiedDto;
@@ -240,7 +239,7 @@ public class UserService extends BaseService {
 		return new ForgotPasswordVerifiedDto(forgotPassword.getUserId(), forgotPassword.getToken());
 	}
 
-	public void changeForgotPassword(ForgotPasswordRequestDto dto) {
+	public void changeForgotPassword(ChangeForgotPasswordRequest dto) {
 		ForgotPassword forgotPassword = this.getVerifiedForgotPassword(dto.getToken());
 
 		if (dto.getId() != forgotPassword.getUserId())
@@ -276,7 +275,7 @@ public class UserService extends BaseService {
 	}
 
 	public void forgotPassword(EmailRequestDto dto) {
-		AuthUser user = userRepository.findByEmail(dto.getEmail()).orElseThrow(InvalidAccessException::new);
+		AuthUser user = userRepository.findByEmail(dto.getEmail()).orElseThrow(RecordNotFoundException::new);
 		String token = Util.getRandomUUID();
 
 		Optional<ForgotPassword> optionalForgotPassword = forgotPasswordService.findByUserId(user.getId());
