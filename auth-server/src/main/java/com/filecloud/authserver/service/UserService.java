@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.filecloud.authserver.client.dto.ForgotPasswordEmailDto;
 import com.filecloud.authserver.client.endpoint.EmailServiceClient;
 import com.filecloud.authserver.constant.ConstUtil;
+import com.filecloud.authserver.exception.InvalidAccessException;
 import com.filecloud.authserver.exception.RecordNotFoundException;
 import com.filecloud.authserver.model.db.AuthUser;
 import com.filecloud.authserver.model.db.ForgotPassword;
@@ -23,6 +24,7 @@ import com.filecloud.authserver.model.dto.request.ChangePasswordDto;
 import com.filecloud.authserver.model.dto.request.EmailRequestDto;
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
 import com.filecloud.authserver.model.dto.request.SingleIdRequestDto;
+import com.filecloud.authserver.model.dto.request.UpdateUserRequest;
 import com.filecloud.authserver.model.dto.response.ForgotPasswordVerifiedDto;
 import com.filecloud.authserver.model.dto.response.ResponseUserDto;
 import com.filecloud.authserver.model.dto.response.SingleFieldResponse;
@@ -312,6 +314,14 @@ public class UserService extends BaseService {
 				.path(authServerProperties.getUiServiceForgotPasswordUrl())
 				.path("/" + token)
 				.toUriString();
+	}
+
+	public void updateUser(UpdateUserRequest request) {
+		AuthUserDetail user = AuthUtil.getPrincipal();
+		AuthUser dbUser = userRepository.findById(user.getUserId()).orElseThrow(InvalidAccessException::new);
+		dbUser.setFullName(request.getName());
+		dbUser.setEmail(request.getEmail());
+		userRepository.save(dbUser);
 	}
 
 }

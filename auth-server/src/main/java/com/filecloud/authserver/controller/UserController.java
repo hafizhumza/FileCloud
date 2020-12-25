@@ -11,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.filecloud.authserver.model.dto.request.ChangeForgotPasswordRequest;
 import com.filecloud.authserver.model.dto.request.ChangePasswordDto;
 import com.filecloud.authserver.model.dto.request.EmailRequestDto;
-import com.filecloud.authserver.model.dto.request.ChangeForgotPasswordRequest;
 import com.filecloud.authserver.model.dto.request.RegisterUserDto;
+import com.filecloud.authserver.model.dto.request.UpdateUserRequest;
 import com.filecloud.authserver.response.Response.Status;
 import com.filecloud.authserver.response.Result;
 import com.filecloud.authserver.service.UserService;
@@ -37,6 +38,13 @@ public class UserController extends BaseController {
 	public Result<?> register(@RequestBody RegisterUserDto userDto) {
 		userService.registerUser(userDto);
 		return sendSuccessResponse(Status.ALL_OK, "User registered successfully!");
+	}
+
+	@Transactional
+	@PostMapping("/update-profile")
+	public Result<?> updateProfile(@RequestBody UpdateUserRequest request) {
+		userService.updateUser(request);
+		return sendSuccessResponse(Status.ALL_OK, "User updated successfully!");
 	}
 
 	@Transactional
