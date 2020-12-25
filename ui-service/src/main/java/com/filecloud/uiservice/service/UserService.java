@@ -1,10 +1,7 @@
 package com.filecloud.uiservice.service;
 
 import com.filecloud.uiservice.client.endpoint.AuthServerClient;
-import com.filecloud.uiservice.client.request.ChangeForgotPasswordRequest;
-import com.filecloud.uiservice.client.request.ChangePasswordRequest;
-import com.filecloud.uiservice.client.request.ForgotPasswordRequest;
-import com.filecloud.uiservice.client.request.RegisterUserRequest;
+import com.filecloud.uiservice.client.request.*;
 import com.filecloud.uiservice.client.response.ForgotPasswordVerifiedResponse;
 import com.filecloud.uiservice.client.response.LoginResponse;
 import com.filecloud.uiservice.client.response.UserDto;
@@ -39,6 +36,12 @@ public class UserService extends BaseService {
 
     public void register(RegisterUserRequest request) {
         // TODO
+    }
+
+    public Result<String> updateProfile(String token, UpdateUserRequest request) {
+        Result<String> result = authServerClient.updateProfile(AuthUtil.getBearerToken(token), request);
+        throwIfInvalidAccessOrInternalError(result);
+        return result;
     }
 
     public Result<String> forgotPassword(ForgotPasswordRequest request) {

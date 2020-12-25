@@ -1,7 +1,9 @@
 package com.filecloud.uiservice.controller;
 
+import com.filecloud.uiservice.client.request.ChangePasswordRequest;
 import com.filecloud.uiservice.client.response.UserDto;
 import com.filecloud.uiservice.constant.UiConst;
+import com.filecloud.uiservice.client.request.UpdateUserRequest;
 import com.filecloud.uiservice.dto.session.UserSession;
 import com.filecloud.uiservice.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +78,18 @@ public class AdminController extends BaseController {
         String result = adminService.deleteUser(currentUser.getAccessToken(), id);
         redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result);
         return "redirect:/admin/users";
+    }
+
+    @GetMapping("/profile")
+    public String profile(@RequestParam(required = false) String mode, HttpSession session, Model model, @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage, @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
+        UserSession user = verifyAdmin(session);
+        model.addAttribute(UiConst.KEY_USER, user);
+        model.addAttribute("mode", mode);
+        model.addAttribute("changePassword", new ChangePasswordRequest());
+        model.addAttribute("updateProfile", new UpdateUserRequest(user.getName(), user.getEmail()));
+        model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
+        model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
+        return "admin/profile";
     }
 
 }

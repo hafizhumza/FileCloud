@@ -1,9 +1,6 @@
 package com.filecloud.uiservice.client.endpoint;
 
-import com.filecloud.uiservice.client.request.ChangeForgotPasswordRequest;
-import com.filecloud.uiservice.client.request.ChangePasswordRequest;
-import com.filecloud.uiservice.client.request.ForgotPasswordRequest;
-import com.filecloud.uiservice.client.request.RegisterUserRequest;
+import com.filecloud.uiservice.client.request.*;
 import com.filecloud.uiservice.client.response.ForgotPasswordVerifiedResponse;
 import com.filecloud.uiservice.client.response.LoginResponse;
 import com.filecloud.uiservice.client.response.UserDto;
@@ -30,6 +27,9 @@ public interface AuthServerClient {
 
     @PostMapping(UiConst.URL_AUTH_SERVER + "register")
     Result<?> register(@RequestHeader("Authorization") String bearerToken, @RequestBody RegisterUserRequest request);
+
+    @PostMapping(UiConst.URL_AUTH_SERVER + "update-profile")
+    Result<String> updateProfile(@RequestHeader("Authorization") String bearerToken, @RequestBody UpdateUserRequest request);
 
     @PostMapping(UiConst.URL_AUTH_SERVER + "forgot-password")
     Result<String> forgotPassword(@RequestBody ForgotPasswordRequest request);

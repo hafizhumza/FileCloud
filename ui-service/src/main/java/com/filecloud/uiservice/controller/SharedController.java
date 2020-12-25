@@ -6,6 +6,7 @@ import com.filecloud.uiservice.client.request.ForgotPasswordRequest;
 import com.filecloud.uiservice.client.response.ForgotPasswordVerifiedResponse;
 import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.dto.mvcmodel.LoginModel;
+import com.filecloud.uiservice.client.request.UpdateUserRequest;
 import com.filecloud.uiservice.dto.session.UserSession;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.service.UserService;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
@@ -136,35 +134,53 @@ public class SharedController extends BaseController {
     }
 
     @PostMapping("/change-password")
-    public String changePassword(HttpServletRequest servletRequest, HttpSession session, @Valid ChangePasswordRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+    public String changePassword(@RequestHeader(value = "referer") final String referer, HttpServletRequest servletRequest, HttpSession session, @Valid ChangePasswordRequest request, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
         UserSession user = getCurrentUser(session);
 
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, bindingResult.getFieldErrors());
-            return "redirect:/change-password";
+            return "redirect:" + referer;
         }
 
         Result<String> result = userService.changePassword(user.getAccessToken(), request);
 
         if (!result.isSuccess()) {
             redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());
-            return "redirect:/change-password";
+            return "redirect:" + referer;
         }
 
         try {
             UserSession userSession = userService.login(new LoginModel(user.getEmail(), request.getNewPassword()));
             persistSession(servletRequest, userSession);
             redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, "Password successfully changed");
-
-            if (isAdmin(userSession))
-                return "redirect:/admin/home";
-            else
-                return "redirect:/home";
-
+            return "redirect:" + referer;
         } catch (BadRequest e) {
             model.addAttribute(UiConst.KEY_ERROR, UiConst.MESSAGE_INVALID_LOGIN);
             return "login";
         }
+    }
+
+    @PostMapping("update-profile")
+    public String updateProfile(@RequestHeader(value = "referer") final String referer, HttpServletRequest request, @Valid UpdateUserRequest updateUserRequest, BindingResult bindingResult, HttpSession session, RedirectAttributes redirectAttributes) {
+        UserSession currentUser = getCurrentUser(session);
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, bindingResult.getFieldErrors());
+            return "redirect:" + referer;
+        }
+
+        Result<String> result = userService.updateProfile(currentUser.getAccessToken(), updateUserRequest);
+
+        if (!result.isSuccess())
+            redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());
+        else {
+            currentUser.setName(updateUserRequest.getName());
+            currentUser.setEmail(updateUserRequest.getEmail());
+            persistSession(request, currentUser);
+            redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
+        }
+
+        return "redirect:" + referer;
     }
 
     @GetMapping("/logout")
