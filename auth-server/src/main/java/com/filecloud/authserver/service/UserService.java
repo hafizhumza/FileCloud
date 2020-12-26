@@ -323,6 +323,14 @@ public class UserService extends BaseService {
 
 	public void updateUser(UpdateUserRequest request) {
 		AuthUserDetail user = AuthUtil.getPrincipal();
+
+		if (!request.getEmail().equals(user.getUsername())) {
+			Optional<AuthUser> existingUser = userRepository.findByEmail(request.getEmail());
+
+			if (existingUser.isPresent())
+				duplicateEmail();
+		}
+
 		AuthUser dbUser = userRepository.findById(user.getUserId()).orElseThrow(InvalidAccessException::new);
 		dbUser.setFullName(request.getName());
 		dbUser.setEmail(request.getEmail());
