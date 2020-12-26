@@ -2,7 +2,7 @@ package com.filecloud.uiservice.client.endpoint;
 
 import com.filecloud.uiservice.client.request.IdRequest;
 import com.filecloud.uiservice.client.response.SingleFieldResponse;
-import com.filecloud.uiservice.client.response.UserDto;
+import com.filecloud.uiservice.client.response.UserResponse;
 import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.response.Result;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,13 +17,13 @@ import java.util.List;
 public interface AdminServiceClient {
 
     @GetMapping("list-users")
-    Result<List<UserDto>> listUsers(@RequestHeader("Authorization") String bearerToken);
+    Result<List<UserResponse>> listUsers(@RequestHeader("Authorization") String bearerToken);
 
     @GetMapping("list-active-users")
-    Result<List<UserDto>> activeUsers(@RequestHeader("Authorization") String bearerToken);
+    Result<List<UserResponse>> activeUsers(@RequestHeader("Authorization") String bearerToken);
 
     @GetMapping("list-inactive-users")
-    Result<List<UserDto>> inactiveusers(@RequestHeader("Authorization") String bearerToken);
+    Result<List<UserResponse>> inactiveusers(@RequestHeader("Authorization") String bearerToken);
 
     @PostMapping("enable-user")
     Result<String> enableUser(@RequestHeader("Authorization") String bearerToken, IdRequest dto);
@@ -44,9 +44,9 @@ public interface AdminServiceClient {
     Result<SingleFieldResponse> allUsersCount(@RequestHeader("Authorization") String bearerToken);
 
     @GetMapping("list-role-admin")
-    Result<List<UserDto>> listRoleAdmin(@RequestHeader("Authorization") String bearerToken);
+    Result<List<UserResponse>> listRoleAdmin(@RequestHeader("Authorization") String bearerToken);
 
     @GetMapping("list-role-user")
-    Result<List<UserDto>> listRoleUser(@RequestHeader("Authorization") String bearerToken);
+    Result<List<UserResponse>> listRoleUser(@RequestHeader("Authorization") String bearerToken);
 
 }

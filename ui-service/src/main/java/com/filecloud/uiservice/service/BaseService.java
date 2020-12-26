@@ -33,24 +33,12 @@ public class BaseService {
         throw new RecordNotFoundException();
     }
 
-    public static void notFound(String message) {
-        throw new RecordNotFoundException(message);
-    }
-
     public static void invalidInput() {
         throw new InvalidInputException();
     }
 
-    public static void invalidInput(String message) {
-        throw new InvalidInputException(message);
-    }
-
     public static void invalidAccess() {
         throw new InvalidAccessException();
-    }
-
-    public static void invalidAccess(String message) {
-        throw new InvalidAccessException(message);
     }
 
     public static void sessionExpired() {

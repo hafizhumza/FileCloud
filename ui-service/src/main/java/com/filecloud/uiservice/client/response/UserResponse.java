@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class UserResponse {
 
     @NotNull(message = "ID null")
     @Min(value = 1, message = "Invalid ID")

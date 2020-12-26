@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpSession;
 
@@ -21,14 +22,14 @@ public class UserController extends BaseController {
     }
 
     @GetMapping("/home")
-    public String home(HttpSession session, Model model) {
+    public String home(HttpSession session, Model model, @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage, @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
         UserSession currentUser = getCurrentUser(session);
 
         if (isAdmin(currentUser))
             return "redirect:/admin/home";
 
         model.addAttribute(UiConst.KEY_USER, currentUser);
-        return "home";
+        return "user/home";
     }
 
 }

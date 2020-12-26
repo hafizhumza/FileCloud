@@ -4,7 +4,7 @@ import com.filecloud.uiservice.client.endpoint.AdminServiceClient;
 import com.filecloud.uiservice.client.endpoint.AuthServerClient;
 import com.filecloud.uiservice.client.request.IdRequest;
 import com.filecloud.uiservice.client.response.SingleFieldResponse;
-import com.filecloud.uiservice.client.response.UserDto;
+import com.filecloud.uiservice.client.response.UserResponse;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.security.util.AuthUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +25,8 @@ public class AdminService extends BaseService {
         this.authServerClient = authServerClient;
     }
 
-    public List<UserDto> listUsers(String token, String mode) {
-        Result<List<UserDto>> result;
+    public List<UserResponse> listUsers(String token, String mode) {
+        Result<List<UserResponse>> result;
         String bearerToken = AuthUtil.getBearerToken(token);
 
         if (mode.equalsIgnoreCase("active"))
@@ -62,9 +62,9 @@ public class AdminService extends BaseService {
         return result.getMessage();
     }
 
-    public UserDto getUser(String token, long userId) {
+    public UserResponse getUser(String token, long userId) {
         String bearerToken = AuthUtil.getBearerToken(token);
-        Result<UserDto> result = authServerClient.getUser(bearerToken, userId);
+        Result<UserResponse> result = authServerClient.getUser(bearerToken, userId);
         logIfError(result);
         return result.getData();
     }

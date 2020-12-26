@@ -6,7 +6,7 @@ import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.dto.mvcmodel.LoginModel;
 import com.filecloud.uiservice.dto.session.UserSession;
 import com.filecloud.uiservice.response.Result;
-import com.filecloud.uiservice.service.UserService;
+import com.filecloud.uiservice.service.SharedService;
 import feign.FeignException.BadRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,11 +22,11 @@ import javax.validation.Valid;
 @Controller
 public class SharedController extends BaseController {
 
-    private final UserService userService;
+    private final SharedService sharedService;
 
     @Autowired
-    public SharedController(UserService userService) {
-        this.userService = userService;
+    public SharedController(SharedService sharedService) {
+        this.sharedService = sharedService;
     }
 
     @GetMapping("/login")
@@ -54,7 +54,7 @@ public class SharedController extends BaseController {
             return "login";
 
         try {
-            UserSession userSession = userService.login(loginModel);
+            UserSession userSession = sharedService.login(loginModel);
             persistSession(request, userSession);
 
             if (isAdmin(userSession))
@@ -91,7 +91,7 @@ public class SharedController extends BaseController {
             return "register";
         }
 
-        Result<String> result = userService.register(registerUser);
+        Result<String> result = sharedService.register(registerUser);
 
         if (!result.isSuccess())
             model.addAttribute(UiConst.KEY_ERROR, result.getMessage());
@@ -115,7 +115,7 @@ public class SharedController extends BaseController {
             return "forgot";
         }
 
-        Result<String> result = userService.forgotPassword(request);
+        Result<String> result = sharedService.forgotPassword(request);
 
         if (!result.isSuccess()) {
             redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());
@@ -128,7 +128,7 @@ public class SharedController extends BaseController {
 
     @GetMapping("/forgot-password/{token}")
     public String verifyForgotPasswordToken(@PathVariable String token, @ModelAttribute(UiConst.KEY_ERROR) String error, Model model) {
-        Result<ForgotPasswordVerifiedResponse> result = userService.verifyForgotPasswordToken(token);
+        Result<ForgotPasswordVerifiedResponse> result = sharedService.verifyForgotPasswordToken(token);
 
         ChangeForgotPasswordRequest request = new ChangeForgotPasswordRequest();
         request.setId(result.getData().getUserId());
@@ -146,7 +146,7 @@ public class SharedController extends BaseController {
             return "redirect:/forgot-password/" + request.getToken();
         }
 
-        Result<String> result = userService.changeForgotPassword(request);
+        Result<String> result = sharedService.changeForgotPassword(request);
 
         if (!result.isSuccess()) {
             redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());
@@ -173,7 +173,7 @@ public class SharedController extends BaseController {
             return "redirect:" + referer;
         }
 
-        Result<String> result = userService.changePassword(user.getAccessToken(), request);
+        Result<String> result = sharedService.changePassword(user.getAccessToken(), request);
 
         if (!result.isSuccess()) {
             redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());
@@ -181,7 +181,7 @@ public class SharedController extends BaseController {
         }
 
         try {
-            UserSession userSession = userService.login(new LoginModel(user.getEmail(), request.getNewPassword()));
+            UserSession userSession = sharedService.login(new LoginModel(user.getEmail(), request.getNewPassword()));
             persistSession(servletRequest, userSession);
             redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, "Password successfully changed");
             return "redirect:" + referer;
@@ -200,7 +200,7 @@ public class SharedController extends BaseController {
             return "redirect:" + referer;
         }
 
-        Result<String> result = userService.updateProfile(currentUser.getAccessToken(), updateUserRequest);
+        Result<String> result = sharedService.updateProfile(currentUser.getAccessToken(), updateUserRequest);
 
         if (!result.isSuccess())
             redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());

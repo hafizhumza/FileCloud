@@ -1,7 +1,7 @@
 package com.filecloud.uiservice.controller;
 
 import com.filecloud.uiservice.client.request.ChangePasswordRequest;
-import com.filecloud.uiservice.client.response.UserDto;
+import com.filecloud.uiservice.client.response.UserResponse;
 import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.client.request.UpdateUserRequest;
 import com.filecloud.uiservice.dto.session.UserSession;
@@ -58,14 +58,14 @@ public class AdminController extends BaseController {
     }
 
     @PostMapping("update-user")
-    public String updateUser(@Valid UserDto userDto, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String updateUser(@Valid UserResponse userResponse, HttpSession session, RedirectAttributes redirectAttributes) {
         UserSession currentUser = verifyAdmin(session);
         String result;
 
-        if (userDto.getAccountNonLocked() == null || !userDto.getAccountNonLocked()) {
-            result = adminService.disableUser(currentUser.getAccessToken(), userDto.getId());
+        if (userResponse.getAccountNonLocked() == null || !userResponse.getAccountNonLocked()) {
+            result = adminService.disableUser(currentUser.getAccessToken(), userResponse.getId());
         } else {
-            result = adminService.enableUser(currentUser.getAccessToken(), userDto.getId());
+            result = adminService.enableUser(currentUser.getAccessToken(), userResponse.getId());
         }
 
         redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result);
