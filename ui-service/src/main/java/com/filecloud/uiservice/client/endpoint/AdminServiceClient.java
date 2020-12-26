@@ -34,9 +34,6 @@ public interface AdminServiceClient {
     @PostMapping("delete-user")
     Result<String> deleteUser(@RequestHeader("Authorization") String bearerToken, IdRequest dto);
 
-    @GetMapping("active-users-count")
-    Result<SingleFieldResponse> activeUserCount(@RequestHeader("Authorization") String bearerToken);
-
     @GetMapping("inactive-users-count")
     Result<SingleFieldResponse> inActiveUserCount(@RequestHeader("Authorization") String bearerToken);
 

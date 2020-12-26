@@ -28,7 +28,7 @@ public class UiConst {
      */
     public static final String URL_AUTH_SERVER = "/aus/api/v1/";
     public static final String URL_ADMIN_SERVICE = "/as/api/v1/";
-    public static final String URL_DOCUMENT_SERVICE = "/ds/api/v1/";
+    public static final String URL_DOCUMENT_SERVICE = "/ds/api/v1/document/";
 
     /**
      * ROLE

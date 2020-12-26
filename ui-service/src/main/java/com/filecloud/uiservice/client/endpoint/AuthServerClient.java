@@ -3,6 +3,7 @@ package com.filecloud.uiservice.client.endpoint;
 import com.filecloud.uiservice.client.request.*;
 import com.filecloud.uiservice.client.response.ForgotPasswordVerifiedResponse;
 import com.filecloud.uiservice.client.response.LoginResponse;
+import com.filecloud.uiservice.client.response.SingleFieldResponse;
 import com.filecloud.uiservice.client.response.UserResponse;
 import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.response.Result;
@@ -46,5 +47,8 @@ public interface AuthServerClient {
 
     @GetMapping(UiConst.URL_AUTH_SERVER + "list-active-users")
     Result<List<UserResponse>> listActiveUsers(@RequestHeader("Authorization") String bearerToken);
+
+    @GetMapping(UiConst.URL_AUTH_SERVER + "active-users-count")
+    Result<SingleFieldResponse> activeUserCount(@RequestHeader("Authorization") String bearerToken);
 
 }

@@ -202,9 +202,9 @@ public class SharedController extends BaseController {
 
         Result<String> result = sharedService.updateProfile(currentUser.getAccessToken(), updateUserRequest);
 
-        if (!result.isSuccess())
+        if (!result.isSuccess()) {
             redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());
-        else {
+        } else {
             currentUser.setName(updateUserRequest.getName());
             currentUser.setEmail(updateUserRequest.getEmail());
             persistSession(request, currentUser);

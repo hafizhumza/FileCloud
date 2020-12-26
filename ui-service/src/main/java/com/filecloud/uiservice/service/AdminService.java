@@ -19,10 +19,13 @@ public class AdminService extends BaseService {
 
     private final AdminServiceClient adminServiceClient;
 
+    private final UserService userService;
+
     @Autowired
-    public AdminService(AdminServiceClient adminServiceClient, AuthServerClient authServerClient) {
+    public AdminService(AdminServiceClient adminServiceClient, AuthServerClient authServerClient, UserService userService) {
         this.adminServiceClient = adminServiceClient;
         this.authServerClient = authServerClient;
+        this.userService = userService;
     }
 
     public List<UserResponse> listUsers(String token, String mode) {
@@ -70,9 +73,7 @@ public class AdminService extends BaseService {
     }
 
     public String activeUserCount(String bearerToken) {
-        Result<SingleFieldResponse> result = adminServiceClient.activeUserCount(bearerToken);
-        logIfError(result);
-        return result.getData().getResponse().toString();
+        return userService.activeUserCount(bearerToken);
     }
 
     public String inActiveUserCount(String bearerToken) {
