@@ -88,4 +88,9 @@ public class UserController extends BaseController {
 		return sendSuccessResponse(Status.ALL_OK, userService.getCurrentUser());
 	}
 
+	@GetMapping("/active-users-count")
+	public Result<?> activeUserCount() {
+		return sendSuccessResponse(Status.ALL_OK, userService.getActiveUserCount());
+	}
+
 }

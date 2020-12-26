@@ -64,11 +64,6 @@ public class AdminController extends BaseController {
 		return sendSuccessResponse(Status.ALL_OK, "User deleted successfully!");
 	}
 
-	@GetMapping("/active-users-count")
-	public Result<?> activeUserCount() {
-		return sendSuccessResponse(Status.ALL_OK, userService.getActiveUserCount());
-	}
-
 	@GetMapping("/inactive-users-count")
 	public Result<?> inActiveUserCount() {
 		return sendSuccessResponse(Status.ALL_OK, userService.getInActiveUserCount());
