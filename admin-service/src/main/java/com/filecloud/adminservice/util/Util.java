@@ -28,13 +28,6 @@ public class Util {
         return configBoolean != null && configBoolean;
     }
 
-    public static double convertBytesToMb(long bytes) {
-        if (bytes <= 0)
-            return 0;
-
-        return bytes / 1024d / 1024d;
-    }
-
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
