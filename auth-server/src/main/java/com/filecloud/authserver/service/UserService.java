@@ -65,6 +65,11 @@ public class UserService extends BaseService {
 	}
 
 	public void registerUser(RegisterUserDto userDto) {
+		Optional<AuthUser> existingUser = userRepository.findByEmail(userDto.getEmail());
+
+		if (existingUser.isPresent())
+			duplicateEmail();
+
 		Role role = roleService.findByName(ConstUtil.ROLE_USER);
 
 		AuthUser authUser = new AuthUser();

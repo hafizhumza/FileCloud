@@ -2,6 +2,7 @@
 package com.filecloud.authserver.service;
 
 import com.filecloud.authserver.exception.BadRequestException;
+import com.filecloud.authserver.exception.DuplicateEmailException;
 import com.filecloud.authserver.exception.HttpResponseException;
 import com.filecloud.authserver.exception.InvalidAccessException;
 import com.filecloud.authserver.exception.InvalidInputException;
@@ -72,4 +73,13 @@ public class BaseService {
 	public static void invalidAccess(String message) {
 		throw new InvalidAccessException(message);
 	}
+
+	public static void duplicateEmail() {
+		throw new DuplicateEmailException();
+	}
+
+	public static void duplicateEmail(String message) {
+		throw new DuplicateEmailException(message);
+	}
+
 }
