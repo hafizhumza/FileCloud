@@ -59,10 +59,6 @@ public class AdminService extends BaseService {
 		return result;
 	}
 
-	public Result<?> getActiveUserCount() {
-		return authClient.activeUserCount(AuthUtil.getBearerToken());
-	}
-
 	public Result<?> getInActiveUserCount() {
 		return authClient.inActiveUserCount(AuthUtil.getBearerToken());
 	}

@@ -31,9 +31,6 @@ public interface AuthServerClient {
 	@PostMapping("admin/delete-user")
 	Result<?> deleteUser(@RequestHeader("Authorization") String bearerToken, SingleIdRequestDto dto);
 
-	@GetMapping("admin/active-users-count")
-	Result<?> activeUserCount(@RequestHeader("Authorization") String bearerToken);
-
 	@GetMapping("admin/inactive-users-count")
 	Result<?> inActiveUserCount(@RequestHeader("Authorization") String bearerToken);
 

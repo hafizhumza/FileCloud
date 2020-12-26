@@ -61,11 +61,6 @@ public class AdminController extends BaseController {
 		return adminService.deleteUser(dto);
 	}
 
-	@GetMapping("/active-users-count")
-	public Result<?> activeUserCount() {
-		return adminService.getActiveUserCount();
-	}
-
 	@GetMapping("/inactive-users-count")
 	public Result<?> inActiveUserCount() {
 		return adminService.getInActiveUserCount();
