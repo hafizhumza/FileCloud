@@ -73,7 +73,7 @@ public class DocumentService extends BaseService {
 
 	public DocumentResponseDto saveDocument(MultipartFile multipartDocument, String rawProps) {
 		UploadRequestDto properties = verifyDocumentUploadRequest(rawProps);
-		double documentSizeInMb = verifyDocumentAndSpaceLimit(multipartDocument);
+		long documentSizeInBytes = verifyDocumentAndSpaceLimit(multipartDocument);
 
 		String fileName = Util.getRandomUUID() + "." + ConstUtil.FILE_EXTENSION_ENCRYPTED;
 		Path targetLocation = fileStorageLocation.resolve(fileName);
@@ -93,7 +93,7 @@ public class DocumentService extends BaseService {
 		document.setDisplayName(properties.getName());
 		document.setExtension(extension);
 		document.setPath(targetLocation.toString());
-		document.setSizeInMb(documentSizeInMb);
+		document.setSizeInBytes(documentSizeInBytes);
 
 		return new DocumentResponseDto(documentRepository.save(document));
 	}
@@ -124,9 +124,9 @@ public class DocumentService extends BaseService {
 	}
 
 	public SpaceInfoResponseDto getSpaceInfo() {
-		double spaceLimit = documentServiceProperties.getSpaceLimitPerUser();
-		double usedSpace = this.getUsedSpace();
-		double remainingSpace = (spaceLimit - usedSpace);
+		long spaceLimit = Util.convertMbToBytes(documentServiceProperties.getSpaceLimitPerUser());
+		long usedSpace = this.getUsedSpace();
+		long remainingSpace = (spaceLimit - usedSpace);
 		return new SpaceInfoResponseDto(spaceLimit, usedSpace, remainingSpace);
 	}
 
@@ -197,7 +197,7 @@ public class DocumentService extends BaseService {
 		}
 	}
 
-	private double getUsedSpace() {
+	private long getUsedSpace() {
 		UserSession session = AuthUtil.getCurrentLoggedInUser();
 		return documentRepository.findUsedSpace(session.getUserId());
 	}
@@ -221,11 +221,11 @@ public class DocumentService extends BaseService {
 		return properties;
 	}
 
-	private double verifyDocumentAndSpaceLimit(MultipartFile multipartDocument) {
+	private long verifyDocumentAndSpaceLimit(MultipartFile multipartDocument) {
 		if (multipartDocument == null)
 			invalidInput("Document cannot be null.");
 
-		double documentSize = Util.convertBytesToMb(multipartDocument.getSize());
+		long documentSize = multipartDocument.getSize();
 
 		if (documentSize <= 0)
 			invalidInput("Document size cannot be 0.");
@@ -233,18 +233,20 @@ public class DocumentService extends BaseService {
 		SpaceInfoResponseDto spaceInfo = this.getSpaceInfo();
 
 		if (documentSize > spaceInfo.getSpaceLimit())
-			invalidAccess(String.format("Your document size is bigger than space limit. " +
-					"Document Size: %.6f, Space Limit: %.6f.", documentSize, spaceInfo.getSpaceLimit()));
+			invalidInput(String.format("Your document size is bigger than space limit. " +
+					"Document Size: %s, Space Limit: %s.", Util.humanReadableByteCountBin(documentSize), Util.humanReadableByteCountBin(documentSize)));
 
 		if (documentSize > getSpaceInfo().getRemainingSpace())
-			invalidAccess(String.format("Your disk space is low. " +
-					"Space Limit is %.6f MB. " +
-					"You used %.6f MB. " +
-					"Remaining space is %.6f MB. " +
-					"Document size is %.6f MB." +
+			invalidInput(String.format("Your disk space is low. " +
+					"Space Limit is %s. " +
+					"You used %s. " +
+					"Remaining space is %s. " +
+					"Document size is %s." +
 					"Please delete some documents to continue.",
-					spaceInfo.getSpaceLimit(), spaceInfo.getUsedSpace(),
-					spaceInfo.getRemainingSpace(), documentSize));
+					Util.humanReadableByteCountBin(spaceInfo.getSpaceLimit()),
+					Util.humanReadableByteCountBin(spaceInfo.getUsedSpace()),
+					Util.humanReadableByteCountBin(spaceInfo.getRemainingSpace()),
+					Util.humanReadableByteCountBin(documentSize)));
 
 		return documentSize;
 	}

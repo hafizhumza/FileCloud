@@ -18,6 +18,6 @@ public interface DocumentRepository extends JpaRepository<Document, Long> {
 	Long countByUserId(long userId);
 
 	@Query(name = DocumentQueries.QUERY_USER_FILES_SIZE)
-	double findUsedSpace(long userId);
+	Long findUsedSpace(long userId);
 
 }

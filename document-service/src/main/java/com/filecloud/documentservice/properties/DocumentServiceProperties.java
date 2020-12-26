@@ -15,7 +15,7 @@ public class DocumentServiceProperties {
 	/**
 	 * This will be in MB
 	 */
-	double spaceLimitPerUser;
+	long spaceLimitPerUser;
 
 	boolean devMode;
 
@@ -60,11 +60,11 @@ public class DocumentServiceProperties {
 		this.documentServicePrefix = documentServicePrefix;
 	}
 
-	public double getSpaceLimitPerUser() {
+	public long getSpaceLimitPerUser() {
 		return spaceLimitPerUser;
 	}
 
-	public void setSpaceLimitPerUser(double spaceLimitPerUser) {
+	public void setSpaceLimitPerUser(long spaceLimitPerUser) {
 		this.spaceLimitPerUser = spaceLimitPerUser;
 	}
 

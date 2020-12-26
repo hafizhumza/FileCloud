@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Table(name = "document")
 @NamedQueries({
-        @NamedQuery(name = DocumentQueries.QUERY_USER_FILES_SIZE, query = "SELECT COALESCE(SUM(sizeInMb), 0) FROM Document WHERE userId = :userId")
+        @NamedQuery(name = DocumentQueries.QUERY_USER_FILES_SIZE, query = "SELECT COALESCE(SUM(sizeInBytes), 0) FROM Document WHERE userId = :userId")
 })
 public class Document {
 
@@ -38,8 +38,8 @@ public class Document {
     @Column
     private String path;
 
-    @Column(name = "size_in_mb")
-    private Double sizeInMb;
+    @Column(name = "size_in_bytes")
+    private Long sizeInBytes;
 
     @Column(name = "create_date")
     private Long createDate;
