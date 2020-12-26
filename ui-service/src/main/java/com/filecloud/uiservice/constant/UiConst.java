@@ -20,6 +20,7 @@ public class UiConst {
      * Messages
      */
     public static final String MESSAGE_INVALID_LOGIN = "Invalid email or password";
+    public static final String MESSAGE_ACCOUNT_LOCKED = "User account is locked";
     public static final String MESSAGE_LOGIN = "Please login to continue";
 
     /**

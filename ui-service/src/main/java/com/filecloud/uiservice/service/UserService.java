@@ -34,8 +34,10 @@ public class UserService extends BaseService {
         return session;
     }
 
-    public void register(RegisterUserRequest request) {
-        // TODO
+    public Result<String> register(RegisterUserRequest request) {
+        Result<String> result = authServerClient.register(request);
+        throwIfInternalServerError(result);
+        return result;
     }
 
     public Result<String> updateProfile(String token, UpdateUserRequest request) {

@@ -1,12 +1,9 @@
 package com.filecloud.uiservice.controller;
 
-import com.filecloud.uiservice.client.request.ChangeForgotPasswordRequest;
-import com.filecloud.uiservice.client.request.ChangePasswordRequest;
-import com.filecloud.uiservice.client.request.ForgotPasswordRequest;
+import com.filecloud.uiservice.client.request.*;
 import com.filecloud.uiservice.client.response.ForgotPasswordVerifiedResponse;
 import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.dto.mvcmodel.LoginModel;
-import com.filecloud.uiservice.client.request.UpdateUserRequest;
 import com.filecloud.uiservice.dto.session.UserSession;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.service.UserService;
@@ -65,9 +62,43 @@ public class SharedController extends BaseController {
             else
                 return "redirect:/home";
         } catch (BadRequest e) {
-            model.addAttribute(UiConst.KEY_ERROR, UiConst.MESSAGE_INVALID_LOGIN);
+            String message;
+
+            if (e.getLocalizedMessage().contains("account is locked"))
+                message = UiConst.MESSAGE_ACCOUNT_LOCKED;
+            else
+                message = UiConst.MESSAGE_INVALID_LOGIN;
+
+            model.addAttribute(UiConst.KEY_ERROR, message);
             return "login";
         }
+    }
+
+    @GetMapping("/register")
+    public String register(@ModelAttribute(UiConst.KEY_ERROR) String error, @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage, Model model) {
+        model.addAttribute("registerUser", new RegisterUserRequest());
+        model.addAttribute(UiConst.KEY_ERROR, error);
+        model.addAttribute(UiConst.KEY_RESULT_MESSAGE, resultMessage);
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String register(@Valid RegisterUserRequest registerUser, BindingResult bindingResult, RedirectAttributes redirectAttributes, Model model) {
+        model.addAttribute("registerUser", registerUser);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute(UiConst.KEY_ERROR, bindingResult.getFieldErrors().get(0).getDefaultMessage());
+            return "register";
+        }
+
+        Result<String> result = userService.register(registerUser);
+
+        if (!result.isSuccess())
+            model.addAttribute(UiConst.KEY_ERROR, result.getMessage());
+        else
+            model.addAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
+
+        return "register";
     }
 
     @GetMapping("/forgot-password")

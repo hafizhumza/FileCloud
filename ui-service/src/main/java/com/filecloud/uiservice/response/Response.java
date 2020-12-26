@@ -23,9 +23,9 @@ public class Response {
         /**
          * Exceptions + Errors
          */
-
         INTERNAL_SERVER_ERROR(500, "An error occurred on server side"),
-        INVALID_ACCESS(403, " Access with the provided credentials denied."),
+        INVALID_ACCESS(403, "Access with the provided credentials denied."),
+        DUPLICATE_EMAIL(407, "Email already exists"),
         INVALID_INPUT(511, "Invalid Input"),
         BAD_REQUEST(400, "Invalid request data on the client side"),
         NOT_LOGGED_IN_EXCEPTION(405, "User not logged in. Please login to continue"),

@@ -26,7 +26,7 @@ public interface AuthServerClient {
     Result<UserDto> getUser(@RequestHeader("Authorization") String bearerToken, @PathVariable long userId);
 
     @PostMapping(UiConst.URL_AUTH_SERVER + "register")
-    Result<?> register(@RequestHeader("Authorization") String bearerToken, @RequestBody RegisterUserRequest request);
+    Result<String> register(@RequestBody RegisterUserRequest request);
 
     @PostMapping(UiConst.URL_AUTH_SERVER + "update-profile")
     Result<String> updateProfile(@RequestHeader("Authorization") String bearerToken, @RequestBody UpdateUserRequest request);

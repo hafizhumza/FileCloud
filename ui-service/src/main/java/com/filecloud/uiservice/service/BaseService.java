@@ -66,6 +66,10 @@ public class BaseService {
         if (result.getStatusCode() == Status.INVALID_ACCESS.getStatusCode())
             invalidAccess();
 
+        throwIfInternalServerError(result);
+    }
+
+    public static void throwIfInternalServerError(Result<?> result) {
         if (result.getStatusCode() == Status.INTERNAL_SERVER_ERROR.getStatusCode())
             error();
     }
