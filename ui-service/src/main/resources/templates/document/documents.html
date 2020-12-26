@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Documents</title>
+    <div th:replace="master :: head"></div>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <div th:replace="master :: user-header"></div>
+    <div th:replace="master :: user-aside"></div>
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1 style="display: inline; margin-right: 10px;">
+                All Documents
+            </h1>
+            <div style="display: inline;" class=" alert alert-danger" th:inline="text" th:if="${error}">
+                [[${error}]]
+            </div>
+            <div style="display: inline;" class="alert alert-success" th:inline="text" th:if="${ResultMessage}">
+                [[${ResultMessage}]]
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div>
+                <section class="content-header">
+                    <h1>
+                        Documents
+                        <small>All Documents</small>
+                    </h1>
+                </section>
+
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <!-- /.box-header -->
+                                <div class="box-body">
+                                    <table id="example1" class="table table-bordered table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Description</th>
+                                            <th>Type</th>
+                                            <th>Size</th>
+                                            <th>Create Date</th>
+                                            <th>Modify Date</th>
+                                            <th></th>
+                                            <th></th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="doc : ${documents}">
+                                            <td th:text="${doc.name}"></td>
+                                            <td th:text="${doc.description}"></td>
+                                            <td th:text="${doc.extension}"></td>
+                                            <td th:text="${doc.size}"></td>
+                                            <td th:text="${doc.createDate}"></td>
+                                            <td th:text="${doc.modifyDate}"></td>
+                                            <td><a th:href="@{/admin/tasks/update(id=${doc.id})}"><span
+                                                    class="glyphicon glyphicon-pencil"></span> EDIT</a></td>
+                                            <td><a th:href="@{/admin/tasks/delete(id=${doc.id})}"><span
+                                                    class="glyphicon glyphicon-trash"></span> DELETE</a></td>
+                                            <td><a th:href="@{/admin/tasks/per_inf(id=${doc.id})}"><span
+                                                    class="glyphicon glyphicon-user"></span> INF</a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </section>
+            </div>
+            <!--<div th:if="${mode == 'MODE_UPDATE'}">
+                <div class="container">
+                    <div class="row">
+                        <form autocomplete="off" action="#" th:action="@{/admin/tasks/save}"
+                              th:object="${task}" method="post" class="form-horizontal"
+                              role="form">
+                            <fieldset>
+                                &lt;!&ndash; Form Name &ndash;&gt;
+                                <legend>Edit Task</legend>
+                                &lt;!&ndash; Text input&ndash;&gt;
+                                <input type="hidden" name="id" th:field="${task.id}"/>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Task
+                                        Name</label>
+                                    <div class="col-md-4">
+                                        <input type="text" th:field="${task.name}" placeholder="Name"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Task
+                                        Description</label>
+                                    <div class="col-md-4">
+                                        <input type="text" th:field="${task.description}"
+                                               placeholder="Description" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Task Status
+                                        (Finished)</label>
+                                    <div class="col-md-4 text-left">
+                                        <input type="radio" class="col-sm-1" name="finished"
+                                               value="true"/>
+                                        <div class="col-sm-2">Yes</div>
+                                        <input type="radio" class="col-md-1" name="finished"
+                                               value="false"/>
+                                        <div class="col-sm-2">No</div>
+                                    </div>
+
+                                </div>
+
+                                &lt;!&ndash; Button (Double) &ndash;&gt;
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="submitButton"></label>
+                                    <div class="col-md-8">
+                                        <button type="submit" id="submitButton" name="submitButton"
+                                                class="btn btn-success">Save
+                                        </button>
+                                        <button type="button" class="btn btn-inverse"
+                                                onclick="window.history.back()">Cancel
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${mode == 'MODE_NEW'}">
+                <div class="container">
+                    <div class="row">
+                        <form autocomplete="off" action="#" th:action="@{/admin/tasks/save}"
+                              th:object="${task}" method="post" class="form-horizontal"
+                              role="form">
+                            <fieldset>
+                                &lt;!&ndash; Form Name &ndash;&gt;
+                                <legend>New Task</legend>
+                                &lt;!&ndash; Text input&ndash;&gt;
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Task
+                                        Name</label>
+                                    <div class="col-md-4">
+                                        <input type="text" th:field="${task.name}" placeholder="Name"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="textinput">Task
+                                        Description</label>
+                                    <div class="col-md-4">
+                                        <input type="text" th:field="${task.description}"
+                                               placeholder="Description" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label">Task Status
+                                        (Finished)</label>
+                                    <div class="col-md-4 text-left">
+                                        <input type="radio" class="col-sm-1" name="finished"
+                                               value="true"/>
+                                        <div class="col-sm-2">Yes</div>
+                                        <input type="radio" class="col-sm-1" name="finished"
+                                               value="false" checked/>
+                                        <div class="col-sm-2">No</div>
+                                    </div>
+
+                                </div>
+
+                                &lt;!&ndash; Button (Double) &ndash;&gt;
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="submitButton"></label>
+                                    <div class="col-md-8">
+                                        <button type="submit" id="submtButton" name="submitButton"
+                                                class="btn btn-success">Save
+                                        </button>
+                                        <button type="button" class="btn btn-inverse"
+                                                onclick="window.history.back()">Cancel
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${mode == 'MODE_INF'}">
+                <section class="content-header">
+                    <h2>
+                        Personnel Assigned to the Task
+                    </h2>
+                    &lt;!&ndash; /.box-header &ndash;&gt;
+                    <h1 class="box-title"><span style="color: black; font-weight: bold"
+                                                th:utext="${task.name}"></span></h1>
+                </section>
+
+                &lt;!&ndash; Main content &ndash;&gt;
+                <section class="content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+
+
+                                <div class="box-body">
+                                    <table id="table2" class="table table-bordered table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>Personnel Name</th>
+                                            <th>Personnel Email</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each="tasks : ${usertasks}">
+                                            <td th:text="${tasks.user.name}"></td>
+                                            <td th:text="${tasks.user.email}"></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                &lt;!&ndash; /.box-body &ndash;&gt;
+                            </div>
+                            &lt;!&ndash; /.box &ndash;&gt;
+                        </div>
+                        &lt;!&ndash; /.col &ndash;&gt;
+                    </div>
+                    &lt;!&ndash; /.row &ndash;&gt;
+                </section>
+            </div>-->
+        </section>
+
+        <!-- /.content -->
+    </div>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 2.2.3 -->
+<script src="@{/js/jquery-2.2.3.min.js}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="@{/js/bootstrap.min.js}"></script>
+<!-- DataTables -->
+
+<!-- SlimScroll -->
+<script src="@{/js/jquery.slimscroll.min.js}"></script>
+<!-- FastClick -->
+<script src="@{/js/fastclick.js}"></script>
+<!-- AdminLTE App -->
+<script src="@{/js/app.min.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="@{/js/demo.js}"></script>
+<!-- page script -->
+<script src="@{/js/jquery.dataTables.min.js}"></script>
+<script src="@{/js/dataTables.bootstrap.min.js}"></script>
+<script>
+    $(function () {
+        $('#example1').DataTable({
+            "ordering": false
+        });
+        $('#table2').DataTable();
+    });
+</script>
+</body>
+</html>

@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SpaceInfoResponse {
 
-    private double spaceLimit;
-    private double usedSpace;
-    private double remainingSpace;
+    private long spaceLimit;
+    private long usedSpace;
+    private long remainingSpace;
 
 }

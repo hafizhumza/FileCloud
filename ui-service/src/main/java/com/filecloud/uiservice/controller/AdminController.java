@@ -54,7 +54,7 @@ public class AdminController extends BaseController {
         UserSession currentUser = getVerifiedAdmin(session);
         model.addAttribute(UiConst.KEY_PROCESS_USER, adminService.getUser(currentUser.getAccessToken(), id));
         model.addAttribute(UiConst.KEY_USER, currentUser);
-        return "admin/edit_user";
+        return "admin/edit-user";
     }
 
     @PostMapping("update-user")

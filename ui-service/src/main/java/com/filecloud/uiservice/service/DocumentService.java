@@ -1,12 +1,18 @@
 package com.filecloud.uiservice.service;
 
 import com.filecloud.uiservice.client.endpoint.DocumentServiceClient;
+import com.filecloud.uiservice.client.response.DocumentResponse;
 import com.filecloud.uiservice.client.response.SingleFieldResponse;
 import com.filecloud.uiservice.client.response.SpaceInfoResponse;
+import com.filecloud.uiservice.dto.mvcmodel.DocumentModel;
+import com.filecloud.uiservice.dto.mvcmodel.SpaceInfoModel;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -21,22 +27,29 @@ public class DocumentService extends BaseService {
 
     public String count(String bearerToken) {
         Result<SingleFieldResponse> result = documentServiceClient.count(bearerToken);
-        logIfError(result);
+        throwIfInvalidAccessOrInternalError(result);
         return result.getData().getResponse().toString();
     }
 
-    public SpaceInfoResponse spaceInfo(String bearerToken) {
+    public SpaceInfoModel spaceInfo(String bearerToken) {
         Result<SpaceInfoResponse> result = documentServiceClient.spaceInfo(bearerToken);
-        logIfError(result);
+        throwIfInvalidAccessOrInternalError(result);
         SpaceInfoResponse response = result.getData();
 
         if (response == null)
-            return new SpaceInfoResponse();
+            return new SpaceInfoModel();
 
-        response.setUsedSpace(Util.roundUptoTwo(response.getUsedSpace()));
-        response.setRemainingSpace(Util.roundUptoTwo(response.getRemainingSpace()));
-        response.setSpaceLimit(Util.roundUptoTwo(response.getSpaceLimit()));
-        return response;
+        return new SpaceInfoModel(
+                Util.humanReadableByteCountBin(response.getSpaceLimit()),
+                Util.humanReadableByteCountBin(response.getUsedSpace()),
+                Util.humanReadableByteCountBin(response.getRemainingSpace())
+        );
+    }
+
+    public List<DocumentModel> listDocuments(String bearerToken) {
+        Result<List<DocumentResponse>> result = documentServiceClient.listDocuments(bearerToken);
+        throwIfInvalidAccessOrInternalError(result);
+        return result.getData().stream().map(DocumentModel::new).collect(Collectors.toList());
     }
 
 }
