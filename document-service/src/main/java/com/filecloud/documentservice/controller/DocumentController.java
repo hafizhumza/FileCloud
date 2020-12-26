@@ -79,8 +79,8 @@ public class DocumentController extends BaseController {
 		return sendSuccessResponse(Response.Status.ALL_OK, "Document deleted successfully!");
 	}
 
-	@GetMapping("/used-space")
-	public Result<?> usedSpace() {
+	@GetMapping("/space-info")
+	public Result<?> spaceInfo() {
 		return sendSuccessResponse(Response.Status.ALL_OK, documentService.getSpaceInfo());
 	}
 
@@ -89,6 +89,11 @@ public class DocumentController extends BaseController {
 	public Result<?> share(@RequestBody @Valid ShareDocumentRequestDto requestDto) {
 		documentService.share(requestDto);
 		return sendSuccessResponse(Response.Status.ALL_OK, "Document shared successfully to the given email address");
+	}
+
+	@GetMapping("/count")
+	public Result<?> countByUser() {
+		return sendSuccessResponse(Response.Status.ALL_OK, documentService.countByUser());
 	}
 
 }

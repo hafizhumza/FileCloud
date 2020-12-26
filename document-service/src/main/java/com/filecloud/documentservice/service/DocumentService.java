@@ -27,6 +27,7 @@ import com.filecloud.documentservice.model.dto.DocumentResponseDto;
 import com.filecloud.documentservice.model.dto.DownloadDocumentDto;
 import com.filecloud.documentservice.model.dto.EmailSharedDocumentDto;
 import com.filecloud.documentservice.model.dto.ShareDocumentRequestDto;
+import com.filecloud.documentservice.model.dto.SingleFieldResponse;
 import com.filecloud.documentservice.model.dto.SingleIdRequestDto;
 import com.filecloud.documentservice.model.dto.SpaceInfoResponseDto;
 import com.filecloud.documentservice.model.dto.UpdateRequestDto;
@@ -179,6 +180,11 @@ public class DocumentService extends BaseService {
 			}
 
 		documentRepository.deleteAll(documents);
+	}
+
+	public SingleFieldResponse countByUser() {
+		UserSession user = AuthUtil.getCurrentLoggedInUser();
+		return new SingleFieldResponse(documentRepository.countByUserId(user.getUserId()));
 	}
 
 	private void createDocumentsDir(DocumentServiceProperties documentServiceProperties) {
