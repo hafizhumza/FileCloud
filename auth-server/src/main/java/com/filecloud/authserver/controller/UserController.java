@@ -37,7 +37,7 @@ public class UserController extends BaseController {
 	@PostMapping("/register")
 	public Result<?> register(@RequestBody RegisterUserDto userDto) {
 		userService.registerUser(userDto);
-		return sendSuccessResponse(Status.ALL_OK, "User registered successfully!");
+		return sendSuccessResponse(Status.ALL_OK, "Success. We will approve your registration soon.");
 	}
 
 	@Transactional
