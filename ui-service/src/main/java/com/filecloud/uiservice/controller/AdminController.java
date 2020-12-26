@@ -28,7 +28,7 @@ public class AdminController extends BaseController {
 
     @GetMapping("home")
     public String home(HttpSession session, Model model, @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage, @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
-        UserSession currentUser = verifyAdmin(session);
+        UserSession currentUser = getVerifiedAdmin(session);
         model.addAttribute(UiConst.KEY_USER, currentUser);
         model.addAttribute(UiConst.KEY_ACTIVE_USERS_COUNT, adminService.activeUserCount(getBearerToken(currentUser)));
         model.addAttribute(UiConst.KEY_IN_ACTIVE_USERS_COUNT, adminService.inActiveUserCount(getBearerToken(currentUser)));
@@ -42,7 +42,7 @@ public class AdminController extends BaseController {
     public String users(@RequestParam(value = "mode", required = false, defaultValue = "all") String mode,
                         @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String result,
                         HttpSession session, Model model) {
-        UserSession currentUser = verifyAdmin(session);
+        UserSession currentUser = getVerifiedAdmin(session);
         model.addAttribute(UiConst.KEY_USERS, adminService.listUsers(currentUser.getAccessToken(), mode));
         model.addAttribute(UiConst.KEY_USER, currentUser);
         model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (result != null && result.equals("")) ? null : result);
@@ -51,7 +51,7 @@ public class AdminController extends BaseController {
 
     @GetMapping("edit-user")
     public String editUser(@RequestParam long id, HttpSession session, Model model) {
-        UserSession currentUser = verifyAdmin(session);
+        UserSession currentUser = getVerifiedAdmin(session);
         model.addAttribute(UiConst.KEY_PROCESS_USER, adminService.getUser(currentUser.getAccessToken(), id));
         model.addAttribute(UiConst.KEY_USER, currentUser);
         return "admin/edit_user";
@@ -59,7 +59,7 @@ public class AdminController extends BaseController {
 
     @PostMapping("update-user")
     public String updateUser(@Valid UserResponse userResponse, HttpSession session, RedirectAttributes redirectAttributes) {
-        UserSession currentUser = verifyAdmin(session);
+        UserSession currentUser = getVerifiedAdmin(session);
         String result;
 
         if (userResponse.getAccountNonLocked() == null || !userResponse.getAccountNonLocked()) {
@@ -74,7 +74,7 @@ public class AdminController extends BaseController {
 
     @GetMapping("delete-user")
     public String deleteUser(@RequestParam long id, HttpSession session, RedirectAttributes redirectAttributes) {
-        UserSession currentUser = verifyAdmin(session);
+        UserSession currentUser = getVerifiedAdmin(session);
         String result = adminService.deleteUser(currentUser.getAccessToken(), id);
         redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result);
         return "redirect:/admin/users";
@@ -82,7 +82,7 @@ public class AdminController extends BaseController {
 
     @GetMapping("/profile")
     public String profile(@RequestParam(required = false) String mode, HttpSession session, Model model, @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage, @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
-        UserSession user = verifyAdmin(session);
+        UserSession user = getVerifiedAdmin(session);
         model.addAttribute(UiConst.KEY_USER, user);
         model.addAttribute("mode", mode);
         model.addAttribute("changePassword", new ChangePasswordRequest());

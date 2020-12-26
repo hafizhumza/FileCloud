@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+    <title>Profile</title>
+    <div th:replace="master :: head"></div>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <div th:replace="master :: user-header"></div>
+    <div th:replace="master :: user-aside"></div>
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content">
+            <div>
+                <section class="content-header">
+                    <h1>
+                        User Profile
+                    </h1>
+                </section>
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+                        <div class="col-lg-offset-3 col-md-4">
+                            <!-- Widget: user widget style 1 -->
+                            <div class="box box-widget widget-user-2 ">
+                                <!-- Add the bg color to the header using any of the bg-* classes -->
+                                <div class="widget-user-header bg-yellow">
+                                    <div class="widget-user-image">
+                                        <img class="img-circle" src="/images/avatar5.png" alt="User Avatar">
+                                    </div>
+                                    <small>
+                                        <cite class="pull-right" title="Ankara, TURKEY">
+                                            PK <i class="glyphicon glyphicon-map-marker"> </i>
+                                        </cite>
+                                    </small>
+                                    <!-- /.widget-user-image -->
+                                    <h3 class="widget-user-username">
+                                        <span style="color: white" th:utext="${user.name}"></span>
+                                    </h3>
+                                    <h5 class=" pull-right widget-user-desc">
+                                        <span style="color: white" th:utext="${user.role}"></span>
+                                    </h5>
+                                    <h5 class="widget-user-desc">
+                                        <span style="color: white" th:utext="${user.email}"></span>
+                                    </h5>
+                                </div>
+                                <div class="box-footer no-padding">
+                                    <ul class="nav nav-stacked">
+                                        <li><a th:href="@{/profile(mode=edit)}">
+                                            Edit profile information
+                                            <span class="pull-right glyphicon glyphicon-pencil  badge bg-blue">Edit</span></a>
+                                        </li>
+                                        <li>
+                                            <a th:href="@{/profile(mode=pass)}">
+                                                Change Password
+                                                <span class="pull-right glyphicon glyphicon-cog badge bg-blue">Password</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- /.widget-user -->
+                        </div>
+                    </div>
+
+                    <!-- /.error-page -->
+                </section>
+            </div>
+            <div th:if="${mode == 'edit'}">
+                <!--<div>-->
+                <div class="container">
+                    <div class="row">
+                        <form autocomplete="off" action="#" th:action="@{/update-profile}"
+                              th:object="${updateProfile}" method="post" class="form-horizontal"
+                              role="form">
+                            <fieldset>
+                                <!-- Form Name -->
+                                <legend>Edit Profile</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">Name</label>
+                                    <div class="col-md-4 text-left">
+                                        <input type="text" th:field="*{name}" placeholder="Name"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">Email</label>
+                                    <div class="col-md-4 text-left">
+                                        <input type="text" th:field="*{email}" placeholder="Email"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="submitButton"></label>
+                                    <div class="col-md-8">
+                                        <button type="submit" name="submitButton" class="btn btn-success">
+                                            Save
+                                        </button>
+                                        <button type="button" class="btn btn-inverse"
+                                                onclick="location.href='/profile'">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${mode == 'pass'}">
+                <div class="container">
+                    <div class="row">
+
+                        <form autocomplete="off" action="#"
+                              th:action="@{/change-password}" th:object="${changePassword}"
+                              method="post" class="form-horizontal" role="form">
+                            <fieldset>
+                                <!-- Form Name -->
+                                <legend>Change Password</legend>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">Old password</label>
+                                    <div class="col-md-4 text-left">
+                                        <input type="password" th:field="*{currentPassword}"
+                                               placeholder="Enter your old password..." class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">New password</label>
+                                    <!--TODO: Change email to password-->
+                                    <div class="col-md-4 text-left">
+                                        <input type="password" th:field="*{newPassword}"
+                                               placeholder="Enter your new password..." class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label col-lg-3">Confirm new
+                                        password</label>
+                                    <div class="col-md-4 text-left">
+                                        <input type="password"
+                                               th:field="*{confirmPassword}"
+                                               placeholder="Confirm your new password..." class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="submitButton"></label>
+                                    <div class="col-md-8">
+                                        <button type="submit" id="submitButton" name="submitButton"
+                                                class="btn btn-success">Save
+                                        </button>
+                                        <button type="button" class="btn btn-inverse"
+                                                onclick="location.href='/profile'">Cancel
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <fieldset>
+                        <div class="form-group">
+                            <label class="control-label col-lg-3"></label>
+                            <div class="col-md-4 text-left">
+                                <div th:replace="master :: messages"></div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+
+    <div class="control-sidebar-bg"></div>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 2.2.3 -->
+<script th:src="@{/js/jquery-2.2.3.min.js}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/js/fastclick.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/js/app.min.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<script th:src="@{/js/demo.js}"></script>
+<!-- jQuery UI 1.11.4 -->
+<script th:src="@{/js/jquery-ui.min.js}"></script>
+<!-- Slimscroll -->
+<script th:src="@{/js/jquery.slimscroll.min.js}"></script>
+
+
+<!-- Morris.js charts -->
+<script th:src="@{/js/raphael-min.js}"></script>
+<script th:src="@{/js/morris.min.js}"></script>
+<!-- Sparkline -->
+<script th:src="@{/js/jquery.sparkline.min.js}"></script>
+<!-- jQuery Knob Chart -->
+<script th:src="@{/js/jquery.knob.js}"></script>
+<!-- Bootstrap WYSIHTML5 -->
+<script th:src="@{/js/bootstrap3-wysihtml5.all.min.js}"></script>
+,
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script th:src="@{/js/dashboard.js}"></script>
+<script th:src="@{/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+<script th:src="@{/js/raphael-min.js}"></script>
+<script th:src="@{js/moment.min.js}"></script>
+<script>
+    $(function () {
+        $('#example1').DataTable({
+            "ordering": false
+        });
+    });
+</script>
+</body>
+</html>

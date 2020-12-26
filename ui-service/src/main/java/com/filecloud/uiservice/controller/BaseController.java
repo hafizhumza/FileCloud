@@ -30,7 +30,7 @@ public class BaseController {
         return userSession;
     }
 
-    public static UserSession verifyAdmin(HttpSession session) {
+    public static UserSession getVerifiedAdmin(HttpSession session) {
         UserSession user = getCurrentUser(session);
 
         if (!isAdmin(user))
