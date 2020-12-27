@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -19,8 +20,8 @@ public class DocumentModel {
     private String description;
     private String extension;
     private String size;
-    private Date createDate;
-    private Date modifyDate;
+    private String createDate;
+    private String modifyDate;
 
     public DocumentModel(DocumentResponse response) {
         id = response.getDocumentId();
@@ -28,9 +29,9 @@ public class DocumentModel {
         description = response.getDescription();
         extension = response.getExtension();
         size = Util.humanReadableByteCountBin(response.getSizeInBytes());
-        createDate = new Date(response.getCreateDate());
+        createDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(response.getCreateDate()));
         if (response.getModifyDate() != null && response.getModifyDate() > 0)
-            modifyDate = new Date(response.getModifyDate());
+            modifyDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(response.getModifyDate()));
     }
 
 }
