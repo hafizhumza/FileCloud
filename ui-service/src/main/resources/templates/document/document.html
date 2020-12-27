@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Documents</title>
+    <div th:replace="master :: head"></div>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <div th:replace="master :: user-header"></div>
+    <div th:replace="master :: user-aside"></div>
+
+    <div class="content-wrapper">
+
+        <section class="content-header">
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div th:if="${result == 'ERROR'}">
+                <div style="display: inline;" class=" alert alert-danger" th:inline="text" th:if="${error}">
+                    [[${error}]]
+                </div>
+            </div>
+            <div th:if="${result == 'SUCCESS'}">
+                <!-- Main content -->
+                <section class="content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-body">
+                                    <fieldset>
+                                        <legend th:inline="text">[[${document.name}]]</legend>
+                                        <table id="table2" class="table table-bordered table-striped">
+                                            <tbody>
+                                            <tr>
+                                                <td>Name</td>
+                                                <td th:inline="text">[[${document.name}]]</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Description</td>
+                                                <td th:inline="text">[[${document.description}]]</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Type</td>
+                                                <td th:inline="text">[[${document.extension}]]</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Size</td>
+                                                <td th:inline="text">[[${document.size}]]</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Create Date</td>
+                                                <td th:inline="text">[[${document.createDate}]]</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Modify Date</td>
+                                                <td th:inline="text">[[${document.modifyDate}]]</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <div style="float: right;">
+                                            <a class="btn btn-success"
+                                               th:href="@{/documents/download/{id}(id=${document.id})}">
+                                                <span class="glyphicon glyphicon-download"></span> DOWNLOAD
+                                            </a>
+                                            <a class="btn btn-warning"
+                                               th:href="@{/documents/update/{id}(id=${document.id})}">
+                                                <span class="glyphicon glyphicon-pencil"></span> EDIT
+                                            </a>
+                                            <a class="btn btn-danger"
+                                               th:href="@{/documents/delete/{id}(id=${document.id})}">
+                                                <span class="glyphicon glyphicon-trash"></span> DELETE
+                                            </a>
+                                            <a class="btn btn-primary"
+                                               th:href="@{/documents/share(documentId=${document.id})}">
+                                                <span class="glyphicon glyphicon-share"></span> SHARE
+                                            </a>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </section>
+            </div>
+        </section>
+
+        <!-- /.content -->
+    </div>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 2.2.3 -->
+<script th:src="@{/js/jquery-2.2.3.min.js}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<!-- DataTables -->
+
+<!-- SlimScroll -->
+<script th:src="@{/js/jquery.slimscroll.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/js/fastclick.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/js/app.min.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<script th:src="@{/js/demo.js}"></script>
+<!-- page script -->
+<script th:src="@{/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+<script src="@{/js/bootstrap-select.min.js}"></script>
+<script>
+    $(function () {
+        $('#example1').DataTable({
+            "ordering": false
+        });
+        $('#table2').DataTable();
+    });
+</script>
+</body>
+</html>

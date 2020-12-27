@@ -27,9 +27,6 @@ public interface DocumentServiceClient {
     @GetMapping("/download/{documentId}")
     ResponseEntity<ByteArrayResource> download(@RequestHeader("Authorization") String bearerToken, @PathVariable long documentId);
 
-    @GetMapping("/{documentId}")
-    Result<?> getDocument(@RequestHeader("Authorization") String bearerToken, @PathVariable long documentId);
-
     @PostMapping("/update")
     Result<?> update(@RequestHeader("Authorization") String bearerToken, @RequestBody UpdateRequest request);
 
@@ -38,6 +35,9 @@ public interface DocumentServiceClient {
 
     @PostMapping("/share")
     Result<?> share(@RequestHeader("Authorization") String bearerToken, @RequestBody ShareDocumentRequest request);
+
+    @GetMapping("/{documentId}")
+    Result<DocumentResponse> getDocument(@RequestHeader("Authorization") String bearerToken, @PathVariable long documentId);
 
     @GetMapping("/list")
     Result<List<DocumentResponse>> listDocuments(@RequestHeader("Authorization") String bearerToken);

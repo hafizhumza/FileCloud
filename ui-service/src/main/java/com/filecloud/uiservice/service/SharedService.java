@@ -42,31 +42,31 @@ public class SharedService extends BaseService {
 
     public Result<String> updateProfile(String token, UpdateUserRequest request) {
         Result<String> result = authServerClient.updateProfile(AuthUtil.getBearerToken(token), request);
-        throwIfInvalidAccessOrInternalError(result);
+        throwIfInvalidAccess(result);
         return result;
     }
 
     public Result<String> forgotPassword(ForgotPasswordRequest request) {
         Result<String> result = authServerClient.forgotPassword(request);
-        throwIfInvalidAccessOrInternalError(result);
+        throwIfInvalidAccess(result);
         return result;
     }
 
     public Result<ForgotPasswordVerifiedResponse> verifyForgotPasswordToken(String token) {
         Result<ForgotPasswordVerifiedResponse> result = authServerClient.verifyForgotPasswordToken(token);
-        throwIfInvalidAccessOrInternalError(result);
+        throwIfInvalidAccess(result);
         return result;
     }
 
     public Result<String> changeForgotPassword(ChangeForgotPasswordRequest request) {
         Result<String> result = authServerClient.changeForgotPassword(request);
-        throwIfInvalidAccessOrInternalError(result);
+        throwIfInvalidAccess(result);
         return result;
     }
 
     public Result<String> changePassword(String token, ChangePasswordRequest request) {
         Result<String> result = authServerClient.changePassword(AuthUtil.getBearerToken(token), request);
-        throwIfInvalidAccessOrInternalError(result);
+        throwIfInvalidAccess(result);
         return result;
     }
 

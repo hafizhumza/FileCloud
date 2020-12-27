@@ -50,12 +50,17 @@ public class BaseService {
             logger.severe(String.format("Service failed with status code %s. Message: %s", result.getStatusCode(), result.getMessage()));
     }
 
-    public static void throwIfInvalidAccessOrInternalError(Result<?> result) {
+    public static void throwIfInvalidAccess(Result<?> result) {
         if (result.getStatusCode() == Status.INVALID_ACCESS.getStatusCode())
             invalidAccess();
-
-        throwIfInternalServerError(result);
     }
+
+//    public static void throwIfInvalidAccessOrInternalError(Result<?> result) {
+//        if (result.getStatusCode() == Status.INVALID_ACCESS.getStatusCode())
+//            invalidAccess();
+//
+//        throwIfInternalServerError(result);
+//    }
 
     public static void throwIfInternalServerError(Result<?> result) {
         if (result.getStatusCode() == Status.INTERNAL_SERVER_ERROR.getStatusCode())

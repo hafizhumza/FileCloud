@@ -20,10 +20,10 @@ public class UserService extends BaseService {
         this.authServerClient = authServerClient;
     }
 
-    public Result<List<UserResponse>> listActiveUsers(String token) {
+    public List<UserResponse> listActiveUsers(String token) {
         Result<List<UserResponse>> result = authServerClient.listActiveUsers(token);
-        logIfError(result);
-        return result;
+        throwIfInvalidAccess(result);
+        return result.getData();
     }
 
     public String activeUserCount(String bearerToken) {

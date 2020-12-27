@@ -43,7 +43,7 @@ public class AdminService extends BaseService {
         else
             result = adminServiceClient.listUsers(bearerToken);
 
-        logIfError(result);
+        throwIfInvalidAccess(result);
         return result.getData();
     }
 

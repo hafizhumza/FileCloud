@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Space Information</title>
+    <div th:replace="master :: head"></div>
+    <!--<meta charset="ISO-8859-1">-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <div th:replace="master :: user-header"></div>
+    <div th:replace="master :: user-aside"></div>
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div style="display: inline;" class=" alert alert-danger" th:inline="text" th:if="${error}">
+                [[${error}]]
+            </div>
+            <div style="display: inline;" class="alert alert-success" th:inline="text" th:if="${ResultMessage}">
+                [[${ResultMessage}]]
+            </div>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div>
+                <section class="content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <!-- /.box-header -->
+                                <div class="box-body">
+
+                                    <div align="center">
+                                        <h2>Space Information</h2>
+                                        <!--<div id="chart_div"></div>-->
+                                        <div id="piechart" style="width: 700px;height: 500px;"></div>
+                                    </div>
+
+                                    <script th:inline="javascript">
+                                        var real_data = /*[[${chartData}]]*/'noValue';
+
+                                        $(document).ready(function () {
+                                            google.charts.load('current', {
+                                                packages: ['corechart', 'bar']
+                                            });
+                                            google.charts.setOnLoadCallback(drawPieChart);
+                                        });
+
+                                        function drawPieChart() {
+                                            var data = new google.visualization.DataTable();
+                                            data.addColumn('string', 'Year');
+                                            data.addColumn('number', 'Views');
+                                            Object.keys(real_data).forEach(function (key) {
+                                                data.addRow([key, real_data[key]]);
+                                            });
+                                            var options = {
+                                                title: 'Total Space Limit is ' + /*[[${spaceLimit}]]*/'noValue'
+                                            };
+                                            var chart = new google.visualization.PieChart(document
+                                                .getElementById('piechart'));
+                                            chart.draw(data, options);
+                                        }
+                                    </script>
+
+                                </div>
+                                <!-- /.box-body -->
+                            </div>
+                            <!-- /.box -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </section>
+            </div>
+        </section>
+
+        <!-- /.content -->
+    </div>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 2.2.3 -->
+<script th:src="@{/js/jquery-2.2.3.min.js}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<!-- DataTables -->
+
+<!-- SlimScroll -->
+<script th:src="@{/js/jquery.slimscroll.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/js/fastclick.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/js/app.min.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<script th:src="@{/js/demo.js}"></script>
+<!-- page script -->
+<script th:src="@{/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+<script src="@{/js/bootstrap-select.min.js}"></script>
+<script>
+    $(function () {
+        $('#example1').DataTable({
+            "ordering": false
+        });
+        $('#table2').DataTable();
+    });
+</script>
+</body>
+</html>

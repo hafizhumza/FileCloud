@@ -29,9 +29,9 @@ public class DocumentModel {
         description = response.getDescription();
         extension = response.getExtension();
         size = Util.humanReadableByteCountBin(response.getSizeInBytes());
-        createDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(response.getCreateDate()));
+        createDate = new SimpleDateFormat("yyyy-MM-dd h:mm a").format(new Date(response.getCreateDate()));
         if (response.getModifyDate() != null && response.getModifyDate() > 0)
-            modifyDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(new Date(response.getModifyDate()));
+            modifyDate = new SimpleDateFormat("yyyy-MM-dd h:mm a").format(new Date(response.getModifyDate()));
     }
 
 }

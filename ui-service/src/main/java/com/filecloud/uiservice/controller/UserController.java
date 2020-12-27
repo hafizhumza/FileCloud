@@ -6,6 +6,7 @@ import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.dto.session.UserSession;
 import com.filecloud.uiservice.service.DocumentService;
 import com.filecloud.uiservice.service.UserService;
+import com.filecloud.uiservice.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +37,7 @@ public class UserController extends BaseController {
             return "redirect:/admin/home";
 
         model.addAttribute("documentCount", documentService.count(getBearerToken(currentUser)));
-        model.addAttribute("usedSpace", documentService.spaceInfo(getBearerToken(currentUser)).getUsedSpace());
+        model.addAttribute("usedSpace", Util.humanReadableByteCountBin(documentService.spaceInfo(getBearerToken(currentUser)).getUsedSpace()));
         model.addAttribute("userCount", userService.activeUserCount(getBearerToken(currentUser)));
         model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
         model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
@@ -54,6 +55,20 @@ public class UserController extends BaseController {
         model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
         model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
         return "user/profile";
+    }
+
+    @GetMapping("users")
+    public String users(@RequestParam(value = "mode", required = false, defaultValue = "all") String mode,
+                        @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage,
+                        @ModelAttribute(UiConst.KEY_ERROR) String errorMessage,
+                        HttpSession session, Model model) {
+
+        UserSession currentUser = getVerifiedUser(session);
+        model.addAttribute(UiConst.KEY_USERS, userService.listActiveUsers(getBearerToken(currentUser)));
+        model.addAttribute(UiConst.KEY_USER, currentUser);
+        model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
+        model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
+        return "user/users";
     }
 
 }
