@@ -75,7 +75,7 @@ public class UserController extends BaseController {
 
 	@GetMapping("/list-active-users")
 	public Result<?> listActiveUsers() {
-		return sendSuccessResponse(Status.ALL_OK, userService.findAllActiveUsersExcludeAdmin());
+		return sendSuccessResponse(Status.ALL_OK, userService.findActiveUsers());
 	}
 
 	@GetMapping("/user/{userId}")
