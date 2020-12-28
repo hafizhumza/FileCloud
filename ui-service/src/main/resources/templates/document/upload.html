@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Save Document</title>
+    <div th:replace="master :: head"></div>
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+    <div th:replace="master :: user-header"></div>
+    <div th:replace="master :: user-aside"></div>
+
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div>
+                <div class="container">
+                    <div class="row">
+                        <form autocomplete="off" th:action="@{/documents/upload}"
+                              enctype="multipart/form-data"
+                              th:object="${uploadModel}" method="post" class="form-horizontal"
+                              role="form">
+                            <fieldset>
+                                <!-- Form Name -->
+                                <legend>Save New Document</legend>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="document">Document
+                                    </label>
+                                    <div class="col-md-4">
+                                        <input type="file" id="document" th:field="${uploadModel.document}"
+                                               class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="name">Name
+                                    </label>
+                                    <div class="col-md-4">
+                                        <input type="text" id="name" th:field="${uploadModel.name}"
+                                               placeholder="Name" class="form-control"/>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="description">Description</label>
+                                    <div class="col-md-4">
+                                        <textarea rows="10" cols="80" id="description"
+                                                  th:field="${uploadModel.description}"
+                                                  placeholder="Description" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4 control-label" for="submitButton"></label>
+                                    <div class="col-md-4">
+                                        <div>
+                                            <span style="color: green; font-weight: bold"
+                                                  th:utext="${ResultMessage}"></span>
+                                            <span style="color: red; font-weight: bold" th:utext="${error}"></span>
+                                        </div>
+                                        <div>
+                                            <button type="submit" id="submitButton" name="submitButton"
+                                                    class="btn btn-success">Save
+                                            </button>
+                                            <button type="button" class="btn btn-inverse"
+                                                    onclick="window.history.back()">
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery 2.2.3 -->
+<script th:src="@{/js/jquery-2.2.3.min.js}"></script>
+<!-- Bootstrap 3.3.6 -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+<!-- DataTables -->
+
+<!-- SlimScroll -->
+<script th:src="@{/js/jquery.slimscroll.min.js}"></script>
+<!-- FastClick -->
+<script th:src="@{/js/fastclick.js}"></script>
+<!-- AdminLTE App -->
+<script th:src="@{/js/app.min.js}"></script>
+<!-- AdminLTE for demo purposes -->
+<script th:src="@{/js/demo.js}"></script>
+<!-- page script -->
+<script th:src="@{/js/jquery.dataTables.min.js}"></script>
+<script th:src="@{/js/dataTables.bootstrap.min.js}"></script>
+<script src="@{/js/bootstrap-select.min.js}"></script>
+<script>
+    $(function () {
+        $('#example1').DataTable({
+            "ordering": false
+        });
+        $('#table2').DataTable();
+    });
+</script>
+</body>
+</html>
