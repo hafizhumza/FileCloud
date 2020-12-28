@@ -241,7 +241,7 @@ public class DocumentService extends BaseService {
 					"Space Limit is %s. " +
 					"You used %s. " +
 					"Remaining space is %s. " +
-					"Document size is %s." +
+					"Document size is %s. " +
 					"Please delete some documents to continue.",
 					Util.humanReadableByteCountBin(spaceInfo.getSpaceLimit()),
 					Util.humanReadableByteCountBin(spaceInfo.getUsedSpace()),
