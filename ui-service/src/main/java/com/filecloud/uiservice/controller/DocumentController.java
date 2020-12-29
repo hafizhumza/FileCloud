@@ -5,11 +5,16 @@ import com.filecloud.uiservice.client.response.SpaceInfoResponse;
 import com.filecloud.uiservice.constant.UiConst;
 import com.filecloud.uiservice.dto.mvcmodel.DocumentModel;
 import com.filecloud.uiservice.dto.mvcmodel.DocumentUploadModel;
+import com.filecloud.uiservice.dto.mvcmodel.DownloadDocumentModel;
 import com.filecloud.uiservice.dto.session.UserSession;
+import com.filecloud.uiservice.exception.RecordNotFoundException;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.service.DocumentService;
 import com.filecloud.uiservice.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -124,4 +129,20 @@ public class DocumentController extends BaseController {
 
         return "redirect:/documents";
     }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<ByteArrayResource> download(@PathVariable long id, HttpSession session, Model model) {
+        UserSession currentUser = getVerifiedUser(session);
+        DownloadDocumentModel dto = documentService.download(getBearerToken(currentUser), id);
+
+        if (dto == null || dto.getResource() == null)
+            throw new RecordNotFoundException();
+
+        return ResponseEntity.ok()
+                .headers(dto.getHeaders())
+                .contentLength(dto.getResource().contentLength())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(dto.getResource());
+    }
+
 }

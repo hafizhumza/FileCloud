@@ -8,26 +8,17 @@ import com.filecloud.uiservice.client.response.SingleFieldResponse;
 import com.filecloud.uiservice.client.response.SpaceInfoResponse;
 import com.filecloud.uiservice.dto.mvcmodel.DocumentModel;
 import com.filecloud.uiservice.dto.mvcmodel.DocumentUploadModel;
-import com.filecloud.uiservice.properties.UiServiceProperties;
+import com.filecloud.uiservice.dto.mvcmodel.DownloadDocumentModel;
 import com.filecloud.uiservice.response.Result;
-import com.filecloud.uiservice.security.encryption.CryptoUtils;
 import com.filecloud.uiservice.util.FileUtil;
-import com.filecloud.uiservice.util.Util;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
+import feign.Response;
 import org.bouncycastle.crypto.CryptoException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,6 +79,24 @@ public class DocumentService extends BaseService {
         Result<DocumentResponse> result = documentServiceClient.upload(bearerToken, requestPartFile, request.toString());
         throwIfInvalidAccess(result);
         return result;
+    }
+
+    public DownloadDocumentModel download(String bearerToken, long documentId) {
+        Response response = documentServiceClient.download(bearerToken, documentId);
+
+        if (response.status() != HttpStatus.OK.value() || response.body() == null)
+            return null;
+
+        try {
+            DownloadDocumentModel model = new DownloadDocumentModel();
+            model.setHeadersMap(response.headers());
+            model.setResource(fileUtil.decryptResponse(response));
+            return model;
+        } catch (IOException | CryptoException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
 }
