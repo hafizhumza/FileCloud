@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateRequest {
+public class DocumentUpdateRequest {
 
     @NotNull(message = "Document ID cannot be null")
     @Min(value = 1, message = "Invalid document ID")

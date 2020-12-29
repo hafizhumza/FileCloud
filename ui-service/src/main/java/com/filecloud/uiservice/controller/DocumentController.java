@@ -1,5 +1,6 @@
 package com.filecloud.uiservice.controller;
 
+import com.filecloud.uiservice.client.request.DocumentUpdateRequest;
 import com.filecloud.uiservice.client.response.DocumentResponse;
 import com.filecloud.uiservice.client.response.SpaceInfoResponse;
 import com.filecloud.uiservice.constant.UiConst;
@@ -57,7 +58,7 @@ public class DocumentController extends BaseController {
         graphData.put("Remaining Space", Util.roundUptoTwo(Util.convertBytesToMb(spaceInfo.getRemainingSpace())));
 
         model.addAttribute("chartData", graphData);
-        model.addAttribute("spaceLimit", Util.roundUptoTwo(Util.convertBytesToMb(spaceInfo.getSpaceLimit())) + " MB");
+        model.addAttribute("spaceLimit", Util.humanReadableByteCountBin(spaceInfo.getSpaceLimit()));
         model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
         model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
         model.addAttribute(UiConst.KEY_USER, currentUser);
@@ -143,6 +144,63 @@ public class DocumentController extends BaseController {
                 .contentLength(dto.getResource().contentLength())
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(dto.getResource());
+    }
+
+    @GetMapping("/update/{id}")
+    public String update(@PathVariable long id,
+                         HttpSession session,
+                         Model model,
+                         @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage,
+                         @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
+
+        UserSession currentUser = getVerifiedUser(session);
+        Result<DocumentResponse> result = documentService.getDocument(getBearerToken(currentUser), id);
+
+        if (!result.isSuccess())
+            throw new RecordNotFoundException();
+
+        DocumentResponse documentResponse = result.getData();
+
+        DocumentUpdateRequest request = new DocumentUpdateRequest();
+        request.setDocumentId(documentResponse.getDocumentId());
+        request.setName(documentResponse.getDisplayName());
+        request.setDescription(documentResponse.getDescription());
+
+        model.addAttribute("document", request);
+        model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
+        model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
+        model.addAttribute(UiConst.KEY_USER, currentUser);
+        return "document/update";
+    }
+
+    @PostMapping("/update")
+    public String update(@Valid @ModelAttribute DocumentUpdateRequest updateRequest,
+                         BindingResult bindingResult,
+                         RedirectAttributes redirectAttributes,
+                         HttpSession session, Model model,
+                         @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage,
+                         @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
+
+        UserSession currentUser = getVerifiedUser(session);
+        model.addAttribute(UiConst.KEY_USER, currentUser);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("document", updateRequest);
+            model.addAttribute(UiConst.KEY_ERROR, bindingResult.getFieldErrors().get(0).getDefaultMessage());
+            return "document/update";
+        }
+
+        Result<DocumentResponse> result = documentService.update(getBearerToken(currentUser), updateRequest);
+
+        if (!result.isSuccess()) {
+            model.addAttribute("uploadModel", updateRequest);
+            model.addAttribute(UiConst.KEY_ERROR, result.getMessage());
+            return "document/update";
+        } else {
+            redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
+        }
+
+        return "redirect:/documents";
     }
 
 }

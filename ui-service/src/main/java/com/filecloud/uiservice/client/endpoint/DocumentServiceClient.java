@@ -1,8 +1,8 @@
 package com.filecloud.uiservice.client.endpoint;
 
+import com.filecloud.uiservice.client.request.DocumentUpdateRequest;
 import com.filecloud.uiservice.client.request.IdRequest;
 import com.filecloud.uiservice.client.request.ShareDocumentRequest;
-import com.filecloud.uiservice.client.request.UpdateRequest;
 import com.filecloud.uiservice.client.response.DocumentResponse;
 import com.filecloud.uiservice.client.response.SingleFieldResponse;
 import com.filecloud.uiservice.client.response.SpaceInfoResponse;
@@ -21,14 +21,14 @@ import java.util.List;
 @FeignClient(contextId = "DocumentService", name = "GatewayServer", path = UiConst.URL_DOCUMENT_SERVICE)
 public interface DocumentServiceClient {
 
-    @PostMapping("/update")
-    Result<?> update(@RequestHeader("Authorization") String bearerToken, @RequestBody UpdateRequest request);
-
     @PostMapping("/delete")
     Result<?> delete(@RequestHeader("Authorization") String bearerToken, @RequestBody IdRequest request);
 
     @PostMapping("/share")
     Result<?> share(@RequestHeader("Authorization") String bearerToken, @RequestBody ShareDocumentRequest request);
+
+    @PostMapping("/update")
+    Result<DocumentResponse> update(@RequestHeader("Authorization") String bearerToken, @RequestBody DocumentUpdateRequest request);
 
     @GetMapping("/download/{documentId}")
     Response download(@RequestHeader("Authorization") String bearerToken, @PathVariable long documentId);
