@@ -56,20 +56,10 @@ public class SharedDocumentService extends BaseService {
 
 		Document document = sharedDocument.getDocument();
 
-		// TODO: Commented document decryption for now
-		//        String tempFile = Util.getRandomUUID() + "." + document.getExtension();
-		//        Path copyPath = Paths.get(documentServiceProperties.getUploadedDocumentsDir())
-		//                .resolve(tempFile)
-		//                .toAbsolutePath()
-		//                .normalize();
-
 		try {
-			//            CryptoUtils.decrypt(documentServiceProperties.security().getEncryptionKey(), new File(document.getPath()), new File(copyPath.toString()));
-			//            ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(copyPath));
-			//            Files.deleteIfExists(copyPath);
 			ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(Paths.get(document.getPath())));
 			return new DownloadDocumentDto(resource, HeaderUtil.getDocumentHeaders(document));
-		} catch (IOException /*| CryptoException*/ e) {
+		} catch (IOException e) {
 			error("Document not found.");
 		}
 
@@ -78,14 +68,10 @@ public class SharedDocumentService extends BaseService {
 
 	private String getSharedDocumentUrl(String token) {
 		return ServletUriComponentsBuilder.fromCurrentContextPath()
-				.scheme(documentServiceProperties.getGatewayServerScheme())
-				.host(documentServiceProperties.getGatewayServerHost())
-				.port(documentServiceProperties.getGatewayServerPort())
-				.path(documentServiceProperties.getDocumentServicePrefix())
-				.path("/api")
-				.path("/v1")
-				.path("/document")
-				.path("/shared/")
+				.scheme(documentServiceProperties.getUiServiceScheme())
+				.host(documentServiceProperties.getUiServiceHost())
+				.port(documentServiceProperties.getUiServicePort())
+				.path(documentServiceProperties.getUiServiceDownloadSharedDocumentUrl())
 				.path(token)
 				.toUriString();
 	}

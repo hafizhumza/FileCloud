@@ -19,13 +19,13 @@ public class DocumentServiceProperties {
 
 	boolean devMode;
 
-	String gatewayServerScheme;
+	String uiServiceScheme;
 
-	String gatewayServerHost;
+	String uiServiceHost;
 
-	String gatewayServerPort;
+	String uiServicePort;
 
-	String documentServicePrefix;
+	String uiServiceDownloadSharedDocumentUrl;
 
 	/**
 	 * This will be in days
@@ -52,14 +52,6 @@ public class DocumentServiceProperties {
 		this.security = security;
 	}
 
-	public String getDocumentServicePrefix() {
-		return documentServicePrefix;
-	}
-
-	public void setDocumentServicePrefix(String documentServicePrefix) {
-		this.documentServicePrefix = documentServicePrefix;
-	}
-
 	public long getSpaceLimitPerUser() {
 		return spaceLimitPerUser;
 	}
@@ -84,28 +76,36 @@ public class DocumentServiceProperties {
 		this.sharedDocumentsExpiryDays = sharedDocumentsExpiryDays;
 	}
 
-	public String getGatewayServerScheme() {
-		return gatewayServerScheme;
+	public String getUiServiceScheme() {
+		return uiServiceScheme;
 	}
 
-	public void setGatewayServerScheme(String gatewayServerScheme) {
-		this.gatewayServerScheme = gatewayServerScheme;
+	public void setUiServiceScheme(String uiServiceScheme) {
+		this.uiServiceScheme = uiServiceScheme;
 	}
 
-	public String getGatewayServerHost() {
-		return gatewayServerHost;
+	public String getUiServiceHost() {
+		return uiServiceHost;
 	}
 
-	public void setGatewayServerHost(String gatewayServerHost) {
-		this.gatewayServerHost = gatewayServerHost;
+	public void setUiServiceHost(String uiServiceHost) {
+		this.uiServiceHost = uiServiceHost;
 	}
 
-	public String getGatewayServerPort() {
-		return gatewayServerPort;
+	public String getUiServicePort() {
+		return uiServicePort;
 	}
 
-	public void setGatewayServerPort(String gatewayServerPort) {
-		this.gatewayServerPort = gatewayServerPort;
+	public void setUiServicePort(String uiServicePort) {
+		this.uiServicePort = uiServicePort;
+	}
+
+	public String getUiServiceDownloadSharedDocumentUrl() {
+		return uiServiceDownloadSharedDocumentUrl;
+	}
+
+	public void setUiServiceDownloadSharedDocumentUrl(String uiServiceDownloadSharedDocumentUrl) {
+		this.uiServiceDownloadSharedDocumentUrl = uiServiceDownloadSharedDocumentUrl;
 	}
 
 }
