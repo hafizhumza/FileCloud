@@ -37,7 +37,7 @@ public class UserController extends BaseController {
             return "redirect:/admin/home";
 
         model.addAttribute("documentCount", documentService.count(getBearerToken(currentUser)));
-        model.addAttribute("usedSpace", Util.humanReadableByteCountBin(documentService.spaceInfo(getBearerToken(currentUser)).getUsedSpace()));
+        model.addAttribute("remainingSpace", Util.humanReadableByteCountBin(documentService.spaceInfo(getBearerToken(currentUser)).getRemainingSpace()));
         model.addAttribute("userCount", userService.activeUserCount(getBearerToken(currentUser)));
         model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
         model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
