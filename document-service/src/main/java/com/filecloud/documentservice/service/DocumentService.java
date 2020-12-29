@@ -106,7 +106,7 @@ public class DocumentService extends BaseService {
 					FileUtil.readFileToByteArray(document.getPath()),
 					HeaderUtil.getDocumentHeaders(document));
 		} catch (IOException e) {
-			error("Document not found.");
+			/*error("Document not found.");*/
 		}
 
 		return null;

@@ -51,7 +51,6 @@ public class DocumentController extends BaseController {
 
 		return ResponseEntity.ok()
 				.headers(dto.getHeaders())
-				.contentLength(dto.getResource().contentLength())
 				.contentType(MediaType.APPLICATION_OCTET_STREAM)
 				.body(dto.getResource());
 	}
