@@ -21,11 +21,11 @@ import java.util.List;
 @FeignClient(contextId = "DocumentService", name = "GatewayServer", path = UiConst.URL_DOCUMENT_SERVICE)
 public interface DocumentServiceClient {
 
-    @PostMapping("/delete")
-    Result<?> delete(@RequestHeader("Authorization") String bearerToken, @RequestBody IdRequest request);
-
     @PostMapping("/share")
     Result<?> share(@RequestHeader("Authorization") String bearerToken, @RequestBody ShareDocumentRequest request);
+
+    @PostMapping("/delete")
+    Result<String> delete(@RequestHeader("Authorization") String bearerToken, @RequestBody IdRequest request);
 
     @PostMapping("/update")
     Result<DocumentResponse> update(@RequestHeader("Authorization") String bearerToken, @RequestBody DocumentUpdateRequest request);

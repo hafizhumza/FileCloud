@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.filecloud.uiservice.client.endpoint.DocumentServiceClient;
 import com.filecloud.uiservice.client.request.DocumentUpdateRequest;
+import com.filecloud.uiservice.client.request.IdRequest;
 import com.filecloud.uiservice.client.response.DocumentResponse;
 import com.filecloud.uiservice.client.response.SingleFieldResponse;
 import com.filecloud.uiservice.client.response.SpaceInfoResponse;
@@ -102,6 +103,12 @@ public class DocumentService extends BaseService {
 
     public Result<DocumentResponse> update(String bearerToken, DocumentUpdateRequest request) {
         Result<DocumentResponse> result = documentServiceClient.update(bearerToken, request);
+        throwIfInvalidAccess(result);
+        return result;
+    }
+
+    public Result<String> delete(String bearerToken, long id) {
+        Result<String> result = documentServiceClient.delete(bearerToken, new IdRequest(id));
         throwIfInvalidAccess(result);
         return result;
     }

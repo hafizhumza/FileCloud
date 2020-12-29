@@ -203,4 +203,20 @@ public class DocumentController extends BaseController {
         return "redirect:/documents";
     }
 
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable long id,
+                         HttpSession session,
+                         RedirectAttributes redirectAttributes) {
+
+        UserSession currentUser = getVerifiedUser(session);
+        Result<String> result = documentService.delete(getBearerToken(currentUser), id);
+
+        if (!result.isSuccess())
+            redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());
+        else
+            redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
+
+        return "redirect:/documents";
+    }
+
 }
