@@ -22,7 +22,7 @@ import java.util.List;
 public interface DocumentServiceClient {
 
     @PostMapping("/share")
-    Result<?> share(@RequestHeader("Authorization") String bearerToken, @RequestBody ShareDocumentRequest request);
+    Result<String> share(@RequestHeader("Authorization") String bearerToken, @RequestBody ShareDocumentRequest request);
 
     @PostMapping("/delete")
     Result<String> delete(@RequestHeader("Authorization") String bearerToken, @RequestBody IdRequest request);

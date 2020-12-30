@@ -48,6 +48,9 @@ public interface AuthServerClient {
     @GetMapping(UiConst.URL_AUTH_SERVER + "list-active-users")
     Result<List<UserResponse>> listActiveUsers(@RequestHeader("Authorization") String bearerToken);
 
+    @GetMapping(UiConst.URL_AUTH_SERVER + "active-users-exclude-self-and-admin")
+    Result<List<UserResponse>> activeUsersExcludeSelfAndAdmin(@RequestHeader("Authorization") String bearerToken);
+
     @GetMapping(UiConst.URL_AUTH_SERVER + "active-users-count")
     Result<SingleFieldResponse> activeUserCount(@RequestHeader("Authorization") String bearerToken);
 

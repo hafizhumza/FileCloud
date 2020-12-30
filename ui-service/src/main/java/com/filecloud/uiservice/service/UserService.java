@@ -26,6 +26,12 @@ public class UserService extends BaseService {
         return result.getData();
     }
 
+    public List<UserResponse> listActiveUsersExcludeAdmin(String token) {
+        Result<List<UserResponse>> result = authServerClient.activeUsersExcludeSelfAndAdmin(token);
+        throwIfInvalidAccess(result);
+        return result.getData();
+    }
+
     public String activeUserCount(String bearerToken) {
         Result<SingleFieldResponse> result = authServerClient.activeUserCount(bearerToken);
         logIfError(result);

@@ -1,6 +1,7 @@
 package com.filecloud.uiservice.controller;
 
 import com.filecloud.uiservice.client.request.DocumentUpdateRequest;
+import com.filecloud.uiservice.client.request.ShareDocumentRequest;
 import com.filecloud.uiservice.client.response.DocumentResponse;
 import com.filecloud.uiservice.client.response.SpaceInfoResponse;
 import com.filecloud.uiservice.constant.UiConst;
@@ -11,6 +12,7 @@ import com.filecloud.uiservice.dto.session.UserSession;
 import com.filecloud.uiservice.exception.RecordNotFoundException;
 import com.filecloud.uiservice.response.Result;
 import com.filecloud.uiservice.service.DocumentService;
+import com.filecloud.uiservice.service.UserService;
 import com.filecloud.uiservice.util.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -33,9 +36,12 @@ public class DocumentController extends BaseController {
 
     private final DocumentService documentService;
 
+    private final UserService userService;
+
     @Autowired
-    public DocumentController(DocumentService documentService) {
+    public DocumentController(DocumentService documentService, UserService userService) {
         this.documentService = documentService;
+        this.userService = userService;
     }
 
     @GetMapping(value = {"", "/"})
@@ -177,9 +183,7 @@ public class DocumentController extends BaseController {
     public String update(@Valid @ModelAttribute DocumentUpdateRequest updateRequest,
                          BindingResult bindingResult,
                          RedirectAttributes redirectAttributes,
-                         HttpSession session, Model model,
-                         @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage,
-                         @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
+                         HttpSession session, Model model) {
 
         UserSession currentUser = getVerifiedUser(session);
         model.addAttribute(UiConst.KEY_USER, currentUser);
@@ -217,6 +221,65 @@ public class DocumentController extends BaseController {
             redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
 
         return "redirect:/documents";
+    }
+
+    @GetMapping("/share")
+    public String share(@RequestParam(required = false) String mode, HttpSession session,
+                        Model model,
+                        @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage,
+                        @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
+
+        UserSession currentUser = getVerifiedUser(session);
+        model.addAttribute(UiConst.KEY_USER, currentUser);
+
+        model.addAttribute("mode", mode);
+
+        if (mode == null || !mode.equals("outside"))
+            model.addAttribute("users", userService.listActiveUsersExcludeAdmin(getBearerToken(currentUser)));
+
+        List<DocumentModel> documents = documentService.listDocuments(getBearerToken(currentUser));
+
+        if (!Util.isValidList(documents))
+            model.addAttribute("documentError", "Please upload document first");
+
+        model.addAttribute("documents", documents);
+        model.addAttribute("shareDocument", new ShareDocumentRequest());
+        model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
+        model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
+        return "document/share";
+    }
+
+    @PostMapping("/share")
+    public String share(@RequestHeader(value = "referer") final String referer,
+                        @Valid @ModelAttribute ShareDocumentRequest shareDocumentRequest,
+                        BindingResult bindingResult,
+                        HttpSession session, Model model) {
+
+        UserSession currentUser = getVerifiedUser(session);
+        model.addAttribute(UiConst.KEY_USER, currentUser);
+        model.addAttribute("users", userService.listActiveUsersExcludeAdmin(getBearerToken(currentUser)));
+        model.addAttribute("shareDocument", shareDocumentRequest);
+        List<DocumentModel> documents = documentService.listDocuments(getBearerToken(currentUser));
+        model.addAttribute("documents", documents);
+
+        if (!Util.isValidList(documents))
+            model.addAttribute("documentError", "Please upload document first");
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute(UiConst.KEY_ERROR, bindingResult.getFieldErrors().get(0).getDefaultMessage());
+            return "document/share";
+        }
+
+        Result<String> result = documentService.share(getBearerToken(currentUser), shareDocumentRequest);
+
+        if (!result.isSuccess()) {
+            model.addAttribute(UiConst.KEY_ERROR, result.getMessage());
+            return "document/share";
+        } else {
+            model.addAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
+        }
+
+        return "document/share";
     }
 
 }

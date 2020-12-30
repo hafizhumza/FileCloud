@@ -280,10 +280,19 @@
                 </a>
             </li>
             <li class="treeview">
-                <a th:href="@{/documents/share}">
-                    <i class="fa fa-share text-aqua"></i>
+                <a href="#">
+                    <i class="fa fa-share text-blue"></i>
                     <span>Share Document</span>
+                    <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
                 </a>
+                <ul class="treeview-menu">
+                    <li><a th:href="@{/documents/share}"><i class="fa fa-users"></i>
+                        Within Organization</a></li>
+                    <li><a th:href="@{/documents/share(mode=outside)}"><i class="fa fa-globe"></i>
+                        Outside Organization</a></li>
+                </ul>
             </li>
             <li class="treeview">
                 <a th:href="@{/documents/space-info}">
