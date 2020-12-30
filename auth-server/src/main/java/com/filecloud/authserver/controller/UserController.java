@@ -78,6 +78,11 @@ public class UserController extends BaseController {
 		return sendSuccessResponse(Status.ALL_OK, userService.findActiveUsers());
 	}
 
+	@GetMapping("/active-users-exclude-self-and-admin")
+	public Result<?> listActiveUsersExcludeAdmin() {
+		return sendSuccessResponse(Status.ALL_OK, userService.findAllActiveUsersExcludeSelfAndAdmin());
+	}
+
 	@GetMapping("/user/{userId}")
 	public Result<?> getUser(@PathVariable long userId) {
 		return sendSuccessResponse(Status.ALL_OK, userService.getUser(userId));

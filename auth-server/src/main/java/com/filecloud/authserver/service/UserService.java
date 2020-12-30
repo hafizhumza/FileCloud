@@ -107,7 +107,7 @@ public class UserService extends BaseService {
 		List<AuthUser> dbUsers = userRepository.findAll();
 
 		if (Util.isValidList(dbUsers))
-			return getResponseUserDtoExcludeAdmin(dbUsers);
+			return getDtoExcludeSelfAndAdmin(dbUsers);
 
 		return new ArrayList<>();
 	}
@@ -150,11 +150,11 @@ public class UserService extends BaseService {
 		return mapToResponseUserDto(dbUsers);
 	}
 
-	public List<ResponseUserDto> findAllActiveUsersExcludeAdmin() {
+	public List<ResponseUserDto> findAllActiveUsersExcludeSelfAndAdmin() {
 		List<AuthUser> dbUsers = userRepository.findByAccountNonLocked(true);
 
 		if (Util.isValidList(dbUsers))
-			return getResponseUserDtoExcludeAdmin(dbUsers);
+			return getDtoExcludeSelfAndAdmin(dbUsers);
 
 		return new ArrayList<>();
 	}
@@ -191,9 +191,12 @@ public class UserService extends BaseService {
 				.collect(Collectors.toList());
 	}
 
-	private List<ResponseUserDto> getResponseUserDtoExcludeAdmin(List<AuthUser> dbUsers) {
+	private List<ResponseUserDto> getDtoExcludeSelfAndAdmin(List<AuthUser> dbUsers) {
+		String email = ((AuthUserDetail) AuthUtil.getPrincipal()).getUsername();
+
 		return dbUsers
 				.stream()
+				.filter(u -> !u.getEmail().equals(email))
 				.filter(u -> {
 					for (Role role : u.getRoles())
 						if (role.getName().equals(ConstUtil.ROLE_USER))
