@@ -253,6 +253,7 @@ public class DocumentController extends BaseController {
     public String share(@RequestHeader(value = "referer") final String referer,
                         @Valid @ModelAttribute ShareDocumentRequest shareDocumentRequest,
                         BindingResult bindingResult,
+                        RedirectAttributes redirectAttributes,
                         HttpSession session, Model model) {
 
         UserSession currentUser = getVerifiedUser(session);
@@ -276,10 +277,10 @@ public class DocumentController extends BaseController {
             model.addAttribute(UiConst.KEY_ERROR, result.getMessage());
             return "document/share";
         } else {
-            model.addAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
+            redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
         }
 
-        return "document/share";
+        return "redirect:/documents";
     }
 
 }
