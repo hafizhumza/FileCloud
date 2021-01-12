@@ -19,6 +19,8 @@ import org.bouncycastle.crypto.CryptoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -42,8 +44,8 @@ public class DocumentService extends BaseService {
         this.objectMapper = objectMapper;
     }
 
-    public String count(String bearerToken) {
-        Result<SingleFieldResponse> result = documentServiceClient.count(bearerToken);
+    public String countActiveDocuments(String bearerToken) {
+        Result<SingleFieldResponse> result = documentServiceClient.countActiveDocuments(bearerToken);
         throwIfInvalidAccess(result);
         return result.getData().getResponse().toString();
     }
@@ -55,7 +57,7 @@ public class DocumentService extends BaseService {
     }
 
     public List<DocumentModel> listDocuments(String bearerToken) {
-        Result<List<DocumentResponse>> result = documentServiceClient.listDocuments(bearerToken);
+        Result<List<DocumentResponse>> result = documentServiceClient.listActiveDocuments(bearerToken);
         throwIfInvalidAccess(result);
         return result.getData().stream().map(DocumentModel::new).collect(Collectors.toList());
     }
@@ -119,4 +121,29 @@ public class DocumentService extends BaseService {
         throwIfInvalidAccess(result);
         return result;
     }
+
+    public Result<String> recycleDocument(String bearerToken, long id) {
+        Result<String> result = documentServiceClient.recycleDocument(bearerToken, new IdRequest(id));
+        throwIfInvalidAccess(result);
+        return result;
+    }
+
+    public Result<String> restoreDocument(String bearerToken, long id) {
+        Result<String> result = documentServiceClient.restoreDocument(bearerToken, new IdRequest(id));
+        throwIfInvalidAccess(result);
+        return result;
+    }
+
+    public List<DocumentModel> listRecycledDocuments(String bearerToken) {
+        Result<List<DocumentResponse>> result = documentServiceClient.listRecycledDocuments(bearerToken);
+        throwIfInvalidAccess(result);
+        return result.getData().stream().map(DocumentModel::new).collect(Collectors.toList());
+    }
+
+    public String countRecycledDocuments(String bearerToken) {
+        Result<SingleFieldResponse> result = documentServiceClient.countRecycledDocuments(bearerToken);
+        throwIfInvalidAccess(result);
+        return result.getData().getResponse().toString();
+    }
+
 }

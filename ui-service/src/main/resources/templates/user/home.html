@@ -49,18 +49,18 @@
                     </div>
                     <div class="col-lg-3 col-xs-6">
                         <!-- small box -->
-                        <div class="small-box bg-green">
+                        <div class="small-box bg-red">
                             <div class="inner">
                                 <h3>
                                     <span style="color: white; font-weight: bold"
-                                          th:utext="${userCount}"></span>
+                                          th:utext="${trashCount}"></span>
                                 </h3>
-                                <p>Users</p>
+                                <p>Trash</p>
                             </div>
                             <div class="icon">
-                                <i class="fa fa-users"></i>
+                                <i class="fa fa-trash"></i>
                             </div>
-                            <a th:href="@{/users}" class="small-box-footer">More info <i
+                            <a th:href="@{/documents/trash}" class="small-box-footer">More info <i
                                     class="fa fa-arrow-circle-right"></i></a>
                         </div>
                     </div>

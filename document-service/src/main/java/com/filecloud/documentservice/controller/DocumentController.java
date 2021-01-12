@@ -55,9 +55,9 @@ public class DocumentController extends BaseController {
 				.body(dto.getResource());
 	}
 
-	@GetMapping("/list")
-	public Result<?> listDocuments() {
-		return sendSuccessResponse(Response.Status.ALL_OK, documentService.listDocuments());
+	@GetMapping("/list-active-documents")
+	public Result<?> listActiveDocuments() {
+		return sendSuccessResponse(Response.Status.ALL_OK, documentService.listActiveDocuments());
 	}
 
 	@GetMapping("/{documentId}")
@@ -90,9 +90,33 @@ public class DocumentController extends BaseController {
 		return sendSuccessResponse(Response.Status.ALL_OK, "Document shared successfully to the given email address");
 	}
 
-	@GetMapping("/count")
-	public Result<?> countByUser() {
-		return sendSuccessResponse(Response.Status.ALL_OK, documentService.countByUser());
+	@GetMapping("/count-active-documents")
+	public Result<?> countActiveDocuments() {
+		return sendSuccessResponse(Response.Status.ALL_OK, documentService.countActiveDocuments());
+	}
+
+	@Transactional
+	@PostMapping("/recycle")
+	public Result<?> recycle(@RequestBody @Valid SingleIdRequestDto deleteRequestDto) {
+		documentService.recycle(deleteRequestDto);
+		return sendSuccessResponse(Response.Status.ALL_OK, "Document moved to Trash");
+	}
+
+	@Transactional
+	@PostMapping("/restore")
+	public Result<?> restore(@RequestBody @Valid SingleIdRequestDto deleteRequestDto) {
+		documentService.restore(deleteRequestDto);
+		return sendSuccessResponse(Response.Status.ALL_OK, "Document restore successfully!");
+	}
+
+	@GetMapping("/list-recycled-documents")
+	public Result<?> listRecycledDocuments() {
+		return sendSuccessResponse(Response.Status.ALL_OK, documentService.listRecycledDocuments());
+	}
+
+	@GetMapping("/count-recycled-documents")
+	public Result<?> countRecycledDocuments() {
+		return sendSuccessResponse(Response.Status.ALL_OK, documentService.countRecycledDocuments());
 	}
 
 }

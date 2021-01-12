@@ -40,13 +40,25 @@ public interface DocumentServiceClient {
     @GetMapping("/{documentId}")
     Result<DocumentResponse> getDocument(@RequestHeader("Authorization") String bearerToken, @PathVariable long documentId);
 
-    @GetMapping("/list")
-    Result<List<DocumentResponse>> listDocuments(@RequestHeader("Authorization") String bearerToken);
+    @GetMapping("/list-active-documents")
+    Result<List<DocumentResponse>> listActiveDocuments(@RequestHeader("Authorization") String bearerToken);
 
     @GetMapping("/space-info")
     Result<SpaceInfoResponse> spaceInfo(@RequestHeader("Authorization") String bearerToken);
 
-    @GetMapping("/count")
-    Result<SingleFieldResponse> count(@RequestHeader("Authorization") String bearerToken);
+    @GetMapping("/count-active-documents")
+    Result<SingleFieldResponse> countActiveDocuments(@RequestHeader("Authorization") String bearerToken);
+
+    @PostMapping("/recycle")
+    Result<String> recycleDocument(@RequestHeader("Authorization") String bearerToken, @RequestBody IdRequest request);
+
+    @PostMapping("/restore")
+    Result<String> restoreDocument(@RequestHeader("Authorization") String bearerToken, @RequestBody IdRequest request);
+
+    @GetMapping("/list-recycled-documents")
+    Result<List<DocumentResponse>> listRecycledDocuments(@RequestHeader("Authorization") String bearerToken);
+
+    @GetMapping("/count-recycled-documents")
+    Result<SingleFieldResponse> countRecycledDocuments(@RequestHeader("Authorization") String bearerToken);
 
 }

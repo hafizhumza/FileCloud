@@ -13,11 +13,13 @@ import com.filecloud.documentservice.model.db.Document;
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
 
-	List<Document> findByUserId(long userId);
+	List<Document> findByUserId(Long userId);
 
-	Long countByUserId(long userId);
+	List<Document> findByUserIdAndRecycled(Long userId, Boolean recycled);
+
+	Long countByUserIdAndRecycled(Long userId, Boolean recycled);
 
 	@Query(name = DocumentQueries.QUERY_USER_FILES_SIZE)
-	Long findUsedSpace(long userId);
+	Long findUsedSpace(Long userId);
 
 }

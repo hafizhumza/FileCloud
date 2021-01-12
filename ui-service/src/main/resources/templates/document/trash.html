@@ -2,7 +2,7 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Documents</title>
+    <title>Recycle Bin</title>
     <div th:replace="master :: head"></div>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -27,16 +27,11 @@
             <div>
                 <section class="content-header">
                     <h1 style="display: inline">
-                        All Documents
+                        All Deleted Documents
                     </h1>
-                    <div style="display: inline;float: right;margin-left: 5px;">
-                        <a th:href="@{/documents/upload}" class="btn btn-primary">
-                            <span class="glyphicon glyphicon-plus-sign"></span> Upload Document
-                        </a>
-                    </div>
                     <div style="display: inline;float: right;">
-                        <a th:href="@{/documents/trash}" class="btn btn-danger">
-                            <span class="glyphicon glyphicon-trash"></span> Trash
+                        <a th:href="@{/documents}" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-file"></span> Documents
                         </a>
                     </div>
                 </section>
@@ -57,8 +52,6 @@
                                             <th>Upload Date</th>
                                             <th></th>
                                             <th></th>
-                                            <th></th>
-                                            <th></th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -71,14 +64,10 @@
                                             <td th:text="${doc.extension}"></td>
                                             <td th:text="${doc.size}"></td>
                                             <td th:text="${doc.createDate}"></td>
-                                            <td><a th:href="@{/documents/download/{id}(id=${doc.id})}"><span
-                                                    class="glyphicon glyphicon-download"></span> DOWNLOAD</a></td>
-                                            <td><a th:href="@{/documents/update/{id}(id=${doc.id})}"><span
-                                                    class="glyphicon glyphicon-pencil"></span> EDIT</a></td>
-                                            <td><a th:href="@{/documents/recycle/{id}(id=${doc.id})}"><span
-                                                    class="glyphicon glyphicon-trash"></span> DELETE</a></td>
-                                            <td><a th:href="@{/documents/share}"><span
-                                                    class="glyphicon glyphicon-share"></span> SHARE</a></td>
+                                            <td><a th:href="@{/documents/restore/{id}(id=${doc.id})}"><span
+                                                    class="glyphicon glyphicon-repeat"></span> RESTORE</a></td>
+                                            <td><a th:href="@{/documents/delete/{id}(id=${doc.id})}"><span
+                                                    class="glyphicon glyphicon-remove-circle"></span> REMOVE</a></td>
                                         </tr>
                                         </tbody>
                                     </table>

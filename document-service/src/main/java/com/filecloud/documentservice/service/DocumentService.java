@@ -94,6 +94,7 @@ public class DocumentService extends BaseService {
 		document.setExtension(extension);
 		document.setPath(targetLocation.toString());
 		document.setSizeInBytes(documentSizeInBytes);
+		document.setRecycled(false);
 
 		return new DocumentResponseDto(documentRepository.save(document));
 	}
@@ -112,10 +113,12 @@ public class DocumentService extends BaseService {
 		return null;
 	}
 
-	public List<DocumentResponseDto> listDocuments() {
+	public List<DocumentResponseDto> listActiveDocuments() {
 		UserSession session = AuthUtil.getCurrentLoggedInUser();
-		return documentRepository.findByUserId(session.getUserId())
-				.stream().map(DocumentResponseDto::new).collect(Collectors.toList());
+		return documentRepository.findByUserIdAndRecycled(session.getUserId(), false)
+				.stream()
+				.map(DocumentResponseDto::new)
+				.collect(Collectors.toList());
 	}
 
 	public DocumentResponseDto getDocument(long documentId) {
@@ -139,6 +142,9 @@ public class DocumentService extends BaseService {
 
 	public void delete(SingleIdRequestDto deleteRequestDto) {
 		Document document = getVerifiedUserDocument(deleteRequestDto.getId());
+
+		if (!document.getRecycled())
+			invalidInput("Please add document to recycle bin first");
 
 		try {
 			Files.deleteIfExists(Paths.get(document.getPath()));
@@ -182,9 +188,9 @@ public class DocumentService extends BaseService {
 		documentRepository.deleteAll(documents);
 	}
 
-	public SingleFieldResponse countByUser() {
+	public SingleFieldResponse countActiveDocuments() {
 		UserSession user = AuthUtil.getCurrentLoggedInUser();
-		return new SingleFieldResponse(documentRepository.countByUserId(user.getUserId()));
+		return new SingleFieldResponse(documentRepository.countByUserIdAndRecycled(user.getUserId(), false));
 	}
 
 	private void createDocumentsDir(DocumentServiceProperties documentServiceProperties) {
@@ -259,6 +265,31 @@ public class DocumentService extends BaseService {
 			invalidAccess("This document doesn't belong to you.");
 
 		return document;
+	}
+
+	public void recycle(SingleIdRequestDto dto) {
+		Document document = getVerifiedUserDocument(dto.getId());
+		document.setRecycled(true);
+		documentRepository.save(document);
+	}
+
+	public void restore(SingleIdRequestDto dto) {
+		Document document = getVerifiedUserDocument(dto.getId());
+		document.setRecycled(false);
+		documentRepository.save(document);
+	}
+
+	public List<DocumentResponseDto> listRecycledDocuments() {
+		UserSession session = AuthUtil.getCurrentLoggedInUser();
+		return documentRepository.findByUserIdAndRecycled(session.getUserId(), true)
+				.stream()
+				.map(DocumentResponseDto::new)
+				.collect(Collectors.toList());
+	}
+
+	public SingleFieldResponse countRecycledDocuments() {
+		UserSession user = AuthUtil.getCurrentLoggedInUser();
+		return new SingleFieldResponse(documentRepository.countByUserIdAndRecycled(user.getUserId(), true));
 	}
 
 }

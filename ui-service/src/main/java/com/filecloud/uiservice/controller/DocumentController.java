@@ -220,7 +220,7 @@ public class DocumentController extends BaseController {
         else
             redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
 
-        return "redirect:/documents";
+        return "redirect:/documents/trash";
     }
 
     @GetMapping("/share")
@@ -250,8 +250,7 @@ public class DocumentController extends BaseController {
     }
 
     @PostMapping("/share")
-    public String share(@RequestHeader(value = "referer") final String referer,
-                        @Valid @ModelAttribute ShareDocumentRequest shareDocumentRequest,
+    public String share(@Valid @ModelAttribute ShareDocumentRequest shareDocumentRequest,
                         BindingResult bindingResult,
                         RedirectAttributes redirectAttributes,
                         HttpSession session, Model model) {
@@ -281,6 +280,48 @@ public class DocumentController extends BaseController {
         }
 
         return "redirect:/documents";
+    }
+
+    @GetMapping("/recycle/{id}")
+    public String recycleDocument(@PathVariable long id,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
+
+        UserSession currentUser = getVerifiedUser(session);
+        Result<String> result = documentService.recycleDocument(getBearerToken(currentUser), id);
+
+        if (!result.isSuccess())
+            redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());
+        else
+            redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
+
+        return "redirect:/documents";
+    }
+
+    @GetMapping("/restore/{id}")
+    public String restoreDocument(@PathVariable long id,
+                                  HttpSession session,
+                                  RedirectAttributes redirectAttributes) {
+
+        UserSession currentUser = getVerifiedUser(session);
+        Result<String> result = documentService.restoreDocument(getBearerToken(currentUser), id);
+
+        if (!result.isSuccess())
+            redirectAttributes.addFlashAttribute(UiConst.KEY_ERROR, result.getMessage());
+        else
+            redirectAttributes.addFlashAttribute(UiConst.KEY_RESULT_MESSAGE, result.getMessage());
+
+        return "redirect:/documents/trash";
+    }
+
+    @GetMapping("/trash")
+    public String recycleBin(HttpSession session, Model model, @ModelAttribute(UiConst.KEY_RESULT_MESSAGE) String resultMessage, @ModelAttribute(UiConst.KEY_ERROR) String errorMessage) {
+        UserSession currentUser = getVerifiedUser(session);
+        model.addAttribute("documents", documentService.listRecycledDocuments(getBearerToken(currentUser)));
+        model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
+        model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
+        model.addAttribute(UiConst.KEY_USER, currentUser);
+        return "document/trash";
     }
 
 }

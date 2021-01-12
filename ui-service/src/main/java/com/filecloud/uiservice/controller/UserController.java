@@ -36,9 +36,9 @@ public class UserController extends BaseController {
         if (isAdmin(currentUser))
             return "redirect:/admin/home";
 
-        model.addAttribute("documentCount", documentService.count(getBearerToken(currentUser)));
+        model.addAttribute("documentCount", documentService.countActiveDocuments(getBearerToken(currentUser)));
         model.addAttribute("remainingSpace", Util.humanReadableByteCountBin(documentService.spaceInfo(getBearerToken(currentUser)).getRemainingSpace()));
-        model.addAttribute("userCount", userService.activeUserCount(getBearerToken(currentUser)));
+        model.addAttribute("trashCount", documentService.countRecycledDocuments(getBearerToken(currentUser)));
         model.addAttribute(UiConst.KEY_ERROR, (errorMessage != null && errorMessage.equals("")) ? null : errorMessage);
         model.addAttribute(UiConst.KEY_RESULT_MESSAGE, (resultMessage != null && resultMessage.equals("")) ? null : resultMessage);
         model.addAttribute(UiConst.KEY_USER, currentUser);
